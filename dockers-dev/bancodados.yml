@@ -1,0 +1,27 @@
+# Use root/example as user/password credentials
+version: '3.1'
+
+services:
+
+  mongo:
+    image: mongo
+    
+    environment:
+      MONGO_INITDB_DATABASE: mongo
+      MONGO_INITDB_ROOT_USERNAME: backend
+      MONGO_INITDB_ROOT_PASSWORD: beeUpPass
+    
+    networks:
+      - mongo
+    
+    ports:
+      - 27017:27017
+
+    volumes:
+      - db_dev_mongo:/data/db
+
+volumes:
+  db_dev_mongo:
+
+networks:
+  mongo:
