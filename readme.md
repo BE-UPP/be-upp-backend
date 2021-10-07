@@ -49,4 +49,45 @@ npm run start:dev
 Faça um post na url:
 ``` bash
 http://localhost:3000/
-```
+com um body qualquer
+
+
+
+
+get 'http://dominio.com/template'
+get vai ser responsavel por levar os dados do banco até frontend
+deve o json do questionario
+
+get da versão mais nova
+
+post 'http://dominio.com/template'
+Cadastrar uma nova versão do template
+
+post 'http://dominio.com/form-data'
+salvar os dados poós preenchimento do formulário
+
+
+senna
+Joannis
+marcos
+luciano
+lawand
+leo
+
+Criar estrutura de pastas 2 marcos luciano
+Criar arquivos middlewares de rotas 2 lawand joannis
+Parametrizar acesso do banco de dados passar para .env 2 leo senna
+
+Criar api post template 3 lawand marcos luciano
+criar api get template 3 joannis senna leo
+
+criar api post form data
+
+para mudar de branch
+
+git checkout "nomedabrach"
+
+para mudar e criar uma branch ao mesmo tempo
+
+git checkout -b "nome"
+
