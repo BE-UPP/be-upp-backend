@@ -1,45 +1,52 @@
-Para rodar o esqueleto do backend
+## Ferramentas necessárias
 
-Instale o docker 
+- [Docker](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-20-04-pt)
+- [docker-compose](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-20-04)
+- [npm](https://docs.npmjs.com/)
+ 
+## Como rodar 
+#### 1. Inicialize o banco de dados
+``` bash
+docker-compose up mongo 
+```
 
-Abaixo segue um tutorial
-https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-20-04-pt
 
+#### 2. Inicialize o mongo-express
 
-após o docker instaldado entre na pasta dockers-dev e execute a 
-imagem que contem o banco de dados de desenvolvimento com o comando:
+Após o mongo terminar de inicializar, inicialize o mongo-express:
+``` bash
+docker-compose up mongo-express 
+```
 
-docker-compose -f bancodados.yml up
+##### 2.1 Acesso ao mongo-express
 
-o terminal vai ficar sempre soltando consoles enquanto o banco de dados estiver rodando
-
-após esse comando parar de soltar mensagens execute o mongoexpress, o que vai ser uma interface muito útil 
-para lidarmos com o banco. 
-
-na mesma pasta com outra aba do terminal execute o comando:
-
-docker-compose -f mongoexpress.yml up
-
-apoós esse comando startar o mongo express estara disponível em: 
-
+Após a inicialização do mongo-express, ele estará disponível em: 
+``` bash
 http://0.0.0.0:8081/
-
-as senhas de login encontrasse dentro do YML em:
+```
+As senhas de login encontram-se dentro do docker-compose.yml em:
 
 ME_CONFIG_BASICAUTH_USERNAME: beeUp
 ME_CONFIG_BASICAUTH_PASSWORD: beeUpPass
 
-nessa aplicação podera acompanhar o banco de dados em tempo real. 
+Com essa aplicação é possível acompanhar o banco de dados em tempo real.
 
-bom, agora com o banco rodando podemos rodar o back-end. 
+#### 3. Inicializando o backend
 
-instale os pacotes dependentes
 
-Rode npm install
+##### 3.1 Instale os pacotes dependentes
+``` bash
+npm install
+```
 
-Rode npm run start:dev
+##### 3.2 Inicialize o servidor
+``` bash
+npm run start:dev
+```
 
-faça um post atravez do insomnia ou postman para a url: 
+#### 4. Teste
+
+Faça um post na url:
+``` bash
 http://localhost:3000/
-com um body qualquer
-
+```

@@ -1,9 +1,9 @@
-const mongoose = require('../../database');
+const mongoose = require('../../infra/database');
 
 const TemplateSchema = new mongoose.Schema({
   templateVersion: {
     type: Number,
-    require: true,
+    required: [true, 'Template Version Required'],
   }, 
   pages: {
     type: Array,

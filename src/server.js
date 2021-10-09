@@ -2,8 +2,7 @@
 const express = require('express');
 
 const bodyParser = require('body-parser');
-
-// const router = require('./controllers/router');
+const formDataRoutes = require('./route/form-data')
 
 const app = express();
 
@@ -13,20 +12,23 @@ app.use(bodyParser.urlencoded({
 
 app.use(bodyParser.json());
 
-// app.use(router); // para adcionar rotas
-
-
+formDataRoutes(app);
 
 // Setup server port
 var port = process.env.PORT || 3000;
 
 app.post('/', async (req, res) => { 
-    const Model = require('./database/models/template');
+    const Model = require('./data/models/template');
     const body = req.body;
     console.log(body)
-    const dado = await Model.create({ createAt: 1633020142, pages: [], templateVersion: 1});
-    console.log(dado)
-    res.send('Hello World with Express')
+    try{
+        const dado = await Model.create({ createAt: 1633020142, pages: []});
+        console.log(dado)
+        res.send('Hello World with Express')
+    }
+    catch(error){
+        res.send(error.message)
+    }
 });
 
 app.listen(port, function () {
