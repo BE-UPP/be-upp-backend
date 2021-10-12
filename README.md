@@ -26,7 +26,8 @@ http://0.0.0.0:8081/
 ```
 As senhas de login encontram-se dentro do docker-compose.yml em:
 
-ME_CONFIG_BASICAUTH_USERNAME: beeUp
+ME_CONFIG_BASICAUTH_USERNAME: beeUp 
+
 ME_CONFIG_BASICAUTH_PASSWORD: beeUpPass
 
 Com essa aplicação é possível acompanhar o banco de dados em tempo real.
