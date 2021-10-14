@@ -38,24 +38,44 @@ app.use((err, req, res, next) => {
   res.json(formattedError)
 })
 
+app.post('/', async (req, res) => { 
+    const Model = require('./data/models/template');
+    const body = req.body;
+    console.log(body)
+    try{
+        const dado = await Model.create({ createAt: Date.now(), templateVersion: 1, pages: []});
+        console.log(dado)
+        res.send('Hello World with Express')
+    }
+    catch(error){
+        res.send(error.message)
+    }
+});
 
+app.get('/api/templates/by-id/:id', async (req, res) => {
+    const Model = require('./data/models/template');
+    const body = req.body;
+    const id = req.params.id;
+    try {
+        const dado = await Model.findById(id).exec();
+        res.send(dado);
+    }
+    catch(error) {
+        res.send(error.message);
+    }
+});
 
-
-// app.get('/', async (req, res) => { 
-
-//   res.send('Hello World with Express')
-//     // const Model = require('./data/models/template');
-//     // const body = req.body;
-//     // console.log(body)
-//     // try{
-//     //     const dado = await Model.create({ createAt: 1633020142, pages: []});
-//     //     console.log(dado)
-//     //     res.send('Hello World with Express')
-//     // }
-//     // catch(error){
-//     //     res.send(error.message)
-//     // }
-// });
+app.get('/api/templates/latest', async (req, res) => {
+    const Model = require('./data/models/template');
+    const body = req.body;
+    try {
+        const dado = await Model.findOne().sort({createAt: -1}).exec();
+        res.send(dado);
+    }
+    catch(error) {
+        res.send(error.message);
+    }
+});
 
 app.listen(port, function () {
     console.log("Running server on port " + port);
