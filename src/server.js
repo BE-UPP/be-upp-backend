@@ -31,12 +31,12 @@ app.use(bodyParser.json());
 app.use('/open-api', openApis);
 // app.use('/api', auth, protectRoute)
   
-app.use((err, req, res, next) => {
-  const formattedError = errorFormatter(err)
+// app.use((err, req, res, next) => {
+//   const formattedError = errorFormatter(err)
 
-  res.status(formattedError.status || 500)
-  res.json(formattedError)
-})
+//   res.status(formattedError.status || 500)
+//   res.json(formattedError)
+// })
 
 app.post('/', async (req, res) => { 
     const Model = require('./data/models/template');
