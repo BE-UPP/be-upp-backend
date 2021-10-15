@@ -15,7 +15,7 @@ services:
       - mongo
     
     ports:
-      - 27017:27017
+      - ${ME_CONFIG_MONGODB_PORT}:${ME_CONFIG_MONGODB_PORT}
 
     volumes:
       - db_dev_mongo:/data/db
