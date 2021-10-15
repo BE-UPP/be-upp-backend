@@ -1,9 +1,19 @@
-## Ferramentas necessárias
+# be-up
+
+## Preparar o ambiente
+
+#### Ferramentas necessárias
 
 - [Docker](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-20-04-pt)
 - [docker-compose](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-20-04)
 - [npm](https://docs.npmjs.com/)
- 
+
+#### Variáveis de ambiente
+Crie o arquivo **.env** e defina as variávesi de ambiente. Utilize como referência o arquivo **.env-example**
+```bash
+cp .env-example .env
+```
+
 ## Como rodar 
 #### 1. Inicialize o banco de dados
 ``` bash
@@ -24,10 +34,10 @@ Após a inicialização do mongo-express, ele estará disponível em:
 ``` bash
 http://0.0.0.0:8081/
 ```
-As senhas de login encontram-se dentro do docker-compose.yml em:
+As senhas de login são as configuradas no arquivo **.env**:
 
-ME_CONFIG_BASICAUTH_USERNAME: beeUp
-ME_CONFIG_BASICAUTH_PASSWORD: beeUpPass
+ME_CONFIG_BASICAUTH_USERNAME: 
+ME_CONFIG_BASICAUTH_PASSWORD: 
 
 Com essa aplicação é possível acompanhar o banco de dados em tempo real.
 
