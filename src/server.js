@@ -52,31 +52,6 @@ app.post('/', async (req, res) => {
     }
 });
 
-app.get('/api/templates/by-id/:id', async (req, res) => {
-    const Model = require('./data/models/template');
-    const body = req.body;
-    const id = req.params.id;
-    try {
-        const dado = await Model.findById(id).exec();
-        res.send(dado);
-    }
-    catch(error) {
-        res.send(error.message);
-    }
-});
-
-app.get('/api/templates/latest', async (req, res) => {
-    const Model = require('./data/models/template');
-    const body = req.body;
-    try {
-        const dado = await Model.findOne().sort({createAt: -1}).exec();
-        res.send(dado);
-    }
-    catch(error) {
-        res.send(error.message);
-    }
-});
-
 app.listen(port, function () {
     console.log("Running server on port " + port);
 });
