@@ -27,35 +27,7 @@ app.use(bodyParser.urlencoded({
 
 app.use(bodyParser.json());
 
-  
 app.use('/open-api', openApis);
-// app.use('/api', auth, protectRoute)
-  
-app.use((err, req, res, next) => {
-  const formattedError = errorFormatter(err)
-
-  res.status(formattedError.status || 500)
-  res.json(formattedError)
-})
-
-
-
-
-// app.get('/', async (req, res) => { 
-
-//   res.send('Hello World with Express')
-//     // const Model = require('./data/models/template');
-//     // const body = req.body;
-//     // console.log(body)
-//     // try{
-//     //     const dado = await Model.create({ createAt: 1633020142, pages: []});
-//     //     console.log(dado)
-//     //     res.send('Hello World with Express')
-//     // }
-//     // catch(error){
-//     //     res.send(error.message)
-//     // }
-// });
 
 app.listen(port, function () {
     console.log("Running server on port " + port);
