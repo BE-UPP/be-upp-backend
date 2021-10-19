@@ -1,9 +1,19 @@
-## Ferramentas necessárias
+# be-up
+
+## Preparar o ambiente
+
+#### Ferramentas necessárias
 
 - [Docker](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-20-04-pt)
 - [docker-compose](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-20-04)
 - [npm](https://docs.npmjs.com/)
- 
+
+#### Variáveis de ambiente
+Crie o arquivo **.env** e defina as variávesi de ambiente. Utilize como referência o arquivo **.env-example**
+```bash
+cp .env-example .env
+```
+
 ## Como rodar 
 #### 1. Inicialize o banco de dados
 ``` bash
@@ -24,11 +34,10 @@ Após a inicialização do mongo-express, ele estará disponível em:
 ``` bash
 http://0.0.0.0:8081/
 ```
-As senhas de login encontram-se dentro do docker-compose.yml em:
+As senhas de login são as configuradas no arquivo **.env**:
 
-ME_CONFIG_BASICAUTH_USERNAME: beeUp 
-
-ME_CONFIG_BASICAUTH_PASSWORD: beeUpPass
+ME_CONFIG_BASICAUTH_USERNAME: 
+ME_CONFIG_BASICAUTH_PASSWORD: 
 
 Com essa aplicação é possível acompanhar o banco de dados em tempo real.
 
@@ -52,43 +61,9 @@ Faça um post na url:
 http://localhost:3000/
 com um body qualquer
 
-
-
-
 get 'http://dominio.com/template'
-get vai ser responsavel por levar os dados do banco até frontend
-deve o json do questionario
-
-get da versão mais nova
 
 post 'http://dominio.com/template'
-Cadastrar uma nova versão do template
 
 post 'http://dominio.com/form-data'
-salvar os dados poós preenchimento do formulário
-
-
-senna
-Joannis
-marcos
-luciano
-lawand
-leo
-
-Criar estrutura de pastas 2 marcos luciano
-Criar arquivos middlewares de rotas 2 lawand joannis
-Parametrizar acesso do banco de dados passar para .env 2 leo senna
-
-Criar api post template 3 lawand marcos luciano
-criar api get template 3 joannis senna leo
-
-criar api post form data
-
-para mudar de branch
-
-git checkout "nomedabrach"
-
-para mudar e criar uma branch ao mesmo tempo
-
-git checkout -b "nome"
-
+```
