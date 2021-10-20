@@ -1,10 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {
-  getTemplateById,
-  getLatestTemplate,
-  setTemplate,
-} = require('../../service/template');
+const { getTemplateById, getLastestTemplate,  createNewVersionTemplate} = require('../../service/template');
 
 router.get('/by-id/:id', async (req, res) => {
   const id = req.params ? req.params.id : false;
@@ -33,15 +29,20 @@ router.get('/latest', async (req, res) => {
   }
 });
 
-router.post('/', async (req, res) => {
-  try {
-    const template = await setTemplate(req.body);
-    res.send(template);
-  } catch (error) {
-    console.log(error);
-    res.status(error.code).send(error.err.message);
-  }
 
+
+router.post('/', async (req, res) => {
+
+  const pages = req.body
+
+  try {
+    const template = await createNewVersionTemplate(pages);
+    res.send(template);
+  }catch (error){
+    console.log(error)
+    // TODO error
+    res.send(error.message);
+  }
 });
 
 module.exports = router;
