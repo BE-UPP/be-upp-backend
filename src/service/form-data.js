@@ -8,7 +8,7 @@ const addFormData = async (data) => {
     return dado;
   } catch (error) {
     throw {
-      err: error,
+      message: error.message,
       code: 400
     }
   }

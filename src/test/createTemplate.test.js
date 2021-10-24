@@ -1,6 +1,5 @@
 const db = require('./db');
 const { setTemplate } = require('../service/template');
-const Template = require('../data/models/template');
 const supertest = require('supertest');
 const { app, server } = require('../server');
 
