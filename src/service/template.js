@@ -40,7 +40,7 @@ const setTemplate = async (pages) => {
     return result;
   } catch (error) {
     throw {
-      err: error,
+      message: error.message,
       code: 400,
     }
   }
