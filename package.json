@@ -6,15 +6,23 @@
   "author": "IME + UFABC",
   "license": "MIT",
   "scripts": {
-    "start:dev": "nodemon ./src/server.js"
+    "start:dev": "nodemon ./src/server.js",
+    "test": "jest --detectOpenHandles --runInBand ./src/test"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testRunner": "jest-jasmine2"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "mongoose": "^5.9.7"
+    "mongoose": "^5.9.7",
+    "supertest": "^6.1.6"
   },
   "devDependencies": {
+    "jest": "^27.3.1",
+    "mongodb-memory-server": "^7.5.1",
     "nodemon": "^2.0.2"
   }
 }

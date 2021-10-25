@@ -2,14 +2,12 @@
 const express = require('express');
 const cors = require('cors')
 
-const bodyParser = require('body-parser');
 const openApis = require('./route/openApis');
 
 const app = express();
 
-
 // Setup server port
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || 3001;
 
 app.use(cors({
   origin: process.env.ORIGIN || '*',
@@ -20,15 +18,19 @@ app.use(cors({
 
 app.use(express.static('public'))
 
-
-app.use(bodyParser.urlencoded({
+app.use(express.urlencoded({
   extended: true
 }));
 
-app.use(bodyParser.json());
+app.use(express.json());
 
 app.use('/open-api', openApis);
 
-app.listen(port, function () {
+const server = app.listen(port, function () {
     console.log("Running server on port " + port);
 });
+
+module.exports = {
+  app: app,
+  server: server
+};
