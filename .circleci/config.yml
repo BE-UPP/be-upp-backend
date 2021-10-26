@@ -1,0 +1,21 @@
+# Reference: https://stackoverflow.com/questions/58527269/add-mongodb-to-circle-ci
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node:12.10
+      - image: circleci/mongo:4.2.0
+        port: 27017:27017
+        environment:
+          - MONGO_INITDB_DATABASE: mongo
+          - MONGO_INITDB_ROOT_USERNAME: backend
+          - MONGO_INITDB_ROOT_PASSWORD: beeUpPass
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Install package json dependencies
+          command: npm install .
+      - run:
+          name: Run test
+          command: npm test
