@@ -34,6 +34,14 @@ services:
     networks:
       - mongo
 
+  be-upp-dev:
+    image: be-upp/dev:latest
+    container_name: be-upp-dev
+
+    build:
+      dockerfile: src/dockerfiles/Dockerfile-dev
+      context: .
+
 volumes:
   db_dev_mongo:
 
