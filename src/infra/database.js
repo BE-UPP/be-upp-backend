@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-
 mongoose.connect('mongodb://backend:beeUpPass@localhost:27017/admin', {
   useNewUrlParser: true,
   useUnifiedTopology: true

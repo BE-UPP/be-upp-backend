@@ -13,7 +13,9 @@ const mongod = new MongoMemoryServer();
  * Connect to the in-memory database.
  */
  module.exports.connect = async () => {
-    await mongoose.connection.close();
+    if(mongoose.connection.readyState != 0){
+        await mongoose.connection.close();
+    }
     await mongod.start();
     const uri = mongod.getUri();
 
