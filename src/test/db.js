@@ -8,14 +8,11 @@ const { MongoMemoryServer } = require('mongodb-memory-server');
 
 const mongod = new MongoMemoryServer();
 
-
 /**
  * Connect to the in-memory database.
  */
  module.exports.connect = async () => {
-    if(mongoose.connection.readyState != 0){
-        await mongoose.connection.close();
-    }
+    await mongoose.connection.close();
     await mongod.start();
     const uri = mongod.getUri();
 
@@ -43,9 +40,13 @@ module.exports.closeDatabase = async () => {
  */
 module.exports.clearDatabase = async () => {
     const collections = mongoose.connection.collections;
-
-    for (const key in collections) {
-        const collection = collections[key];
-        await collection.deleteMany();
+    try{
+        for (const key in collections) {
+            const collection = collections[key];
+            await collection.deleteMany();
+        }
+    }
+    catch (error) {
+        console.log(error)
     }
 }

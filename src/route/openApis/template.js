@@ -18,7 +18,7 @@ router.get('/by-id/:id', async (req, res) => {
   } catch (error) {
     console.log(error)
     // TODO error
-    res.send(error.message);
+    res.status(error.code).send(error.message);
   }
 });
 
@@ -29,7 +29,7 @@ router.get('/latest', async (req, res) => {
   } catch (error) {
     console.log(error)
     // TODO error
-    res.send(error.message);
+    res.status(error.code).send(error.message);
   }
 });
 

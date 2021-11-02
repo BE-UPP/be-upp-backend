@@ -1,15 +1,20 @@
 const db = require('./db');
 const { createNewDoctor } = require('../service/doctor');
 const supertest = require('supertest');
-const { app, server } = require('../server');
+const { app, openServer, closeServer } = require('../server');
 
-beforeAll(async () => await db.connect());
+beforeAll(async () => {
+    await db.connect();
+    openServer();
+});
 
-afterEach(async () => await db.clearDatabase());
+afterEach(async () => {
+    await db.clearDatabase();
+});
 
 afterAll(async () =>{
     await db.closeDatabase();
-    // server.close();
+    closeServer();
 });
 
 const name = "Doutor";
@@ -22,36 +27,30 @@ describe('Testing doctor service', () => {
             const t = await createNewDoctor(name, email, senha);
             expect(t.name).toEqual(name);
             expect(t.email).toEqual(email);
-            expect(t.senha).toEqual(senha);
+            expect(t.password).toEqual(senha);
             done();
         })
     })
     describe('Testing failed create', () => {
-        it('failing to create the doctor, email error', async done => {
-            await expect(await createNewDoctor(name, "", senha)).toThrowError();
-            done();
+        it('failing to create the doctor, email error', async (done) => {
+            expect.assertions(1);
+            try{
+                await createNewDoctor(name, "", senha);
+            }
+            catch (error){
+                expect(error.code).toEqual(400);
+            }
+            done()
+        })
+        it('failing to create the doctor, name error', async (done) => {
+            expect.assertions(1);
+            try{
+                await createNewDoctor("", email, senha)
+            }
+            catch (error){
+                expect(error.code).toEqual(400)
+            }
+            done()
         })
     })
 })
-
-// describe('Testing post template request', () => {
-//     describe('Testing successful requests', () => {
-//         it('create new template', async done => {
-//             const resp = await supertest(app).post('/open-api/template/').send({
-//                 pages: pages
-//             });
-//             expect(resp.statusCode).toEqual(200);
-//             expect(resp.body.templateVersion).toEqual(0);
-//             done()
-//         })
-//     })
-//     describe('Testing fail requests', () => {
-//         it('pages blank', async done => {
-//             const resp = await supertest(app).post('/open-api/template/').send({
-//                 pages: {}
-//             });
-//             expect(resp.statusCode).toEqual(400);
-//             done()
-//         })
-//     })
-// })

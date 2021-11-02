@@ -12,7 +12,6 @@ const addFormData = async (data) => {
       code: 400
     }
   }
-
 }
 
 
