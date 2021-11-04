@@ -13,7 +13,7 @@ router.post('/', async (req, res) => {
         const appointment = await createNewAppointment(date, patientId, doctorId);
         res.send(appointment._id);
     } catch (error){
-        console.log(error)
+        // console.log(error)
         // TODO error
         res.status(error.code).send(error.message);
     }

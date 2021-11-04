@@ -13,7 +13,7 @@ router.post('/', async (req, res) => {
         const doctor = await createNewDoctor(name, email, password);
         res.send(doctor);
     } catch (error){
-        console.log(error)
+        // console.log(error)
         // TODO error
         res.status(error.code).send(error.message);
     }

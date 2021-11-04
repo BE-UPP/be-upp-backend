@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const {
     createNewPatient,
-} = require('../../service/appointment');
+} = require('../../service/patient');
 
 router.post('/', async (req, res) => {
 
@@ -16,7 +16,7 @@ router.post('/', async (req, res) => {
         const patient = await createNewPatient(name, email, cpf, cellphone, birth, password);
         res.send(patient);
     } catch (error){
-        console.log(error)
+        // console.log(error)
         // TODO error
         res.status(error.code).send(error.message);
     }

@@ -18,6 +18,8 @@ const DoctorSchema = new mongoose.Schema({
 
     password: {
         type: String,
+        validate: s => (typeof s === 'string' || s instanceof String)
+        && s.length > 5,
         required: [true, 'password required']
     }
 });

@@ -29,9 +29,9 @@ const FormDataSchema = new mongoose.Schema({
     required: [true, 'Answer time required'],
   },
 
-  doctorId: {
+  appointmentId: {
     type: Number,
-    required: [true, 'Doctor id required'],
+    required: [true, 'Appointment id required'],
   },
 })
 
