@@ -21,7 +21,13 @@ services:
       - db_dev_mongo:/data/db
 
   mongo-express:
-    image: mongo-express
+    image: be-upp/mongo-express:latest
+    container_name: be-upp-mongo-express
+
+    build: 
+      dockerfile: src/dockerfiles/Dockerfile-mongo-express
+      context: .
+    
     ports:
       - 8081:8081
     environment:
