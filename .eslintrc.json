@@ -1,6 +1,7 @@
 {
     "env": {
         "browser": true,
+        "jest": true,
         "node": true
     },
     "parserOptions": {
@@ -10,5 +11,9 @@
             "jsx": true
         }
     },
-    "extends": "strongloop"
+    "extends": "strongloop",
+    "rules": {
+        "max-len": [2,90],
+        "no-throw-literal": 1
+    }
 }

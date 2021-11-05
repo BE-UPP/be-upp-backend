@@ -1,6 +1,6 @@
 const Model = require('../data/models/form-data');
 
-const addFormData = async (data) => {
+const addFormData = async(data) => {
   try {
     const answerAt = Date.now();
     data.answeredAt = answerAt;
@@ -9,13 +9,13 @@ const addFormData = async (data) => {
   } catch (error) {
     throw {
       err: error,
-      code: 400
-    }
+      code: 400,
+    };
   }
 
-}
+};
 
 
 module.exports = {
-  addFormData: addFormData
+  addFormData: addFormData,
 };

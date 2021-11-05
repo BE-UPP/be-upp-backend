@@ -1,6 +1,6 @@
 const Model = require('../data/models/template');
 
-const getTemplateById = async (id) => {
+const getTemplateById = async(id) => {
   try {
     const dado = await Model.findById(id).exec();
     return dado;
@@ -8,25 +8,25 @@ const getTemplateById = async (id) => {
     throw {
       err: error,
       code: 500,
-    }
+    };
   }
-}
+};
 
-const getLatestTemplate = async () => {
+const getLatestTemplate = async() => {
   try {
     const dado = await Model.findOne().sort({
-      createAt: -1
+      createAt: -1,
     }).exec();
     return dado;
   } catch (error) {
     throw {
       err: error,
       code: 500,
-    }
+    };
   }
-}
+};
 
-const setTemplate = async (pages) => {
+const setTemplate = async(pages) => {
   try {
     const now = Date.now();
     const latest_template = await getLatestTemplate();
@@ -35,17 +35,17 @@ const setTemplate = async (pages) => {
       templateVersion: version,
       pages: pages,
       createAt: now,
-    }
+    };
     const result = await Model.create(dado);
     return result;
   } catch (error) {
     throw {
       message: error.message,
       code: 400,
-    }
+    };
   }
 
-}
+};
 
 
 module.exports = {
