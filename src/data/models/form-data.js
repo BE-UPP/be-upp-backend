@@ -3,12 +3,12 @@ const mongoose = require('../../infra/database');
 const QuestionSchema = new mongoose.Schema({
   id: {
     type: String,
-    required: true
+    required: true,
   },
 
   value: {
     type: mongoose.Schema.Types.Mixed,
-    required: true
+    required: true,
   },
 });
 
@@ -33,7 +33,7 @@ const FormDataSchema = new mongoose.Schema({
     type: Number,
     required: [true, 'Appointment id required'],
   },
-})
+});
 
 const FormDataModel = mongoose.model('FormDataSchema', FormDataSchema);
 

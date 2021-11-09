@@ -4,7 +4,12 @@ version: '3.1'
 services:
 
   mongo:
-    image: mongo
+    image: be-upp/mongo:latest
+    container_name: be-upp-mongo
+
+    build:
+      dockerfile: src/dockerfiles/Dockerfile-mongo
+      context: .
 
     environment:
       MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
@@ -21,7 +26,13 @@ services:
       - db_dev_mongo:/data/db
 
   mongo-express:
-    image: mongo-express
+    image: be-upp/mongo-express:latest
+    container_name: be-upp-mongo-express
+
+    build:
+      dockerfile: src/dockerfiles/Dockerfile-mongo-express
+      context: .
+
     ports:
       - 8081:8081
     environment:
@@ -33,6 +44,14 @@ services:
       ME_CONFIG_MONGODB_SERVER: ${ME_CONFIG_MONGODB_SERVER}
     networks:
       - mongo
+
+  be-upp-dev:
+    image: be-upp/dev:latest
+    container_name: be-upp-dev
+
+    build:
+      dockerfile: src/dockerfiles/Dockerfile-dev
+      context: .
 
 volumes:
   db_dev_mongo:

@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { addFormData } = require('../../service/form-data');
 
-router.post('/', async (req, res) => {
+router.post('/', async(req, res) => {
   try {
     const data = await addFormData(req.body);
     res.send(data);

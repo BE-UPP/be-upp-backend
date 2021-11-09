@@ -1,49 +1,49 @@
-const mongoose = require('../../infra/database')
+const mongoose = require('../../infra/database');
 
 const PatientSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        validate: s => (typeof s === 'string' || s instanceof String)
+  name: {
+    type: String,
+    validate: s => (typeof s === 'string' || s instanceof String)
         && s.length > 0,
-        required: [true, 'name required']
-    },
+    required: [true, 'name required'],
+  },
 
-    email: {
-        type: String,
-        validate: s => (typeof s === 'string' || s instanceof String)
+  email: {
+    type: String,
+    validate: s => (typeof s === 'string' || s instanceof String)
         && s.length > 0,
-        required: [true, 'email required'],
-        unique: true
-    },
+    required: [true, 'email required'],
+    unique: true,
+  },
 
-    cpf: {
-        type: String,
-        validate: s => (typeof s === 'string' || s instanceof String)
-        && s.length == 11,
-        required: [true, 'cpf required'],
-        unique: true
-    },
+  cpf: {
+    type: String,
+    validate: s => (typeof s === 'string' || s instanceof String)
+        && s.length === 11,
+    required: [true, 'cpf required'],
+    unique: true,
+  },
 
-    cellphone: {
-        type: String,
-        validate: s => (typeof s === 'string' || s instanceof String)
+  cellphone: {
+    type: String,
+    validate: s => (typeof s === 'string' || s instanceof String)
         && s.length > 0,
-        required: [true, 'cellphone required']
-    },
+    required: [true, 'cellphone required'],
+  },
 
-    birth: {
-        type: Number,
-        required: [true, 'birth required']
-    },
+  birth: {
+    type: Number,
+    required: [true, 'birth required'],
+  },
 
-    password: {
-        type: String,
-    }
+  password: {
+    type: String,
+  },
 });
 
 const PatientModel = mongoose.model('PatientSchema', PatientSchema);
 
 module.exports = {
-    PatientModel: PatientModel,
-    PatientSchema: PatientSchema
-}
+  PatientModel: PatientModel,
+  PatientSchema: PatientSchema,
+};

@@ -1,4 +1,4 @@
-# be-up
+# be-upp
 
 ## Preparar o ambiente
 
@@ -15,46 +15,28 @@ cp .env-example .env
 ```
 
 ## Como rodar 
-#### 1. Inicialize o banco de dados
+#### Inicializar containers (mongo e mongo-express) e API
 ``` bash
-docker-compose up mongo 
+./run-be-upp.sh
 ```
 
-
-#### 2. Inicialize o mongo-express
-
-Após o mongo terminar de inicializar, inicialize o mongo-express:
-``` bash
-docker-compose up mongo-express 
+#### Consultar logs dos containers (opcional)
+Abra um novo terminal e execute
+``` 
+docker-compose logs -f
 ```
 
-##### 2.1 Acesso ao mongo-express
+#### Consultar registros (opcional)
+A interface web do mongo-express estará disponível em **http://0.0.0.0:8081/**
+Nesta interface web é possível acompanhar os dados do banco de dados em tempo real.
 
-Após a inicialização do mongo-express, ele estará disponível em: 
-``` bash
-http://0.0.0.0:8081/
-```
-As senhas de login são as configuradas no arquivo **.env**:
-
+Os dados de acesso são os configurados no arquivo **.env**:
+``` 
 ME_CONFIG_BASICAUTH_USERNAME: 
 ME_CONFIG_BASICAUTH_PASSWORD: 
-
-Com essa aplicação é possível acompanhar o banco de dados em tempo real.
-
-#### 3. Inicializando o backend
-
-
-##### 3.1 Instale os pacotes dependentes
-``` bash
-npm install
 ```
 
-##### 3.2 Inicialize o servidor
-``` bash
-npm run start:dev
-```
-
-#### 4. Teste
+#### Testar API
 
 Faça um post na url:
 ``` bash

@@ -7,7 +7,8 @@
   "license": "MIT",
   "scripts": {
     "start:dev": "nodemon ./src/server.js",
-    "test": "jest --verbose --runInBand ./src/test"
+    "pretest": "eslint --ignore-path .gitignore .",
+    "test": "jest --detectOpenHandles --verbose --runInBand ./src/test"
   },
   "jest": {
     "testEnvironment": "node",
@@ -21,6 +22,8 @@
     "supertest": "^6.1.6"
   },
   "devDependencies": {
+    "eslint": "^8.1.0",
+    "eslint-config-strongloop": "^2.1.0",
     "jest": "^27.3.1",
     "mongodb-memory-server": "^7.5.1",
     "nodemon": "^2.0.2"

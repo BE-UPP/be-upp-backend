@@ -1,0 +1,19 @@
+{
+    "env": {
+        "browser": true,
+        "jest": true,
+        "node": true
+    },
+    "parserOptions": {
+        "ecmaVersion": "latest",
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true
+        }
+    },
+    "extends": "strongloop",
+    "rules": {
+        "max-len": [2,90],
+        "no-throw-literal": 1
+    }
+}
