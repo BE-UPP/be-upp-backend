@@ -5,6 +5,14 @@ const { getDoctorById } = require('./doctor');
 const getAppointmentById = async(id) => {
   try {
     const dado = await AppointmentModel.findById(id).exec();
+    if (dado === null){
+      const err = {
+        message: 'Appointment does not exist',
+        code: 400,
+      };
+      throw err;
+    }
+
     return dado;
   } catch (error) {
     const err = {

@@ -30,7 +30,8 @@ const FormDataSchema = new mongoose.Schema({
   },
 
   appointmentId: {
-    type: Number,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'AppointmentSchema',
     required: [true, 'Appointment id required'],
   },
 });
