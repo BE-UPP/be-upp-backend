@@ -121,3 +121,29 @@ describe('Testing post doctor request', () => {
     });
   });
 });
+
+describe('Testing login doctor request', () => {
+  describe('Testing successful requests', () => {
+    it('successful login', async done => {
+      await createNewDoctor(name, email, password);
+      const resp = await supertest(app).post('/open-api/doctor/login').send({
+        email: email,
+        password: password,
+      });
+      expect(resp.statusCode).toEqual(200);
+      expect(resp.body.name).toEqual(name);
+      done();
+    });
+  });
+  describe('Testing fail requests', () => {
+    it('fail login', async done => {
+      await createNewDoctor(name, email, password);
+      const resp = await supertest(app).post('/open-api/doctor/').send({
+        email: 'asd@asd.com',
+        password: password,
+      });
+      expect(resp.statusCode).toEqual(400);
+      done();
+    });
+  });
+});
