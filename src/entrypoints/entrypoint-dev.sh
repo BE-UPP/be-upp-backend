@@ -1,6 +1,6 @@
 #!/bin/bash
 
-mkdir -p /be-upp 
+mkdir -p /be-upp
 
 # backend tasks
 cd /be-upp

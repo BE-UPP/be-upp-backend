@@ -26,11 +26,25 @@ app.use(express.json());
 
 app.use('/open-api', openApis);
 
-const server = app.listen(port, function() {
-  console.log('Running server on port ' + port);
-});
+let server = null;
+
+const openServer = () => {
+  if (server != null && server.readyState === server.OPEN)
+    return server;
+  const newServer = app.listen(port, function() {
+    // console.log("Running server on port " + port);
+  });
+  return newServer;
+};
+
+const closeServer = () => {
+  server.close();
+};
+
+server = openServer();
 
 module.exports = {
   app: app,
-  server: server,
+  openServer: openServer,
+  closeServer: closeServer,
 };

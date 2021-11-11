@@ -8,7 +8,6 @@ const { MongoMemoryServer } = require('mongodb-memory-server');
 
 const mongod = new MongoMemoryServer();
 
-
 /**
  * Connect to the in-memory database.
  */
@@ -20,6 +19,8 @@ module.exports.connect = async() => {
   const mongooseOpts = {
     useNewUrlParser: true,
     useUnifiedTopology: true,
+    useFindAndModify: false,
+    useCreateIndex: true,
     poolSize: 10,
   };
 
@@ -41,9 +42,12 @@ module.exports.closeDatabase = async() => {
  */
 module.exports.clearDatabase = async() => {
   const collections = mongoose.connection.collections;
-
-  for (const key in collections) {
-    const collection = collections[key];
-    await collection.deleteMany();
+  try {
+    for (const key in collections) {
+      const collection = collections[key];
+      await collection.deleteMany();
+    }
+  } catch (error) {
+    console.log(error);
   }
 };

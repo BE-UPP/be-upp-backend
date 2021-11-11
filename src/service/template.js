@@ -5,10 +5,11 @@ const getTemplateById = async(id) => {
     const dado = await Model.findById(id).exec();
     return dado;
   } catch (error) {
-    throw {
+    const err = {
       err: error,
       code: 500,
     };
+    throw err;
   }
 };
 
@@ -19,10 +20,11 @@ const getLatestTemplate = async() => {
     }).exec();
     return dado;
   } catch (error) {
-    throw {
+    const err = {
       err: error,
       code: 500,
     };
+    throw err;
   }
 };
 
@@ -39,10 +41,11 @@ const setTemplate = async(pages) => {
     const result = await Model.create(dado);
     return result;
   } catch (error) {
-    throw {
+    const err = {
       message: error.message,
       code: 400,
     };
+    throw err;
   }
 
 };

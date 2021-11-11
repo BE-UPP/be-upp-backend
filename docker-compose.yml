@@ -6,19 +6,19 @@ services:
   mongo:
     image: be-upp/mongo:latest
     container_name: be-upp-mongo
-    
-    build: 
+
+    build:
       dockerfile: src/dockerfiles/Dockerfile-mongo
       context: .
-    
+
     environment:
       MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
-    
+
     networks:
       - mongo
-    
+
     ports:
       - ${ME_CONFIG_MONGODB_PORT}:${ME_CONFIG_MONGODB_PORT}
 
@@ -29,10 +29,10 @@ services:
     image: be-upp/mongo-express:latest
     container_name: be-upp-mongo-express
 
-    build: 
+    build:
       dockerfile: src/dockerfiles/Dockerfile-mongo-express
       context: .
-    
+
     ports:
       - 8081:8081
     environment:

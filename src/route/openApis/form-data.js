@@ -7,8 +7,8 @@ router.post('/', async(req, res) => {
     const data = await addFormData(req.body);
     res.send(data);
   } catch (error) {
-    console.log(error);
-    res.status(error.code).send(error.err.message);
+    // console.log(error);
+    res.status(error.code).send(error.message);
   }
 });
 

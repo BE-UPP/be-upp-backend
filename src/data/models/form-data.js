@@ -29,9 +29,10 @@ const FormDataSchema = new mongoose.Schema({
     required: [true, 'Answer time required'],
   },
 
-  doctorId: {
-    type: Number,
-    required: [true, 'Doctor id required'],
+  appointmentId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'AppointmentSchema',
+    required: [true, 'Appointment id required'],
   },
 });
 
