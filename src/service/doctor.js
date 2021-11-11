@@ -13,6 +13,23 @@ const getDoctorById = async(id) => {
   }
 };
 
+const validateDoctorLogin = async(email, password) => {
+  const doctor = await DoctorModel.findOne({ email: email }).exec();
+  const err = {
+    message: 'login authentication failed',
+    code: 400,
+  };
+  if (doctor != null){
+    if (doctor.password === password){
+      return doctor;
+    } else {
+      throw err;
+    }
+  } else {
+    throw err;
+  }
+};
+
 const createNewDoctor = async(name, email, password) => {
   try {
     const doctor = {
@@ -34,4 +51,5 @@ const createNewDoctor = async(name, email, password) => {
 module.exports = {
   getDoctorById: getDoctorById,
   createNewDoctor: createNewDoctor,
+  validateDoctorLogin: validateDoctorLogin,
 };

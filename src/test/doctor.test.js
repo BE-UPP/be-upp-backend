@@ -1,5 +1,5 @@
 const db = require('./db');
-const { createNewDoctor } = require('../service/doctor');
+const { createNewDoctor, validateDoctorLogin } = require('../service/doctor');
 const supertest = require('supertest');
 const { app, openServer, closeServer } = require('../server');
 
@@ -63,6 +63,32 @@ describe('Testing doctor service', () => {
       expect.assertions(1);
       try {
         await createNewDoctor(name, email, 'asdas');
+      } catch (error){
+        expect(error.code).toEqual(400);
+      }
+      done();
+    });
+  });
+  describe('Testing login authentication', () => {
+    it('successfull login', async(done) => {
+      const t = await createNewDoctor(name, email, password);
+      const d = await validateDoctorLogin(t.email, t.password);
+      expect(d._id).toEqual(t._id);
+      done();
+    });
+    it('login error email inexistent', async(done) => {
+      const t = await createNewDoctor(name, email, password);
+      try {
+        await validateDoctorLogin('asd@asd.com', t.password);
+      } catch (error){
+        expect(error.code).toEqual(400);
+      }
+      done();
+    });
+    it('login password error', async(done) => {
+      const t = await createNewDoctor(name, email, password);
+      try {
+        await validateDoctorLogin(t.email, 'wrong password');
       } catch (error){
         expect(error.code).toEqual(400);
       }
