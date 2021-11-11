@@ -1,0 +1,13 @@
+FROM ubuntu:latest
+
+ENV DEBIAN_FRONTEND noninteractive
+
+RUN chmod o+r /etc/resolv.conf
+
+RUN apt-get update && apt-get install -y \
+    git \
+    npm
+
+ADD src/entrypoints/entrypoint-app.sh /usr/local/bin/
+
+CMD entrypoint-app.sh
