@@ -1,7 +1,7 @@
 const ical = require('ical-generator');
 
-/* HOW TO USE 
-  
+/* HOW TO USE
+
   EXAMPLE
   const mailer = require('../../data/mail/mailer');
   const invite = require('../../data/mail/invite');
