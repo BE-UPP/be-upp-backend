@@ -60,6 +60,8 @@ services:
     environment:
       API_PORT: ${API_PORT}
       MONGO_PORT: ${MONGO_PORT}
+    networks:
+      - be-upp
 
   app:
     build:
@@ -70,6 +72,8 @@ services:
     volumes:
       - ./src/entrypoints/entrypoint-app.sh:/usr/local/bin/entrypoint.sh
     command: entrypoint.sh
+    networks:
+      - be-upp
 
 volumes:
   be_upp_db_mongo:
