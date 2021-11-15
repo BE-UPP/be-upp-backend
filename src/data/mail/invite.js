@@ -55,6 +55,6 @@ var invite = (details) => {
     url: details.url,
   });
   return calendar;
-}
+};
 
 module.exports = invite;
