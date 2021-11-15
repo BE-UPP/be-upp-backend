@@ -10,7 +10,6 @@ git clone https://github.com/BE-UPP/be-upp-frontend.git app && cd app/frontend
 npm install
 
 # start app
-npm start 
+npm start
 
-echo "locked"
 tail -f /dev/null

@@ -1,6 +1,6 @@
-#!/bin/bash 
+#!/bin/bash
 
-function _main 
+function _main
 {
     path=$(pwd)
     env_file_path=${path}/.env
@@ -13,8 +13,28 @@ function _main
     source $env_file_path
 
     docker-compose down
-    docker-compose build  
-    docker-compose up -d    
+
+    image_name="be-upp/mongo:latest"
+    if [[ "$(docker images -q $image_name 2> /dev/null)" == "" ]]; then
+        docker-compose build mongo
+    fi
+
+    image_name="be-upp/mongo-express:latest"
+    if [[ "$(docker images -q $image_name 2> /dev/null)" == "" ]]; then
+        docker-compose build mongo-express
+    fi
+
+    image_name="be-upp/api:latest"
+    if [[ "$(docker images -q $image_name 2> /dev/null)" == "" ]]; then
+        docker-compose build api
+    fi
+
+    image_name="be-upp/app:latest"
+    if [[ "$(docker images -q $image_name 2> /dev/null)" == "" ]]; then
+        docker-compose build app
+    fi
+
+    docker-compose up -d
     docker-compose logs -f
 }
 
