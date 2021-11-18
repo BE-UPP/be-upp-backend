@@ -2,9 +2,10 @@ const express = require('express');
 const router = express.Router();
 const { addFormData } = require('../../service/form-data');
 
-router.post('/', async(req, res) => {
+router.post('/', async (req, res) => {
   try {
     const data = await addFormData(req.body);
+    ///processData(req.body);
     res.send(data);
   } catch (error) {
     // console.log(error);

@@ -31,7 +31,7 @@ let server = null;
 const openServer = () => {
   if (server != null && server.readyState === server.OPEN)
     return server;
-  const newServer = app.listen(port, function() {
+  const newServer = app.listen(port, function () {
     // console.log("Running server on port " + port);
   });
   return newServer;

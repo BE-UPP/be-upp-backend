@@ -1,10 +1,45 @@
 //import jsonteste from 'teste.json'
-const data = require('../teste.json');
-
+//const data = require('../teste.json');
 //const data = { jsonteste };
+
+const Model = require('../data/models/form-data');
+
 const math = require('mathjs');
 
+
 var variables = {};
+
+const processData = async (formData, dataProcessing) => {
+    try {
+
+        for (let key in formData) {
+            let variables = formData[key].variables;
+            let values = formData[key].values;
+            for (let i = 0; i < values.length; i += 1) {
+                set_variable(variables[i], values[i]);
+            }
+        }
+
+        compute(dataProcessing);
+
+        return variables;
+
+    } catch (error) {
+        const err = {
+            message: error.message,
+            code: 400,
+        };
+        throw err;
+    }
+};
+
+module.exports = {
+    processData: processData,
+};
+
+
+
+
 
 function set_variable(variable, value) {
     variables[variable] = value;

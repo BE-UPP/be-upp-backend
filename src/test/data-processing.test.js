@@ -1,4 +1,4 @@
-const db = require('./db'); 
+const db = require('./db');
 const {
   getLatestTemplate,
   setTemplate,
@@ -8,69 +8,124 @@ const supertest = require('supertest');
 const { app, openServer, closeServer } = require('../server');
 const { ObjectId } = require('mongodb');
 
-beforeAll(async() => {
+beforeAll(async () => {
   await db.connect();
   openServer();
 });
 
-afterEach(async() => {
+afterEach(async () => {
   await db.clearDatabase();
 });
 
-afterAll(async() => {
+afterAll(async () => {
   await db.closeDatabase();
   closeServer();
 });
 
-const pages = [
-  {
-    pageLabel: 'A page label',
-    questions: {
-      name: {
-        questionLabel: 'Nome Incompleto',
-        placeholder: 'Ex: José Fernando da Silva',
-        type: 'text',
-      },
-      telephone: {
-        questionLabel: 'Número de Celular (DDD + Telefone)',
-        placeholder: 'Ex: 119XXXXXXXX',
-        type: 'text',
-      },
-    },
+const formData = {
+  templateVersion: 1,
+  "text": {
+    "type": "text",
+    "variables": ["text"],
+    "values": ["josé"]
   },
-  {
-    pageLabel: 'another page label',
-    questions: {
-      name2: {
-        questionLabel: 'Nome Incompleto',
-        placeholder: 'Ex: José Fernando da Silva',
-        type: 'text',
-      },
-      telephone2: {
-        questionLabel: 'Número de Celular (DDD + Telefone)',
-        placeholder: 'Ex: 119XXXXXXXX',
-        type: 'text',
-      },
-    },
+  "select": {
+    "type": "select",
+    "variables": ["selectId", "select"],
+    "values": [2, "Feminino"]
   },
-];
+  "scale": {
+    "type": "scale",
+    "variables": ["scale"],
+    "values": [4]
+  },
+  "radio": {
+    "type": "radio",
+    "variables": ["radioId", "radio"],
+    "values": [
+      1, "Não"
+    ]
+  },
+  "table": {
+    "type": "table",
+    "variables": ["tableId1", "table1", "tableId2", "table2", "tableId3", "table3"],
+    "values": [0, "1", 1, "3", 2, "2"]
+  },
+  "checkbox": {
+    "type": "checkbox",
+    "variables": ["checkbox"],
+    "values": [{
+      "3": "Melhora de humor",
+      "9": "Melhorar a saúde mental",
+      "10": "Emagrecimento"
+    }]
+  },
+};
 
-describe('Testing setTemplate service', () => {
-  describe('Testing successfully creates', () => {
+const dataProcessing = {
+  "version": 1,
+  "operations": {
+    "math1":
+    {
+      "type": "Math",
+      "input": ["scale", "selectId", "radioId"],
+      "output": ["math1"],
+      "body": "scale * selectId + radioId"
+    }
+  },
+  "tableProcessing1":
+  {
+    "type": "Table",
+    "input": [{ "label": "tableId1", "type": "number" }],
+    "output": ["tableProcessing1"],
+    "body": {
+      "==1": "Sim",
+      "__": "Não"
+    }
+  }
+};
+
+const output = {
+  "text": "josé",
+  "selectId": 2,
+  "select": "Feminino",
+  "scale": 4,
+  "radioId": 1,
+  "radio": "Não",
+  "tableId1": 0,
+  "table1": "1",
+  "tableId2": 1,
+  "table2": "3",
+  "tableId3": 2,
+  "table3": "2",
+  "checkbox": {
+    "3": "Melhora de humor",
+    "9": "Melhorar a saúde mental",
+    "10": "Emagrecimento"
+  },
+  "math1": 9,
+  "tableProcessing1": "Não",
+};
+
+
+describe('Testing data-processing service', () => {
+  describe('Testing successfully process', () => {
     it('creating the first template', async done => {
-      const t = await setTemplate(pages);
-      expect(t.templateVersion).toEqual(0);
-      done();
-    });
-    it('creating a second template', async done => {
-      const t = await setTemplate(pages);
-      const t2 = await setTemplate(pages);
-      expect(t2.templateVersion).toEqual(t.templateVersion + 1);
+      const t = await processData(formData, dataProcessing);
+
+
+      console.log(t);
+      expect(t).toEqual(output);
+
+
+
+
       done();
     });
   });
 });
 
+/*
 describe('Testing getTemplateById service', () => {
   it('Testing successfuly retrieving a template', async done => {
     const t = await setTemplate(pages);
@@ -82,7 +137,7 @@ describe('Testing getTemplateById service', () => {
     expect.assertions(1);
     try {
       await getTemplateById(3);
-    } catch (e){
+    } catch (e) {
       expect(e.code).toEqual(500);
     }
     done();
@@ -162,3 +217,4 @@ describe('Testing get template by id request', () => {
     });
   });
 });
+*/
