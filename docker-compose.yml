@@ -70,7 +70,7 @@ services:
     volumes:
       - ./src/entrypoints/entrypoint-api.sh:/usr/local/bin/entrypoint.sh
 
-    working_dir: /be-upp/api
+    working_dir: /be-upp
 
     command: entrypoint.sh
 
@@ -97,7 +97,7 @@ services:
     volumes:
       - ./src/entrypoints/entrypoint-app.sh:/usr/local/bin/entrypoint.sh
 
-    working_dir: /be-upp/app/frontend
+    working_dir: /be-upp
 
     command: entrypoint.sh
 
