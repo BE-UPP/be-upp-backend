@@ -34,7 +34,21 @@ const createNewPatient = async(name, email, cpf, cellphone, birth, password) => 
   }
 };
 
+const getAllPatients = async() => {
+  try {
+    const patients = await PatientModel.find();
+    return patients;
+  } catch (error) {
+    const err = {
+      message: error.message,
+      code: 400,
+    };
+    throw err;
+  }
+};
+
 module.exports = {
   getPatientById: getPatientById,
   createNewPatient: createNewPatient,
+  getAllPatients: getAllPatients,
 };

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const {
-  createNewPatient,
+  createNewPatient, getAllPatients,
 } = require('../../service/patient');
 
 router.post('/', async(req, res) => {
@@ -18,6 +18,15 @@ router.post('/', async(req, res) => {
   } catch (error){
     // console.log(error)
     // TODO error
+    res.status(error.code).send(error.message);
+  }
+});
+
+router.get('/all', async(req, res) => {
+  try {
+    const patients = await getAllPatients();
+    res.send(patients);
+  } catch (error) {
     res.status(error.code).send(error.message);
   }
 });
