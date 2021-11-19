@@ -1,110 +1,112 @@
 const db = require('./db');
-const {
+/* const {
   getLatestTemplate,
   setTemplate,
   getTemplateById,
 } = require('../service/template');
 const supertest = require('supertest');
-const { app, openServer, closeServer } = require('../server');
-const { ObjectId } = require('mongodb');
+const { ObjectId } = require('mongodb');*/
+const { openServer, closeServer } = require('../server');
+const { processData } = require('../service/data-processing');
 
-beforeAll(async () => {
+beforeAll(async() => {
   await db.connect();
   openServer();
 });
 
-afterEach(async () => {
+afterEach(async() => {
   await db.clearDatabase();
 });
 
-afterAll(async () => {
+afterAll(async() => {
   await db.closeDatabase();
   closeServer();
 });
 
 const formData = {
   templateVersion: 1,
-  "text": {
-    "type": "text",
-    "variables": ["text"],
-    "values": ["josé"]
+  text: {
+    type: 'text',
+    variables: ['text'],
+    values: ['josé'],
   },
-  "select": {
-    "type": "select",
-    "variables": ["selectId", "select"],
-    "values": [2, "Feminino"]
+  select: {
+    type: 'select',
+    variables: ['selectId', 'select'],
+    values: [2, 'Feminino'],
   },
-  "scale": {
-    "type": "scale",
-    "variables": ["scale"],
-    "values": [4]
+  scale: {
+    type: 'scale',
+    variables: ['scale'],
+    values: [4],
   },
-  "radio": {
-    "type": "radio",
-    "variables": ["radioId", "radio"],
-    "values": [
-      1, "Não"
-    ]
+  radio: {
+    type: 'radio',
+    variables: ['radioId', 'radio'],
+    values: [
+      1, 'Não',
+    ],
   },
-  "table": {
-    "type": "table",
-    "variables": ["tableId1", "table1", "tableId2", "table2", "tableId3", "table3"],
-    "values": [0, "1", 1, "3", 2, "2"]
+  table: {
+    type: 'table',
+    variables: ['tableId1', 'table1', 'tableId2', 'table2', 'tableId3', 'table3'],
+    values: [0, '1', 1, '3', 2, '2'],
   },
-  "checkbox": {
-    "type": "checkbox",
-    "variables": ["checkbox"],
-    "values": [{
-      "3": "Melhora de humor",
-      "9": "Melhorar a saúde mental",
-      "10": "Emagrecimento"
-    }]
+  checkbox: {
+    type: 'checkbox',
+    variables: ['checkbox'],
+    values: [{
+      3: 'Melhora de humor',
+      9: 'Melhorar a saúde mental',
+      10: 'Emagrecimento',
+    }],
   },
 };
 
 const dataProcessing = {
-  "version": 1,
-  "operations": {
-    "math1":
+  version: 1,
+  operations: {
+    math1:
     {
-      "type": "Math",
-      "input": ["scale", "selectId", "radioId"],
-      "output": ["math1"],
-      "body": "scale * selectId + radioId"
-    }
+      type: 'Math',
+      input: ['scale', 'selectId', 'radioId'],
+      output: ['math1'],
+      body: 'scale * selectId + radioId',
+    },
+
+    tableProcessing1:
+    {
+      type: 'Table',
+      input: [{ label: 'tableId1', type: 'number' }],
+      output: ['tableProcessing1'],
+      body: {
+        '==1': 'Sim',
+        __: 'Não',
+      },
+    },
   },
-  "tableProcessing1":
-  {
-    "type": "Table",
-    "input": [{ "label": "tableId1", "type": "number" }],
-    "output": ["tableProcessing1"],
-    "body": {
-      "==1": "Sim",
-      "__": "Não"
-    }
-  }
 };
 
 const output = {
-  "text": "josé",
-  "selectId": 2,
-  "select": "Feminino",
-  "scale": 4,
-  "radioId": 1,
-  "radio": "Não",
-  "tableId1": 0,
-  "table1": "1",
-  "tableId2": 1,
-  "table2": "3",
-  "tableId3": 2,
-  "table3": "2",
-  "checkbox": {
-    "3": "Melhora de humor",
-    "9": "Melhorar a saúde mental",
-    "10": "Emagrecimento"
+  text: 'josé',
+  selectId: 2,
+  select: 'Feminino',
+  scale: 4,
+  radioId: 1,
+  radio: 'Não',
+  tableId1: 0,
+  table1: '1',
+  tableId2: 1,
+  table2: '3',
+  tableId3: 2,
+  table3: '2',
+  checkbox: {
+    3: 'Melhora de humor',
+    9: 'Melhorar a saúde mental',
+    10: 'Emagrecimento',
   },
-  "math1": 9,
-  "tableProcessing1": "Não",
+  math1: 9,
+  tableProcessing1: 'Não',
 };
 
 
@@ -113,11 +115,7 @@ describe('Testing data-processing service', () => {
     it('creating the first template', async done => {
       const t = await processData(formData, dataProcessing);
 
-
-      console.log(t);
       expect(t).toEqual(output);
-
-
 
 
       done();

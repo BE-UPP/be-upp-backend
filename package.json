@@ -8,7 +8,8 @@
   "scripts": {
     "start:dev": "nodemon ./src/server.js",
     "pretest": "eslint --ignore-path .gitignore .",
-    "test": "jest --detectOpenHandles --verbose --runInBand ./src/test"
+    "test": "jest --detectOpenHandles --verbose --runInBand ./src/test",
+    "lint": "eslint --fix --ext .js ."
   },
   "jest": {
     "testEnvironment": "node",
