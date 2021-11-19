@@ -5,16 +5,17 @@ let domain = process.env.MONGO_PORT ? 'mongo' : 'localhost';
 
 mongoose.connect('mongodb://backend:beeUpPass@' + domain + ':' + port + '/admin', {
   useNewUrlParser: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
+  useFindAndModify: false,
+  useCreateIndex: true,
 });
 
 const db = mongoose.connection;
 
-if(!db){
-  console.log("Error connecting db");
-}
-else {
-  console.log("Db connected successfully");
+if (!db){
+  // console.log("Error connecting db");
+} else {
+  // console.log("Db connected successfully");
 }
 
 db.Promise = global.Promise;
