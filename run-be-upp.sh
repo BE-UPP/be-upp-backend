@@ -1,6 +1,6 @@
-#!/bin/bash 
+#!/bin/bash
 
-function _main 
+function _main
 {
     path=$(pwd)
     env_file_path=${path}/.env
@@ -12,22 +12,29 @@ function _main
     sed -i 's/\r$//' $env_file_path
     source $env_file_path
 
-    docker-compose stop
+    docker-compose down
 
     image_name="be-upp/mongo:latest"
     if [[ "$(docker images -q $image_name 2> /dev/null)" == "" ]]; then
         docker-compose build mongo
-    fi 
+    fi
 
     image_name="be-upp/mongo-express:latest"
     if [[ "$(docker images -q $image_name 2> /dev/null)" == "" ]]; then
         docker-compose build mongo-express
-    fi 
+    fi
 
-    docker-compose up -d mongo 
-    docker-compose up -d mongo-express
-    npm install
-    npm run start:dev --prefix ${path}
+    image_name="be-upp/api:latest"
+    if [[ "$(docker images -q $image_name 2> /dev/null)" == "" ]]; then
+        docker-compose build api
+    fi
+
+    image_name="be-upp/app:latest"
+    if [[ "$(docker images -q $image_name 2> /dev/null)" == "" ]]; then
+        docker-compose build app
+    fi
+
+    docker-compose up -d
     docker-compose logs -f
 }
 
