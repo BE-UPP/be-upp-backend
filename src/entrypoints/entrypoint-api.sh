@@ -5,6 +5,7 @@ echo "[BE-UPP][INFO ] Container be-upp-api started"
 # get source files
 mkdir -p /be-upp && cd /be-upp
 git clone https://github.com/BE-UPP/be-upp-backend.git api && cd api
+git checkout "develop"
 
 # install project dependencies
 npm install
