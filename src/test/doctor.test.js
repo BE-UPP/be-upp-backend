@@ -1,5 +1,5 @@
 const db = require('./db');
-const { createNewDoctor } = require('../service/doctor');
+const { createNewDoctor, validateDoctorLogin } = require('../service/doctor');
 const supertest = require('supertest');
 const { app, openServer, closeServer } = require('../server');
 
@@ -69,6 +69,32 @@ describe('Testing doctor service', () => {
       done();
     });
   });
+  describe('Testing login authentication', () => {
+    it('successfull login', async(done) => {
+      const t = await createNewDoctor(name, email, password);
+      const d = await validateDoctorLogin(t.email, t.password);
+      expect(d._id).toEqual(t._id);
+      done();
+    });
+    it('login error email inexistent', async(done) => {
+      const t = await createNewDoctor(name, email, password);
+      try {
+        await validateDoctorLogin('asd@asd.com', t.password);
+      } catch (error){
+        expect(error.code).toEqual(400);
+      }
+      done();
+    });
+    it('login password error', async(done) => {
+      const t = await createNewDoctor(name, email, password);
+      try {
+        await validateDoctorLogin(t.email, 'wrong password');
+      } catch (error){
+        expect(error.code).toEqual(400);
+      }
+      done();
+    });
+  });
 });
 
 describe('Testing post doctor request', () => {
@@ -88,6 +114,32 @@ describe('Testing post doctor request', () => {
     it('blank name', async done => {
       const resp = await supertest(app).post('/open-api/doctor/').send({
         email: email,
+        password: password,
+      });
+      expect(resp.statusCode).toEqual(400);
+      done();
+    });
+  });
+});
+
+describe('Testing login doctor request', () => {
+  describe('Testing successful requests', () => {
+    it('successful login', async done => {
+      await createNewDoctor(name, email, password);
+      const resp = await supertest(app).post('/open-api/doctor/login').send({
+        email: email,
+        password: password,
+      });
+      expect(resp.statusCode).toEqual(200);
+      expect(resp.body.name).toEqual(name);
+      done();
+    });
+  });
+  describe('Testing fail requests', () => {
+    it('fail login', async done => {
+      await createNewDoctor(name, email, password);
+      const resp = await supertest(app).post('/open-api/doctor/').send({
+        email: 'asd@asd.com',
         password: password,
       });
       expect(resp.statusCode).toEqual(400);
