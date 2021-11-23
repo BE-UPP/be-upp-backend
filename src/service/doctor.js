@@ -30,15 +30,18 @@ const validateDoctorLogin = async(email, password) => {
   }
 };
 
-const createNewDoctor = async(name, email, password) => {
+const createNewDoctor = async(name, email, password, cellphone, phone, rcn) => {
   try {
     const doctor = {
       name: name,
       email: email,
       password: password,
+      cellphone: cellphone,
+      phone: phone,
+      rcn: rcn,
     };
-    const dado = await DoctorModel.create(doctor);
-    return dado;
+    const data = await DoctorModel.create(doctor);
+    return data;
   } catch (error) {
     const err = {
       message: error.message,
