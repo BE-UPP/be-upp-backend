@@ -148,6 +148,14 @@ describe('Testing get all patients services', () => {
     expect(patients.length).toEqual(0);
     done();
   });
+  it('testing if passwords are not retrieved', async done => {
+    await createNewPatient(name, email, cpf, cellphone, birth, password);
+    await createNewPatient(name1, email1, cpf1, cellphone1, birth1, password1);
+    const patients = await getAllPatients();
+    expect(patients[0].hasOwnProperty('password')).toEqual(false);
+    expect(patients[1].hasOwnProperty('password')).toEqual(false);
+    done();
+  });
 });
 
 describe('Testing get all patients api', () => {
