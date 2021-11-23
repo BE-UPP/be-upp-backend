@@ -7,6 +7,9 @@ const openApis = require('./route/openApis');
 
 const app = express();
 
+const swaggerUi = require('swagger-ui-express');
+const swaggerFile = require('./doc/swagger_output.json');
+
 // Setup server port
 var port = process.env.API_PORT || 3001;
 
@@ -27,13 +30,17 @@ app.use(express.json());
 
 app.use('/open-api', openApis);
 
+if(process.env.API_DOMAIN === "localhost") {
+  app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile));
+}
+
 let server = null;
 
 const openServer = () => {
   if (server != null && server.readyState === server.OPEN)
     return server;
   const newServer = app.listen(port, function() {
-    // console.log("Running server on port " + port);
+    console.log("Running server on port " + port);
   });
   return newServer;
 };
