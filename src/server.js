@@ -32,7 +32,7 @@ if (process.env.REACT_APP_API_DOMAIN === 'localhost') {
     const swaggerUi = require('swagger-ui-express');
     const swaggerFile = require('./doc/swagger_output.json');
     app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile));
-  } catch(e) {};
+  } catch (e) {};
 }
 
 let server = null;

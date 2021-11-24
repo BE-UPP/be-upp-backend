@@ -7,9 +7,9 @@ const endpointsFiles = ['./src/route/openApis.js'];
 const config = {
   host: process.env.REACT_APP_API_DOMAIN + ':' + process.env.API_PORT,
   info: {
-    "version": packageJson.version,
-    "title": packageJson.name,
-    "description": packageJson.description
+    version: packageJson.version,
+    title: packageJson.name,
+    description: packageJson.description,
   },
 };
 
