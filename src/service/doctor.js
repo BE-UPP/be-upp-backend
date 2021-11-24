@@ -1,4 +1,5 @@
 const { DoctorModel } = require('../data/models/doctor');
+const { generateToken } = require('./authentication');
 
 const getDoctorById = async(id) => {
   try {
@@ -21,7 +22,16 @@ const validateDoctorLogin = async(email, password) => {
   };
   if (doctor != null){
     if (doctor.password === password){
-      return doctor;
+
+      const payload = {
+        id: doctor._id,
+        profile: 'doctor',
+      };
+
+      const token = generateToken(payload);
+      console.log('token gerado com sucesso');
+
+      return {doctor: doctor, token: token};
     } else {
       throw err;
     }

@@ -25,8 +25,8 @@ router.post('/login', async(req, res) => {
   try {
     const email = req.body.email;
     const password = req.body.password;
-    const doctor = await validateDoctorLogin(email, password);
-    res.send(doctor);
+    const loginInfo = await validateDoctorLogin(email, password);
+    res.send(loginInfo);
   } catch (error){
     // console.log(error)
     // TODO error
