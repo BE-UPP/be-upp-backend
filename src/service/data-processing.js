@@ -1,17 +1,41 @@
-// import jsonteste from 'teste.json'
-// const data = require('../teste.json');
-// const data = { jsonteste };
-
-// const Model = require('../data/models/form-data');
-
+const DataProcessingModel = require('../data/models/data-processing');
 const math = require('mathjs');
 
 const error = {message: 'JSON inválido', code: 400};
 
 var variables = {};
 
-const processData = async(formData, dataProcessing) => {
+const addProcessData = async(data) => {
   try {
+    const dado = await DataProcessingModel.create(data);
+    return dado;
+  } catch (error) {
+    const err = {
+      message: error.message,
+      code: 400,
+    };
+    throw err;
+  }
+};
+
+const getProcessData = async(version) => {
+  try {
+    const dado = await DataProcessingModel.findOne({version: version}).exec();
+    return dado;
+  } catch (error) {
+    const err = {
+      message: error.message,
+      code: 400,
+    };
+    throw err;
+  }
+};
+
+const processData = async(formData) => {
+  try {
+
+    let version = formData.templateVersion;
+    let dataProcessing = await getProcessData(version);
 
     for (let key in formData) {
       let variables = formData[key].variables;
@@ -40,6 +64,8 @@ const processData = async(formData, dataProcessing) => {
 
 module.exports = {
   processData: processData,
+  addProcessData: addProcessData,
+  getProcessData: getProcessData,
 };
 
 
@@ -54,8 +80,8 @@ function get_variable(variable) {
 function compute(data) {
   let operations = data.operations;
 
-  for (let key in operations) {
-    let operation = operations[key];
+  for (let i = 0; i < operations.length; i++) {
+    let operation = operations[i];
     switch (operation.type) {
       case 'Table':
         compute_table(operation);
@@ -176,15 +202,16 @@ function compute_table(operation) {
   set_variable(operation.output, output);
 }
 
-
 const parser = math.parser();
 
 function compute_math(operation) {
+
   operation.input.forEach(
     (variable, i) => {
       parser.set(variable, get_variable(variable));
     },
   );
+
   let result = parser.evaluate(operation.body);
   set_variable(operation.output, result);
 

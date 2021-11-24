@@ -1,13 +1,9 @@
 const db = require('./db');
-/* const {
-  getLatestTemplate,
-  setTemplate,
-  getTemplateById,
-} = require('../service/template');
-const supertest = require('supertest');
-const { ObjectId } = require('mongodb');*/
+// const supertest = require('supertest');
+// const { ObjectId } = require('mongodb');
 const { openServer, closeServer } = require('../server');
-const { processData } = require('../service/data-processing');
+const { processData, addProcessData,
+  getProcessData } = require('../service/data-processing');
 
 beforeAll(async() => {
   await db.connect();
@@ -65,16 +61,13 @@ const formData = {
 
 const dataProcessing = {
   version: 1,
-  operations: {
-    math1:
+  operations: [
     {
       type: 'Math',
       input: ['scale', 'selectId', 'radioId'],
       output: ['math1'],
       body: 'scale * selectId + radioId',
     },
-
-    tableProcessing1:
     {
       type: 'Table',
       input: [{ label: 'tableId1', type: 'number' }],
@@ -84,7 +77,7 @@ const dataProcessing = {
         __: 'Não',
       },
     },
-  },
+  ],
 };
 
 const output = {
@@ -110,109 +103,73 @@ const output = {
 };
 
 
-describe('Testing data-processing service', () => {
-  describe('Testing successfully process', () => {
-    it('creating the first template', async done => {
-      const t = await processData(formData, dataProcessing);
+describe('Testing data-processing services', () => {
+  it('Adding Process data', async done => {
 
-      expect(t).toEqual(output);
+    await addProcessData(dataProcessing);
 
-
-      done();
-    });
-  });
-});
-
-/*
-describe('Testing getTemplateById service', () => {
-  it('Testing successfuly retrieving a template', async done => {
-    const t = await setTemplate(pages);
-    const t2 = await getTemplateById(t._id);
-    expect(t2._id).toEqual(t._id);
     done();
   });
-  it('Testing unsuccessfuly retrieving a template', async done => {
-    expect.assertions(1);
-    try {
-      await getTemplateById(3);
-    } catch (e) {
-      expect(e.code).toEqual(500);
-    }
+  it('Get process data', async done => {
+
+    await addProcessData(dataProcessing);
+    let t = await getProcessData(dataProcessing.version);
+    let u = JSON.parse(JSON.stringify(t));
+
+    delete u['_id'];
+    delete u['__v'];
+    for (let i = 0; i < u.operations.length; i++)
+      delete u.operations[i]['_id'];
+
+    expect(u).toEqual(dataProcessing);
+
     done();
   });
-});
+  it('Processing data 1', async done => {
 
-describe('Testing getLatestTemplate service', () => {
-  it('Testing retrieving the last template', async done => {
-    await setTemplate(pages);
-    const t2 = await setTemplate(pages);
-    const r = await getLatestTemplate();
-    expect(r._id).toEqual(t2._id);
+    await addProcessData(dataProcessing);
+    const t = await processData(formData);
+    let u = JSON.parse(JSON.stringify(t));
+
+    delete u['_id'];
+    delete u['__v'];
+
+    expect(u).toEqual(output);
+
     done();
   });
-  it('Failing to retrieve template due to non existence', async done => {
-    const r = await getLatestTemplate();
-    expect(r).toBeNull();
-    done();
-  });
-});
 
-describe('Testing post template request', () => {
-  describe('Testing successful requests', () => {
-    it('create new template', async done => {
-      const resp = await supertest(app).post('/open-api/template/').send({
-        pages: pages,
-      });
-      expect(resp.statusCode).toEqual(200);
-      expect(resp.body.templateVersion).toEqual(0);
-      done();
-    });
-  });
-  describe('Testing fail requests', () => {
-    it('pages blank', async done => {
-      const resp = await supertest(app).post('/open-api/template/').send({
-        pages: {},
-      });
-      expect(resp.statusCode).toEqual(400);
-      done();
-    });
-  });
-});
+  describe('Testing invalid process', () => {
+    it('Processing data 2', async done => {
+      expect.assertions(1);
 
-describe('Testing get template by id request', () => {
-  describe('Testing successful requests', () => {
-    it('template by id', async done => {
-      const t = await setTemplate(pages);
-      const resp = await supertest(app).get(`/open-api/template/by-id/${t._id}`);
-      const t2 = resp.body;
-      const id = ObjectId(t2._id);
-      expect(id).toEqual(t._id);
-      done();
-    });
+      try {
+        let invalidProcessing = JSON.parse(JSON.stringify(dataProcessing));
+        invalidProcessing.operations[0] = {body: 'scale * selectId + radioId' };
 
-    it('latest template', async done => {
-      const t = await setTemplate(pages);
-      const resp = await supertest(app).get('/open-api/template/latest');
-      const t2 = resp.body;
-      const id = ObjectId(t2._id);
-      expect(id).toEqual(t._id);
-      done();
-    });
-  });
+        await addProcessData(invalidProcessing);
+        await processData(formData);
+      } catch (error) {
+        expect(error.code).toEqual(400);
+      }
 
-  describe('Testing fail requests', () => {
-    it('template by id', async done => {
-      await setTemplate(pages);
-      const resp = await supertest(app).get('/open-api/template/by-id/-1');
-      expect(resp.statusCode).toEqual(500);
       done();
     });
-    it('latest template', async done => {
-      const resp = await supertest(app).get('/open-api/template/latest');
-      const t2 = resp.body;
-      expect(t2).toEqual({});
+    it('Processing data 3', async done => {
+      expect.assertions(1);
+
+      try {
+        let invalidProcessing = JSON.parse(JSON.stringify(dataProcessing));
+        console.log(invalidProcessing);
+        invalidProcessing.operations[0].input = [];
+
+        await addProcessData(invalidProcessing);
+        await processData(formData);
+      } catch (error) {
+        expect(error.code).toEqual(400);
+      }
+
       done();
     });
   });
 });
-*/
