@@ -3,8 +3,9 @@ const router = express.Router();
 const {
   createNewAppointment,
 } = require('../../service/appointment');
+const { verifyToken } = require('../../service/authentication');
 
-router.post('/', async(req, res) => {
+router.post('/', verifyToken, async(req, res) => {
 
   try {
     const date = req.body.date;
