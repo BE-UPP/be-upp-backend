@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://backend:beeUpPass@localhost:27017/admin', {
+let port = process.env.MONGO_PORT || 27017;
+let domain = process.env.MONGO_PORT ? 'mongo' : 'localhost';
+
+mongoose.connect('mongodb://backend:beeUpPass@' + domain + ':' + port + '/admin', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useFindAndModify: false,

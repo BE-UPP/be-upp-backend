@@ -1,3 +1,4 @@
+require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
@@ -7,7 +8,7 @@ const openApis = require('./route/openApis');
 const app = express();
 
 // Setup server port
-var port = process.env.PORT || 3001;
+var port = process.env.API_PORT || 3001;
 
 app.use(cors({
   origin: process.env.ORIGIN || '*',

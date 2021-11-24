@@ -1,5 +1,5 @@
 const db = require('./db');
-const { createNewPatient } = require('../service/patient');
+const { createNewPatient, getAllPatients } = require('../service/patient');
 const supertest = require('supertest');
 const { app, openServer, closeServer } = require('../server');
 
@@ -23,6 +23,13 @@ const cpf = '11223344556';
 const cellphone = '11945158787';
 const birth = 1005530400000;
 const password = 'senhasegura';
+
+const name1 = 'Daniel Lawand';
+const email1 = 'daniellawand@mail.com';
+const cpf1 = '12345678900';
+const cellphone1 = '11945158787';
+const birth1 = 1005530400000;
+const password1 = 'senhasegura';
 
 describe('Testing patient service', () => {
   describe('Testing successfully creates', () => {
@@ -122,6 +129,52 @@ describe('Testing post patient request', () => {
         password: password,
       });
       expect(resp.statusCode).toEqual(400);
+      done();
+    });
+  });
+});
+
+describe('Testing get all patients services', () => {
+  it('getting two patients', async done => {
+    await createNewPatient(name, email, cpf, cellphone, birth, password);
+    await createNewPatient(name1, email1, cpf1, cellphone1, birth1, password1);
+    const patients = await getAllPatients();
+    expect(patients.length).toEqual(2);
+    expect(patients[0]._id).not.toEqual(patients[1]._id);
+    done();
+  });
+  it('getting no patients', async done => {
+    const patients = await getAllPatients();
+    expect(patients.length).toEqual(0);
+    done();
+  });
+  it('testing if passwords are not retrieved', async done => {
+    await createNewPatient(name, email, cpf, cellphone, birth, password);
+    await createNewPatient(name1, email1, cpf1, cellphone1, birth1, password1);
+    const patients = await getAllPatients();
+    expect(patients[0].hasOwnProperty('password')).toEqual(false);
+    expect(patients[1].hasOwnProperty('password')).toEqual(false);
+    done();
+  });
+});
+
+describe('Testing get all patients api', () => {
+  describe('Testing successful requests', () => {
+    it('getting two patients', async done => {
+      await createNewPatient(name, email, cpf, cellphone, birth, password);
+      await createNewPatient(name1, email1, cpf1, cellphone1, birth1, password1);
+      const resp = await supertest(app).get('/open-api/patient/all');
+      const patients = resp.body;
+      expect(resp.statusCode).toEqual(200);
+      expect(patients.length).toEqual(2);
+      expect(patients[0]._id).not.toEqual(patients[1]._id);
+      done();
+    });
+    it('getting no patients', async done => {
+      const resp = await supertest(app).get('/open-api/patient/all');
+      const patients = resp.body;
+      expect(resp.statusCode).toEqual(200);
+      expect(patients.length).toEqual(0);
       done();
     });
   });

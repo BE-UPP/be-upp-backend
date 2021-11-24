@@ -20,12 +20,6 @@ cp .env-example .env
 ./run-be-upp.sh
 ```
 
-#### Consultar logs dos containers (opcional)
-Abra um novo terminal e execute
-``` 
-docker-compose logs -f
-```
-
 #### Consultar registros (opcional)
 A interface web do mongo-express estará disponível em **http://0.0.0.0:8081/**
 Nesta interface web é possível acompanhar os dados do banco de dados em tempo real.
