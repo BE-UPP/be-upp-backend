@@ -15,9 +15,19 @@ cp .env-example .env
 ```
 
 ## Como rodar
-#### Inicializar containers (mongo e mongo-express) e API
+#### Inicializar containers (mongo, mongo-express, api, app)
 ``` bash
 ./run-be-upp.sh
+```
+
+#### Inicializar api
+```bash
+npm run start:dev --prefix $PWD
+```
+
+#### Inicializar api com documentação
+```bash
+npm run swagger-autogen
 ```
 
 #### Consultar registros (opcional)
