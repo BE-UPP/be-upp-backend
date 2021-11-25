@@ -45,7 +45,7 @@ const processData = async(formData) => {
         continue;
 
       for (let i = 0; i < values.length; i += 1) {
-        set_variable(variables[i], values[i]);
+        setVariable(variables[i], values[i]);
       }
     }
 
@@ -69,11 +69,11 @@ module.exports = {
 };
 
 
-function set_variable(variable, value) {
+function setVariable(variable, value) {
   variables[variable] = value;
 }
 
-function get_variable(variable) {
+function getVariable(variable) {
   return variables[variable];
 }
 
@@ -84,10 +84,10 @@ function compute(data) {
     let operation = operations[i];
     switch (operation.type) {
       case 'Table':
-        compute_table(operation);
+        computeTable(operation);
         break;
       case 'Math':
-        compute_math(operation);
+        computeMath(operation);
         break;
       default:
         break;
@@ -96,21 +96,21 @@ function compute(data) {
 
 }
 
-function recursive_table(input, table) {
+function recursiveTable(input, table) {
   // console.log('Input:', input);
   // console.log('Table:', table);
   if (input.length === 0)
     throw error;
 
   let variable = input[0];
-  let new_table;
+  let newTable;
   // console.log("Tipo: ", variable.type)
   switch (variable.type) {
     case 'text':
-      new_table = table[get_variable(variable.label)];
+      newTable = table[getVariable(variable.label)];
       break;
     case 'number':
-      let y = get_variable(variable.label);
+      let y = getVariable(variable.label);
       let passou = false;
 
       // console.log("Y: ", y);
@@ -167,7 +167,7 @@ function recursive_table(input, table) {
 
         // console.log(cmp);
         if (cmp) {
-          new_table = table[key];
+          newTable = table[key];
           passou = true;
           break;
         }
@@ -181,39 +181,39 @@ function recursive_table(input, table) {
       throw error;
   }
 
-  if (new_table === {})
+  if (newTable === {})
     throw error;
 
   if (input.length === 1)
-    return new_table;
+    return newTable;
 
-  let new_input = input;
-  new_input.shift();
+  let newInput = input;
+  newInput.shift();
 
-  return recursive_table(new_input, new_table);
+  return recursiveTable(newInput, newTable);
 
 }
 
-function compute_table(operation) {
+function computeTable(operation) {
   // console.log(operation.input);
   let input = JSON.parse(JSON.stringify(operation.input));
-  let output = recursive_table(
+  let output = recursiveTable(
     input, operation.body);
-  set_variable(operation.output, output);
+  setVariable(operation.output, output);
 }
 
 const parser = math.parser();
 
-function compute_math(operation) {
+function computeMath(operation) {
 
   operation.input.forEach(
     (variable, i) => {
-      parser.set(variable, get_variable(variable));
+      parser.set(variable, getVariable(variable));
     },
   );
 
   let result = parser.evaluate(operation.body);
-  set_variable(operation.output, result);
+  setVariable(operation.output, result);
 
   parser.clear();
 }
