@@ -3,6 +3,7 @@ const router = express.Router();
 const {
   createNewDoctor,
   validateDoctorLogin,
+  listAppointments,
 } = require('../../service/doctor');
 const { omit } = require('../../service/helper');
 
@@ -31,6 +32,19 @@ router.post('/login', async(req, res) => {
     const password = req.body.password;
     const doctor = await validateDoctorLogin(email, password);
     res.send(omit(doctor._doc, 'password'));
+  } catch (error){
+    // console.log(error)
+    // TODO error
+    res.status(error.code).send(error.message);
+  }
+});
+
+router.get('/appointments', async(req, res) => {
+
+  try {
+    const idDoctor = req.body.id;
+    const appointments = await listAppointments(idDoctor);
+    res.send(appointments);
   } catch (error){
     // console.log(error)
     // TODO error
