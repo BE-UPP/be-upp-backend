@@ -8,7 +8,8 @@
   "scripts": {
     "start:dev": "nodemon ./src/server.js",
     "pretest": "eslint --ignore-path .gitignore .",
-    "test": "jest --detectOpenHandles --verbose --runInBand ./src/test"
+    "test": "jest --detectOpenHandles --verbose --runInBand ./src/test",
+    "lint": "eslint --fix --ext .js ."
   },
   "jest": {
     "testEnvironment": "node",
@@ -19,6 +20,7 @@
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
+    "mathjs": "^10.0.0",
     "ical-generator": "^3.0.1",
     "moment": "^2.29.1",
     "mongoose": "^5.9.7",
@@ -26,7 +28,7 @@
     "supertest": "^6.1.6"
   },
   "devDependencies": {
-    "eslint": "^8.1.0",
+    "eslint": "^8.2.0",
     "eslint-config-strongloop": "^2.1.0",
     "jest": "^27.3.1",
     "mongodb-memory-server": "^7.5.1",
