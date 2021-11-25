@@ -1,4 +1,6 @@
 const mongoose = require('../../infra/database');
+const { DoctorModel } = require('./doctor');
+const { PatientModel } = require('./patient');
 
 const AppointmentSchema = new mongoose.Schema({
   date: {
@@ -7,20 +9,14 @@ const AppointmentSchema = new mongoose.Schema({
   },
 
   patient: {
-    type: Object,
-    id: mongoose.Schema.Types.ObjectId,
-    name: String,
-    email: String,
-    cellphone: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: PatientModel,
     required: [true, 'patient required'],
   },
 
   doctor: {
-    type: Object,
-    id: mongoose.Schema.Types.ObjectId,
-    name: String,
-    email: String,
-    cellphone: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: DoctorModel,
     required: [true, 'doctor required'],
   },
 });

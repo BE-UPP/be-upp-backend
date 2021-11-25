@@ -27,22 +27,10 @@ const createNewAppointment = async(date, patientId, doctorId) => {
   try {
     const patient = await getPatientById(patientId);
     const doctor = await getDoctorById(doctorId);
-    const patientInfo = {
-      id: patient._id,
-      name: patient.name,
-      email: patient.email,
-      cellphone: patient.cellphone,
-    };
-    const doctorInfo = {
-      id: doctor._id,
-      name: doctor.name,
-      email: doctor.email,
-      cellphone: doctor.cellphone,
-    };
     const appointment = {
       date: date,
-      patient: patientInfo,
-      doctor: doctorInfo,
+      patient: patient._id,
+      doctor: doctor._id,
     };
     const result = await AppointmentModel.create(appointment);
     return result;
