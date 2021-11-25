@@ -1,6 +1,4 @@
 const mongoose = require('../../infra/database');
-const { DoctorSchema } = require('./doctor');
-const { PatientSchema } = require('./patient');
 
 const AppointmentSchema = new mongoose.Schema({
   date: {
@@ -9,12 +7,20 @@ const AppointmentSchema = new mongoose.Schema({
   },
 
   patient: {
-    type: PatientSchema,
+    type: Object,
+    id: mongoose.Schema.Types.ObjectId,
+    name: String,
+    email: String,
+    cellphone: String,
     required: [true, 'patient required'],
   },
 
   doctor: {
-    type: DoctorSchema,
+    type: Object,
+    id: mongoose.Schema.Types.ObjectId,
+    name: String,
+    email: String,
+    cellphone: String,
     required: [true, 'doctor required'],
   },
 });
