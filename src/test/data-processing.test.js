@@ -160,7 +160,6 @@ describe('Testing data-processing services', () => {
 
       try {
         let invalidProcessing = JSON.parse(JSON.stringify(dataProcessing));
-        console.log(invalidProcessing);
         invalidProcessing.operations[0].input = [];
 
         await addProcessData(invalidProcessing);
