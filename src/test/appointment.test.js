@@ -50,8 +50,8 @@ describe('Testing appointment service', () => {
       const date = Date.now();
       const t = await createNewAppointment(date, pat._id, doc._id);
       expect(t.date).toEqual(date);
-      expect(t.patient.name).toEqual(p.name);
-      expect(t.doctor.name).toEqual(d.name);
+      expect(t.patient).toEqual(pat._id);
+      expect(t.doctor).toEqual(doc._id);
       done();
     });
   });
@@ -86,7 +86,7 @@ describe('Testing post appointment request', () => {
       const apId = resp.body;
       const ap = await getAppointmentById(apId);
       expect(resp.statusCode).toEqual(200);
-      expect(ap.patient.name).toEqual(pat.name);
+      expect(ap.patient).toEqual(pat._id);
       done();
     });
   });
