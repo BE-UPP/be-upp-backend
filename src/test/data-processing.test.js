@@ -1,6 +1,4 @@
 const db = require('./db');
-// const supertest = require('supertest');
-// const { ObjectId } = require('mongodb');
 const { processData,
   addProcessData,
   getProcessData,
@@ -113,11 +111,6 @@ describe('Testing data-processing services', () => {
     let t = await getProcessData(dataProcessing.version);
     let u = clone(t);
 
-    // omit(u, '_id');
-    // omit(u, '__v');
-    // for (let i = 0; i < u.operations.length; i++)
-    // omit(u.operations[i], '_id');
-
     delete u._id;
     delete u.__v;
     for (let i = 0; i < u.operations.length; i++)
@@ -127,7 +120,7 @@ describe('Testing data-processing services', () => {
 
     done();
   });
-  it('Processing data 1', async done => {
+  it('Processing 1 user', async done => {
 
     await addProcessData(dataProcessing);
     const t = await processData(formDataDb);
@@ -140,38 +133,59 @@ describe('Testing data-processing services', () => {
 
     done();
   });
+  it('Processing 2 users', async done => {
 
-  describe('Testing invalid process', () => {
-    it('Processing data 2', async done => {
-      expect.assertions(1);
+    await addProcessData(dataProcessing);
+    const t = await processData(formDataDb);
+    let u = clone(t);
 
-      try {
-        let invalidProcessing = clone(dataProcessing);
-        invalidProcessing.operations[0] = {body: 'scale * selectId + radioId' };
+    omit(u, '_id');
+    omit(u, '__v');
 
-        await addProcessData(invalidProcessing);
-        await processData(formDataDb);
-      } catch (error) {
-        expect(error.code).toEqual(400);
-      }
+    expect(u).toEqual(output);
 
-      done();
-    });
-    it('Processing data 3', async done => {
-      expect.assertions(1);
+    const t2 = await processData(formDataDb);
+    let u2 = clone(t2);
 
-      try {
-        let invalidProcessing = clone(dataProcessing);
-        console.log(invalidProcessing);
-        invalidProcessing.operations[0].input = [];
+    omit(u2, '_id');
+    omit(u2, '__v');
 
-        await addProcessData(invalidProcessing);
-        await processData(formDataDb);
-      } catch (error) {
-        expect(error.code).toEqual(400);
-      }
+    expect(u2).toEqual(output);
 
-      done();
-    });
+    done();
+  });
+});
+
+describe('Testing invalid process', () => {
+  it('Operations with only body', async done => {
+    expect.assertions(1);
+
+    try {
+      let invalidProcessing = clone(dataProcessing);
+      invalidProcessing.operations[0] = {body: 'scale * selectId + radioId' };
+
+      await addProcessData(invalidProcessing);
+      await processData(formDataDb);
+    } catch (error) {
+      expect(error.code).toEqual(400);
+    }
+
+    done();
+  });
+  it('Processing without input', async done => {
+    expect.assertions(1);
+
+    try {
+      let invalidProcessing = clone(dataProcessing);
+      console.log(invalidProcessing);
+      invalidProcessing.operations[0].input = [];
+
+      await addProcessData(invalidProcessing);
+      await processData(formDataDb);
+    } catch (error) {
+      expect(error.code).toEqual(400);
+    }
+
+    done();
   });
 });

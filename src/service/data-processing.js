@@ -3,8 +3,6 @@ const math = require('mathjs');
 
 const error = {message: 'JSON inválido', code: 400};
 
-var variables = {};
-
 const addProcessData = async(data) => {
   try {
     const dado = await DataProcessingModel.create(data);
@@ -32,25 +30,25 @@ const getProcessData = async(version) => {
 };
 
 const processData = async(formData) => {
+  let variables = {};
   try {
 
     let version = formData.templateVersion;
     let dataProcessing = await getProcessData(version);
 
     for (let i in formData.questions) {
-      // console.log(formData.questions[i]);
-      let variables = formData.questions[i].variables;
+      let variablesNames = formData.questions[i].variables;
       let values = formData.questions[i].values;
 
       if (values == null)
         continue;
 
       for (let i = 0; i < values.length; i += 1) {
-        set_variable(variables[i], values[i]);
+        set_variable(variablesNames[i], values[i], variables);
       }
     }
 
-    compute(dataProcessing);
+    compute(dataProcessing, variables);
 
     return variables;
 
@@ -70,25 +68,25 @@ module.exports = {
 };
 
 
-function set_variable(variable, value) {
+function set_variable(variable, value, variables) {
   variables[variable] = value;
 }
 
-function get_variable(variable) {
+function get_variable(variable, variables) {
   return variables[variable];
 }
 
-function compute(data) {
+function compute(data, variables) {
   let operations = data.operations;
 
   for (let i = 0; i < operations.length; i++) {
     let operation = operations[i];
     switch (operation.type) {
       case 'Table':
-        compute_table(operation);
+        compute_table(operation, variables);
         break;
       case 'Math':
-        compute_math(operation);
+        compute_math(operation, variables);
         break;
       default:
         break;
@@ -97,27 +95,20 @@ function compute(data) {
 
 }
 
-function recursive_table(input, table) {
-  // console.log('Input:', input);
-  // console.log('Table:', table);
+function recursive_table(input, table, variables) {
   if (input.length === 0)
     throw error;
 
   let variable = input[0];
   let new_table;
-  // console.log("Tipo: ", variable.type)
+
   switch (variable.type) {
     case 'text':
-      new_table = table[get_variable(variable.label)];
+      new_table = table[get_variable(variable.label, variables)];
       break;
     case 'number':
-      let y = get_variable(variable.label);
+      let y = get_variable(variable.label, variables);
       let passou = false;
-
-      // console.log("Y: ", y);
-
-      // console.log("Table: ", table);
-
 
       for (let key in table) {
         let op = key.substr(0, 2);
@@ -126,10 +117,6 @@ function recursive_table(input, table) {
         let x1 = parseFloat(aux2[0]);
         let x2 = parseFloat(aux2[1]);
         let cmp = null;
-
-        // console.log('OP: ', op);
-        // console.log('x1: ', x1);
-        // console.log('x2: ', x2);
 
         switch (op) {
           case '__':
@@ -166,7 +153,6 @@ function recursive_table(input, table) {
             throw error;
         }
 
-        // console.log(cmp);
         if (cmp) {
           new_table = table[key];
           passou = true;
@@ -195,26 +181,25 @@ function recursive_table(input, table) {
 
 }
 
-function compute_table(operation) {
-  // console.log(operation.input);
+function compute_table(operation, variables) {
   let input = JSON.parse(JSON.stringify(operation.input));
   let output = recursive_table(
-    input, operation.body);
-  set_variable(operation.output, output);
+    input, operation.body, variables);
+  set_variable(operation.output, output, variables);
 }
 
 const parser = math.parser();
 
-function compute_math(operation) {
+function compute_math(operation, variables) {
 
   operation.input.forEach(
     (variable, i) => {
-      parser.set(variable, get_variable(variable));
+      parser.set(variable, get_variable(variable, variables));
     },
   );
 
   let result = parser.evaluate(operation.body);
-  set_variable(operation.output, result);
+  set_variable(operation.output, result, variables);
 
   parser.clear();
 }
