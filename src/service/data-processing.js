@@ -37,9 +37,10 @@ const processData = async(formData) => {
     let version = formData.templateVersion;
     let dataProcessing = await getProcessData(version);
 
-    for (let key in formData) {
-      let variables = formData[key].variables;
-      let values = formData[key].values;
+    for (let i in formData.questions) {
+      // console.log(formData.questions[i]);
+      let variables = formData.questions[i].variables;
+      let values = formData.questions[i].values;
 
       if (values == null)
         continue;

@@ -1,9 +1,12 @@
 const db = require('./db');
 // const supertest = require('supertest');
 // const { ObjectId } = require('mongodb');
+const { processData,
+  addProcessData,
+  getProcessData,
+} = require('../service/data-processing');
+const {omit, clone} = require('../service/helper');
 const { openServer, closeServer } = require('../server');
-const { processData, addProcessData,
-  getProcessData } = require('../service/data-processing');
 
 beforeAll(async() => {
   await db.connect();
@@ -19,48 +22,47 @@ afterAll(async() => {
   closeServer();
 });
 
-const formData = {
-  templateVersion: 1,
-  text: {
-    type: 'text',
-    variables: ['text'],
-    values: ['josé'],
-  },
-  select: {
-    type: 'select',
-    variables: ['selectId', 'select'],
-    values: [2, 'Feminino'],
-  },
-  scale: {
-    type: 'scale',
-    variables: ['scale'],
-    values: [4],
-  },
-  radio: {
-    type: 'radio',
-    variables: ['radioId', 'radio'],
-    values: [
-      1, 'Não',
-    ],
-  },
-  table: {
-    type: 'table',
-    variables: ['tableId1', 'table1', 'tableId2', 'table2', 'tableId3', 'table3'],
-    values: [0, '1', 1, '3', 2, '2'],
-  },
-  checkbox: {
-    type: 'checkbox',
-    variables: ['checkbox'],
-    values: [{
-      3: 'Melhora de humor',
-      9: 'Melhorar a saúde mental',
-      10: 'Emagrecimento',
-    }],
-  },
+
+const formDataDb = {
+  templateVersion: 0,
+  questions: [
+    {
+      id: 'text',
+      variables: ['text'],
+      values: ['josé'],
+    },
+    {
+      id: 'select',
+      variables: ['selectId', 'select'],
+      values: [2, 'Feminino'],
+    },
+    {
+      id: 'scale',
+      variables: ['scale'],
+      values: [4],
+    },
+    {
+      id: 'radio',
+      variables: ['radioId', 'radio'],
+      values: [
+        1, 'Não',
+      ],
+    },
+    {
+      id: 'table',
+      variables: ['tableId1', 'table1', 'tableId2', 'table2', 'tableId3', 'table3'],
+      values: [0, '1', 1, '3', 2, '2'],
+    },
+    {
+      id: 'checkbox',
+      variables: ['checkbox1', 'checkbox2'],
+      values: [ 1, 0 ],
+    },
+  ],
 };
 
 const dataProcessing = {
-  version: 1,
+  version: 0,
   operations: [
     {
       type: 'Math',
@@ -93,19 +95,14 @@ const output = {
   table2: '3',
   tableId3: 2,
   table3: '2',
-  checkbox: {
-    3: 'Melhora de humor',
-    9: 'Melhorar a saúde mental',
-    10: 'Emagrecimento',
-  },
+  checkbox1: 1,
+  checkbox2: 0,
   math1: 9,
   tableProcessing1: 'Não',
 };
 
-
 describe('Testing data-processing services', () => {
   it('Adding Process data', async done => {
-
     await addProcessData(dataProcessing);
 
     done();
@@ -114,12 +111,17 @@ describe('Testing data-processing services', () => {
 
     await addProcessData(dataProcessing);
     let t = await getProcessData(dataProcessing.version);
-    let u = JSON.parse(JSON.stringify(t));
+    let u = clone(t);
 
-    delete u['_id'];
-    delete u['__v'];
+    // omit(u, '_id');
+    // omit(u, '__v');
+    // for (let i = 0; i < u.operations.length; i++)
+    // omit(u.operations[i], '_id');
+
+    delete u._id;
+    delete u.__v;
     for (let i = 0; i < u.operations.length; i++)
-      delete u.operations[i]['_id'];
+      delete u.operations[i]._id;
 
     expect(u).toEqual(dataProcessing);
 
@@ -128,11 +130,11 @@ describe('Testing data-processing services', () => {
   it('Processing data 1', async done => {
 
     await addProcessData(dataProcessing);
-    const t = await processData(formData);
-    let u = JSON.parse(JSON.stringify(t));
+    const t = await processData(formDataDb);
+    let u = clone(t);
 
-    delete u['_id'];
-    delete u['__v'];
+    omit(u, '_id');
+    omit(u, '__v');
 
     expect(u).toEqual(output);
 
@@ -144,11 +146,11 @@ describe('Testing data-processing services', () => {
       expect.assertions(1);
 
       try {
-        let invalidProcessing = JSON.parse(JSON.stringify(dataProcessing));
+        let invalidProcessing = clone(dataProcessing);
         invalidProcessing.operations[0] = {body: 'scale * selectId + radioId' };
 
         await addProcessData(invalidProcessing);
-        await processData(formData);
+        await processData(formDataDb);
       } catch (error) {
         expect(error.code).toEqual(400);
       }
@@ -159,12 +161,12 @@ describe('Testing data-processing services', () => {
       expect.assertions(1);
 
       try {
-        let invalidProcessing = JSON.parse(JSON.stringify(dataProcessing));
+        let invalidProcessing = clone(dataProcessing);
         console.log(invalidProcessing);
         invalidProcessing.operations[0].input = [];
 
         await addProcessData(invalidProcessing);
-        await processData(formData);
+        await processData(formDataDb);
       } catch (error) {
         expect(error.code).toEqual(400);
       }
