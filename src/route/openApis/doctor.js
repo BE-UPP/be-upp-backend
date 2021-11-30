@@ -15,8 +15,9 @@ router.post('/', async(req, res) => {
     const password = req.body.password;
     const cellphone = req.body.cellphone;
     const phone = req.body.phone;
-    const rcn = req.body.rcn;
-    const doctor = await createNewDoctor(name, email, password, cellphone, phone, rcn);
+    const profession = req.body.profession;
+    const doctor = await createNewDoctor(name, email, password, cellphone,
+      phone, profession);
     res.send(omit(doctor._doc, 'password'));
   } catch (error){
     // console.log(error)
