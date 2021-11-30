@@ -15,17 +15,32 @@ cp .env-example .env
 ```
 
 ## Como rodar
-#### Inicializar containers (mongo, mongo-express, api, app)
+#### Inicializar containers (mongo e mongo-express) e API
+
+Dev:
+```bash
+docker-compose up
+```
+
+Prod:
 ``` bash
 ./run-be-upp.sh
 ```
 
-#### Inicializar api
+Para rodar algum comando dentro do container:
 ```bash
-npm run start:dev --prefix $PWD
+docker-compose run api bash
 ```
 
-#### Inicializar api com documentação
+Exemplo:
+
+Rodar testes
+```bash
+docker-compose run api bash
+npm test
+```
+
+#### Inicializar api com documentação (rodar dentro do container)
 ```bash
 npm run swagger-autogen
 ```

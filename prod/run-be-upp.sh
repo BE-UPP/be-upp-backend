@@ -5,11 +5,14 @@ function _main
     path=$(pwd)
     env_file_path=${path}/.env
 
+    echo $path
+    echo $env_file_path
+
     if [ ! -f "${env_file_path}" ]; then
-        cp ${path}/.env-example .env
+        cp "${path}/.env-example" .env
     fi
 
-    sed -i 's/\r$//' $env_file_path
+    sed -i 's/\r$//' "$env_file_path"
     source $env_file_path
 
     docker-compose down

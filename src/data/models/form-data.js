@@ -10,6 +10,17 @@ const QuestionSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.Mixed,
     required: true,
   },
+
+  /*
+    variables: {
+      type: Array,
+      required: true,
+    },
+    value: {
+      type: Array,
+      required: true,
+    },*/
+
 });
 
 const FormDataSchema = new mongoose.Schema({

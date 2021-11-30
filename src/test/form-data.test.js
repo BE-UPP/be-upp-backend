@@ -59,6 +59,9 @@ const d = {
   name: 'Doutor',
   email: 'doutor@medi.co',
   password: 'medicina123',
+  cellphone: '11945150909',
+  phone: '1135150909',
+  rcn: '22359',
 };
 
 describe('Testing addFormData service', () => {
@@ -66,7 +69,8 @@ describe('Testing addFormData service', () => {
     it('create new form-data', async(done) => {
       const pat = await createNewPatient(p.name, p.email, p.cpf, p.cellphone,
         p.birth, p.password);
-      const doc = await createNewDoctor(d.name, d.email, d.password);
+      const doc = await createNewDoctor(d.name, d.email, d.password, d.cellphone,
+        d.phone, d.rcn);
       const date = Date.now();
       const t = await createNewAppointment(date, pat._id, doc._id);
       answers.appointmentId = t._id;
@@ -95,7 +99,8 @@ describe('Testing post form-data request', () => {
     it('create new form-data', async done => {
       const pat = await createNewPatient(p.name, p.email, p.cpf, p.cellphone,
         p.birth, p.password);
-      const doc = await createNewDoctor(d.name, d.email, d.password);
+      const doc = await createNewDoctor(d.name, d.email, d.password, d.cellphone,
+        d.phone, d.rcn);
       const date = Date.now();
       const t = await createNewAppointment(date, pat._id, doc._id);
       answers.appointmentId = t._id;
