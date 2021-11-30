@@ -40,6 +40,11 @@ docker-compose run api bash
 npm test
 ```
 
+#### Inicializar api com documentação (rodar dentro do container)
+```bash
+npm run swagger-autogen
+```
+
 #### Consultar registros (opcional)
 A interface web do mongo-express estará disponível em **http://0.0.0.0:8081/**
 Nesta interface web é possível acompanhar os dados do banco de dados em tempo real.
@@ -63,3 +68,6 @@ post 'http://dominio.com/template'
 
 post 'http://dominio.com/form-data'
 ```
+
+#### Doc da API
+Acesse 'http://localhost:<API_PORT>/doc/'

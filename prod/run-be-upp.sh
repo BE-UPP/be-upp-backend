@@ -38,7 +38,7 @@ function _main
     fi
 
     docker-compose up -d
-    docker-compose logs -f
+    docker-compose logs -f api app
 }
 
 _main
