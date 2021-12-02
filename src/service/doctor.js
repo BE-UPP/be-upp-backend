@@ -47,7 +47,7 @@ const validateDoctorLogin = async(email, password) => {
   }
 };
 
-const createNewDoctor = async(name, email, password, cellphone, phone, rcn) => {
+const createNewDoctor = async(name, email, password, cellphone, phone, profession) => {
   try {
     const doctor = {
       name: name,
@@ -55,7 +55,7 @@ const createNewDoctor = async(name, email, password, cellphone, phone, rcn) => {
       password: password,
       cellphone: cellphone,
       phone: phone,
-      rcn: rcn,
+      profession: profession,
     };
     const data = await DoctorModel.create(doctor);
     return data;
