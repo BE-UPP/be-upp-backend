@@ -1,9 +1,26 @@
 const { DoctorModel } = require('../data/models/doctor');
+const AppointmentModel = require('../data/models/appointment');
+const mongoose = require('mongoose');
 
 const getDoctorById = async(id) => {
   try {
     const dado = await DoctorModel.findById(id).exec();
     return dado;
+  } catch (error) {
+    const err = {
+      message: error.message,
+      code: 400,
+    };
+    throw err;
+  }
+};
+
+const listAppointments = async(idDoctor) => {
+  try {
+    const appointments = await AppointmentModel.find({
+      doctor: mongoose.Types.ObjectId(idDoctor),
+    }, '_id date patient').populate('patient', '-password').sort({date: 'asc'}).exec();
+    return appointments;
   } catch (error) {
     const err = {
       message: error.message,
@@ -30,7 +47,7 @@ const validateDoctorLogin = async(email, password) => {
   }
 };
 
-const createNewDoctor = async(name, email, password, cellphone, phone, rcn) => {
+const createNewDoctor = async(name, email, password, cellphone, phone, profession) => {
   try {
     const doctor = {
       name: name,
@@ -38,7 +55,7 @@ const createNewDoctor = async(name, email, password, cellphone, phone, rcn) => {
       password: password,
       cellphone: cellphone,
       phone: phone,
-      rcn: rcn,
+      profession: profession,
     };
     const data = await DoctorModel.create(doctor);
     return data;
@@ -53,6 +70,7 @@ const createNewDoctor = async(name, email, password, cellphone, phone, rcn) => {
 
 module.exports = {
   getDoctorById: getDoctorById,
+  listAppointments: listAppointments,
   createNewDoctor: createNewDoctor,
   validateDoctorLogin: validateDoctorLogin,
 };
