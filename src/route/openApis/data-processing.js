@@ -22,13 +22,14 @@ router.get('/by-version/:version', async(req, res) => {
 
 router.post('/', async(req, res) => {
 
-  const dataProcessing = req.body.dataProcessing;
-
+  const dataProcessing = req.body;
+  console.log('AAA');
+  console.log(dataProcessing);
   try {
     const dp = await addProcessData(dataProcessing);
     res.send(dp);
   } catch (error){
-    // console.log(error)
+    console.log(error);
     // TODO error
     res.status(error.code).send(error.message);
   }
