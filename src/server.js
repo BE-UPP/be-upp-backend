@@ -4,6 +4,7 @@ const express = require('express');
 const cors = require('cors');
 
 const openApis = require('./route/openApis');
+const closeApis = require('./route/closeApis');
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use(express.urlencoded({
 app.use(express.json());
 
 app.use('/open-api', openApis);
+app.use('/close-api', closeApis);
 
 if (process.env.REACT_APP_API_DOMAIN === 'localhost') {
   try {
