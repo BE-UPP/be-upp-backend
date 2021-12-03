@@ -21,8 +21,10 @@ const listAppointments = async(idDoctor) => {
     const appointments = await AppointmentModel.find({
       doctor: mongoose.Types.ObjectId(idDoctor),
     }, '_id date patient').populate('patient', '-password').sort({date: 'asc'}).exec();
+    console.log(appointments);
     return appointments;
   } catch (error) {
+    console.log(error);
     const err = {
       message: error.message,
       code: 400,
