@@ -7,6 +7,11 @@ const omit = (obj, okey) => {
   }, {});
 };
 
+const clone = (obj) => {
+  return JSON.parse(JSON.stringify(obj));
+};
+
 module.exports = {
   omit: omit,
+  clone: clone,
 };

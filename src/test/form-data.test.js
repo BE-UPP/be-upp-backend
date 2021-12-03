@@ -25,23 +25,23 @@ const answers = {
   questions: [
     {
       id: 'name',
-      value: 'Ex: José Fernando da Silva',
+      values: ['Ex: José Fernando da Silva'],
     },
     {
       id: 'telephone',
-      value: '12341234',
+      values: ['12341234'],
     },
     {
       id: 'email',
-      value: 'willian@hiroshi.com.br.mogi',
+      values: ['willian@hiroshi.com.br.mogi'],
     },
     {
       id: 'birthday',
-      value: '30/05/1999',
+      values: ['30/05/1999'],
     },
     {
       id: 'city',
-      value: 'Mogi',
+      values: ['Mogi'],
     }],
   templateVersion: 1,
 };

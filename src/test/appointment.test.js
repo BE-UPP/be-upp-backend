@@ -6,7 +6,9 @@ const {
 const { createNewPatient } = require('../service/patient');
 const { createNewDoctor } = require('../service/doctor');
 const supertest = require('supertest');
-const { app, openServer, closeServer } = require('../server');
+const { app,
+  openServer, closeServer } = require('../server');
+const mongoose = require('mongoose');
 
 beforeAll(async() => {
   await db.connect();
@@ -62,7 +64,7 @@ describe('Testing appointment service', () => {
         d.phone, d.rcn);
       const date = Date.now();
       try {
-        await createNewAppointment(date, 11234, doc._id);
+        await createNewAppointment(date, mongoose.Types.ObjectId(11234), doc._id);
       } catch (error){
         expect(error.code).toEqual(400);
       }
