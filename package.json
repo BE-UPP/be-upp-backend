@@ -9,6 +9,7 @@
     "start:dev": "nodemon ./src/server.js",
     "pretest": "eslint --ignore-path .gitignore .",
     "test": "jest --detectOpenHandles --verbose --runInBand ./src/test",
+    "seed": "node ./src/test/seed.js",
     "swagger-autogen": "node ./src/doc/swagger.js",
     "lint": "eslint --fix --ext .js ."
   },
