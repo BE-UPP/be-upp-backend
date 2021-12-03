@@ -26,10 +26,9 @@ router.post('/', async(req, res) => {
 });
 
 router.post('/login', async(req, res) => {
-  console.log(req.body);
   try {
-    const email = req.body.emailLogin;
-    const password = req.body.passwordLogin;
+    const email = req.body.email;
+    const password = req.body.password;
     const {doctor, token} = await validateDoctorLogin(email, password);
     console.log(doctor);
     res.send({doctor: omit(doctor._doc, 'password'), token: token});
