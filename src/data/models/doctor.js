@@ -22,6 +22,24 @@ const DoctorSchema = new mongoose.Schema({
         && s.length > 5,
     required: [true, 'password required'],
   },
+
+  cellphone: {
+    type: String,
+    validate: s => (typeof s === 'string' || s instanceof String)
+        && s.length > 0,
+    required: [true, 'cellphone required'],
+  },
+
+  phone: {
+    type: String,
+  },
+
+  profession: { /* numero do conselho regional */
+    type: String,
+    validate: s => (typeof s === 'string' || s instanceof String)
+        && s.length > 0,
+    required: [true, 'profession required'],
+  },
 });
 
 const DoctorModel = mongoose.model('DoctorSchema', DoctorSchema);

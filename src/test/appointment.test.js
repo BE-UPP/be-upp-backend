@@ -35,6 +35,9 @@ const d = {
   name: 'Doutor',
   email: 'doutor@medi.co',
   password: 'medicina123',
+  cellphone: '11945150909',
+  phone: '1135150909',
+  rcn: '22359',
 };
 
 describe('Testing appointment service', () => {
@@ -42,19 +45,21 @@ describe('Testing appointment service', () => {
     it('creating the appointment', async done => {
       const pat = await createNewPatient(p.name, p.email, p.cpf, p.cellphone,
         p.birth, p.password);
-      const doc = await createNewDoctor(d.name, d.email, d.password);
+      const doc = await createNewDoctor(d.name, d.email, d.password, d.cellphone,
+        d.phone, d.rcn);
       const date = Date.now();
       const t = await createNewAppointment(date, pat._id, doc._id);
       expect(t.date).toEqual(date);
-      expect(t.patient.name).toEqual(p.name);
-      expect(t.doctor.name).toEqual(d.name);
+      expect(t.patient).toEqual(pat._id);
+      expect(t.doctor).toEqual(doc._id);
       done();
     });
   });
   describe('Testing failed creates', () => {
     it('failed to create the appointment', async done => {
       expect.assertions(1);
-      const doc = await createNewDoctor(d.name, d.email, d.password);
+      const doc = await createNewDoctor(d.name, d.email, d.password, d.cellphone,
+        d.phone, d.rcn);
       const date = Date.now();
       try {
         await createNewAppointment(date, 11234, doc._id);
@@ -71,7 +76,8 @@ describe('Testing post appointment request', () => {
     it('create new appointment', async done => {
       const pat = await createNewPatient(p.name, p.email, p.cpf, p.cellphone,
         p.birth, p.password);
-      const doc = await createNewDoctor(d.name, d.email, d.password);
+      const doc = await createNewDoctor(d.name, d.email, d.password, d.cellphone,
+        d.phone, d.rcn);
       const resp = await supertest(app).post('/open-api/appointment/').send({
         date: Date.now(),
         patientId: pat._id,
@@ -80,13 +86,14 @@ describe('Testing post appointment request', () => {
       const apId = resp.body;
       const ap = await getAppointmentById(apId);
       expect(resp.statusCode).toEqual(200);
-      expect(ap.patient.name).toEqual(pat.name);
+      expect(ap.patient).toEqual(pat._id);
       done();
     });
   });
   describe('Testing fail requests', () => {
     it('failing to create appointment', async done => {
-      const doc = await createNewDoctor(d.name, d.email, d.password);
+      const doc = await createNewDoctor(d.name, d.email, d.password, d.cellphone,
+        d.phone, d.rcn);
       const resp = await supertest(app).post('/open-api/appointment/').send({
         date: Date.now(),
         patientId: 1234,

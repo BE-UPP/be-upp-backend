@@ -1,6 +1,7 @@
 /node_modules
 
 .env
+src/doc/swagger_output.json
 
 package-lock.json
 

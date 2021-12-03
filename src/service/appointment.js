@@ -29,8 +29,8 @@ const createNewAppointment = async(date, patientId, doctorId) => {
     const doctor = await getDoctorById(doctorId);
     const appointment = {
       date: date,
-      patient: patient,
-      doctor: doctor,
+      patient: patient._id,
+      doctor: doctor._id,
     };
     const result = await AppointmentModel.create(appointment);
     return result;

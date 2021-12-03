@@ -36,7 +36,7 @@ const createNewPatient = async(name, email, cpf, cellphone, birth, password) => 
 
 const getAllPatients = async() => {
   try {
-    const patients = await PatientModel.find();
+    const patients = await PatientModel.find({}, { password: 0 });
     return patients;
   } catch (error) {
     const err = {

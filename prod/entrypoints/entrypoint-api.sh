@@ -11,4 +11,11 @@ git checkout "develop"
 npm install
 
 # start api
-npm run start:dev --prefix /be-upp/api
+if [ $REACT_APP_API_DOMAIN == localhost ]; then
+    npm run swagger-autogen
+else
+    npm run start:dev --prefix $PWD
+fi
+
+# lock container
+tail -f /dev/null
