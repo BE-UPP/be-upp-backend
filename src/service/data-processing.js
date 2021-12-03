@@ -103,11 +103,11 @@ function recursiveTable(input, table) {
     throw error;
 
   let variable = input[0];
-  let new_table;
+  let newTable;
   // console.log("Tipo: ", variable.type)
   switch (variable.type) {
     case 'text':
-      new_table = table[getVariable(variable.label)];
+      newTable = table[getVariable(variable.label)];
       break;
     case 'number':
       let y = getVariable(variable.label);
@@ -167,7 +167,7 @@ function recursiveTable(input, table) {
 
         // console.log(cmp);
         if (cmp) {
-          new_table = table[key];
+          newTable = table[key];
           passou = true;
           break;
         }
@@ -181,16 +181,16 @@ function recursiveTable(input, table) {
       throw error;
   }
 
-  if (new_table === {})
+  if (newTable === {})
     throw error;
 
   if (input.length === 1)
-    return new_table;
+    return newTable;
 
-  let new_input = input;
-  new_input.shift();
+  let newInput = input;
+  newInput.shift();
 
-  return recursiveTable(new_input, new_table);
+  return recursiveTable(newInput, newTable);
 
 }
 

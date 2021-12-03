@@ -32,16 +32,13 @@ const DoctorSchema = new mongoose.Schema({
 
   phone: {
     type: String,
-    validate: s => (typeof s === 'string' || s instanceof String)
-        && s.length > 0,
-    required: [true, 'phone required'],
   },
 
-  rcn: { /* numero do conselho regional */
+  profession: { /* numero do conselho regional */
     type: String,
     validate: s => (typeof s === 'string' || s instanceof String)
-        && s.length > 0 && s.length <= 15,
-    required: [true, 'rcn required'],
+        && s.length > 0,
+    required: [true, 'profession required'],
   },
 });
 

@@ -14,10 +14,35 @@ Crie o arquivo **.env** e defina as variávesi de ambiente. Utilize como referê
 cp .env-example .env
 ```
 
-## Como rodar 
+## Como rodar
 #### Inicializar containers (mongo e mongo-express) e API
+
+Dev:
+```bash
+docker-compose up
+```
+
+Prod:
 ``` bash
 ./run-be-upp.sh
+```
+
+Para rodar algum comando dentro do container:
+```bash
+docker-compose run api bash
+```
+
+Exemplo:
+
+Rodar testes
+```bash
+docker-compose run api bash
+npm test
+```
+
+#### Inicializar api com documentação (rodar dentro do container)
+```bash
+npm run swagger-autogen
 ```
 
 #### Consultar registros (opcional)
@@ -25,9 +50,9 @@ A interface web do mongo-express estará disponível em **http://0.0.0.0:8081/**
 Nesta interface web é possível acompanhar os dados do banco de dados em tempo real.
 
 Os dados de acesso são os configurados no arquivo **.env**:
-``` 
-ME_CONFIG_BASICAUTH_USERNAME: 
-ME_CONFIG_BASICAUTH_PASSWORD: 
+```
+ME_CONFIG_BASICAUTH_USERNAME:
+ME_CONFIG_BASICAUTH_PASSWORD:
 ```
 
 #### Testar API
@@ -43,3 +68,6 @@ post 'http://dominio.com/template'
 
 post 'http://dominio.com/form-data'
 ```
+
+#### Doc da API
+Acesse 'http://localhost:<API_PORT>/doc/'
