@@ -5,7 +5,7 @@ const {
 } = require('../../service/doctor');
 const { verifyToken } = require('../../service/authentication');
 
-router.get('/appointments', verifyToken, async (req, res) => {
+router.get('/appointments', verifyToken, async(req, res) => {
 
   try {
     const idDoctor = req.body.id;
