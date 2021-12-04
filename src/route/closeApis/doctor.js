@@ -6,18 +6,20 @@ const {
 const { verifyToken } = require('../../service/authentication');
 const { responseError } = require('../../service/helper');
 
+<<<<<<< 6b6542dc616c2031bffebba1a23bd36a192d33cc
 router.get('/appointments', verifyToken, async(req, res) => {
 
+=======
+router.get('/appointments', verifyToken, async (req, res) => {
+>>>>>>> Corrigido rotas para modelo de rotas livres e restritas
   try {
-    const idDoctor = req.body.id;
+    const idDoctor = req.query.id;
     if (!idDoctor)
-      return responseError(res, {message: "id do doutor não enviado"});
+      throw { code: 400, message: "Ausência de valores (requerido: id" };
     const appointments = await listAppointments(idDoctor);
     res.send(appointments);
   } catch (error) {
-    console.log(error)
-    // TODO error
-    res.status(error.code).send(error.message);
+    responseError(res, error);
   }
 });
 

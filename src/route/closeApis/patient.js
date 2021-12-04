@@ -3,9 +3,10 @@ const router = express.Router();
 const {
   createNewPatient, getAllPatients,
 } = require('../../service/patient');
+const { verifyToken } = require('../../service/authentication');
+const { responseError } = require('../../service/helper');
 
-router.post('/', async(req, res) => {
-
+router.post('/new', verifyToken, async (req, res) => {
   try {
     const name = req.body.name;
     const email = req.body.email;
@@ -13,21 +14,21 @@ router.post('/', async(req, res) => {
     const cellphone = req.body.cellphone;
     const birth = req.body.birth;
     const password = req.body.password;
+    if (!(name && email && cpf && cellphone && birth))
+      throw { code: 400, message: "Ausência de valores (requerido: name, email, cpf, cellphone, birth" };
     const patient = await createNewPatient(name, email, cpf, cellphone, birth, password);
     res.send(patient);
-  } catch (error){
-    // console.log(error)
-    // TODO error
-    res.status(error.code).send(error.message);
+  } catch (error) {
+    responseError(res, error);
   }
 });
 
-router.get('/all', async(req, res) => {
+router.get('/all', verifyToken, async (req, res) => {
   try {
     const patients = await getAllPatients();
     res.send(patients);
   } catch (error) {
-    res.status(error.code).send(error.message);
+    responseError(res, error);
   }
 });
 
