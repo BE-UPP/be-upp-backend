@@ -6,7 +6,7 @@ const {
 const { verifyToken } = require('../../service/authentication');
 const { responseError } = require('../../service/helper');
 
-router.get('/appointments', verifyToken, async (req, res) => {
+router.get('/appointments', verifyToken, async(req, res) => {
   try {
     const idDoctor = req.query.id;
     if (!idDoctor)
