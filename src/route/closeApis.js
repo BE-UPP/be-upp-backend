@@ -1,5 +1,5 @@
 const router = require('express').Router({
-    mergeParams: true,
+  mergeParams: true,
 });
 const doctorRoutes = require('./closeApis/doctor');
 const appointmentRoutes = require('./closeApis/appointment');
