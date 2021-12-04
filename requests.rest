@@ -1,4 +1,4 @@
-POST http://localhost:9090/open-api/doctor/
+POST http://localhost:9090/open-api/doctor/new
 Content-Type: application/json
 
 {
@@ -9,7 +9,7 @@ Content-Type: application/json
 
 ###
 
-POST http://localhost:9090/open-api/patient/
+POST http://localhost:9090/close-api/patient/new
 Content-Type: application/json
 
 {
@@ -32,7 +32,7 @@ Content-Type: application/json
 }
 
 ###
-POST http://localhost:9090/open-api/appointment/
+POST http://localhost:9090/close-api/appointment/new
 x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxOWMzY2U2MjQ2MTZjNGY4Y2IxZThkMSIsInByb2ZpbGUiOiJkb2N0b3IiLCJpYXQiOjE2Mzc3MTc3MzcsImV4cCI6MTYzNzgwNDEzN30.S-dD6My34s7Uo629WJhwI8EmjPeMArGTyesWdc0OMBM
 Content-Type: application/json
 
