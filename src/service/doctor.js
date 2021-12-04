@@ -3,7 +3,7 @@ const { DoctorModel } = require('../data/models/doctor');
 const { generateToken } = require('./authentication');
 const AppointmentModel = require('../data/models/appointment');
 
-const getDoctorById = async(id) => {
+const getDoctorById = async (id) => {
   try {
     const dado = await DoctorModel.findById(id).exec();
     return dado;
@@ -16,15 +16,20 @@ const getDoctorById = async(id) => {
   }
 };
 
-const listAppointments = async(idDoctor) => {
+const listAppointments = async (idDoctor) => {
   try {
     const appointments = await AppointmentModel.find({
       doctor: mongoose.Types.ObjectId(idDoctor),
-    }, '_id date patient').populate('patient', '-password').sort({date: 'asc'}).exec();
-    console.log(appointments);
-    return appointments;
+    }, '_id date patient').populate('patient', '-password').sort({ date: 'asc' }).exec();
+
+    const newAppointments = appointments.map((item) => {
+      const difference = item.date - new Date();
+      item.daysToAppointment = Math.floor(difference / 1000 / 60 / 60 / 24);
+      return item;
+    });
+
+    return newAppointments;
   } catch (error) {
-    console.log(error);
     const err = {
       message: error.message,
       code: 400,
@@ -33,14 +38,14 @@ const listAppointments = async(idDoctor) => {
   }
 };
 
-const validateDoctorLogin = async(email, password) => {
+const validateDoctorLogin = async (email, password) => {
   const doctor = await DoctorModel.findOne({ email: email }).exec();
   const err = {
     message: 'login authentication failed',
-    code: 400,
+    code: 200,
   };
-  if (doctor != null){
-    if (doctor.password === password){
+  if (doctor != null) {
+    if (doctor.password === password) {
 
       const payload = {
         id: doctor._id,
@@ -50,7 +55,7 @@ const validateDoctorLogin = async(email, password) => {
       const token = generateToken(payload);
       console.log('token gerado com sucesso');
 
-      return {doctor: doctor, token: token};
+      return { doctor: doctor, token: token };
     } else {
       throw err;
     }
@@ -59,7 +64,7 @@ const validateDoctorLogin = async(email, password) => {
   }
 };
 
-const createNewDoctor = async(name, email, password, cellphone, phone, profession) => {
+const createNewDoctor = async (name, email, password, cellphone, phone, profession) => {
   try {
     const doctor = {
       name: name,
