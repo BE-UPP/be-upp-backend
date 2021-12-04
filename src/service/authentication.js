@@ -10,8 +10,7 @@ const generateToken = (payload) => {
 
 const verifyToken = (req, res, next) => {
   const token = req.headers['x-access-token'];
-  const profile = req.body.profile;
-
+  const id = req.query.id;
   if (!token){
     return res.status(401).json({auth: false, message: 'Token não foi fornecido.'});
   } else {
@@ -20,7 +19,7 @@ const verifyToken = (req, res, next) => {
         return res.status(500).json({auth: false, message: 'Token inválido.'});
       };
 
-      if ((!profile) || (profile === decoded.profile)){
+      if (id === decoded.id){
         next();
       } else {
         return res.status(403).json({auth: false,
