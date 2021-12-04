@@ -106,7 +106,7 @@ describe('Testing patient service', () => {
 describe('Testing post patient request', () => {
   describe('Testing successful requests', () => {
     it('create new patient', async done => {
-      const resp = await supertest(app).post('/open-api/patient/').send({
+      const resp = await supertest(app).post('/close-api/patient/new').send({
         name: name,
         email: email,
         cpf: cpf,
@@ -121,7 +121,7 @@ describe('Testing post patient request', () => {
   });
   describe('Testing fail requests', () => {
     it('blank name', async done => {
-      const resp = await supertest(app).post('/open-api/patient/').send({
+      const resp = await supertest(app).post('/open-api/patient/new').send({
         email: email,
         cpf: cpf,
         cellphone: cellphone,
@@ -163,7 +163,7 @@ describe('Testing get all patients api', () => {
     it('getting two patients', async done => {
       await createNewPatient(name, email, cpf, cellphone, birth, password);
       await createNewPatient(name1, email1, cpf1, cellphone1, birth1, password1);
-      const resp = await supertest(app).get('/open-api/patient/all');
+      const resp = await supertest(app).get('/close-api/patient/all');
       const patients = resp.body;
       expect(resp.statusCode).toEqual(200);
       expect(patients.length).toEqual(2);
@@ -171,7 +171,7 @@ describe('Testing get all patients api', () => {
       done();
     });
     it('getting no patients', async done => {
-      const resp = await supertest(app).get('/open-api/patient/all');
+      const resp = await supertest(app).get('/close-api/patient/all');
       const patients = resp.body;
       expect(resp.statusCode).toEqual(200);
       expect(patients.length).toEqual(0);

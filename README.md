@@ -57,17 +57,14 @@ ME_CONFIG_BASICAUTH_PASSWORD:
 
 #### Testar API
 
-Faça um post na url:
 ``` bash
-http://localhost:3000/
-com um body qualquer
 
-get 'http://dominio.com/template'
+get 'http://<REACT_APP_API_DOMAIN>:<PORT>/template/latest'
 
-post 'http://dominio.com/template'
+post 'http://<REACT_APP_API_DOMAIN>:<PORT>/template/new'
 
-post 'http://dominio.com/form-data'
+post 'http://<REACT_APP_API_DOMAIN>:<PORT>/form-data/new'
 ```
 
 #### Doc da API
-Acesse 'http://localhost:<API_PORT>/doc/'
+Acesse 'http://<REACT_APP_API_DOMAIN>:<API_PORT>/doc/'
