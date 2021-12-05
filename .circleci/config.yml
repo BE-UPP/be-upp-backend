@@ -10,6 +10,7 @@ jobs:
           - MONGO_INITDB_DATABASE: mongo
           - MONGO_INITDB_ROOT_USERNAME: backend
           - MONGO_INITDB_ROOT_PASSWORD: beeUpPass
+          - SECRET: beeUppAuthentication
     steps:
       - checkout
       - setup_remote_docker
