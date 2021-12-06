@@ -7,11 +7,14 @@ const {
 } = require('../../service/template');
 const { responseError } = require('../../service/helper');
 
-router.get('/by-id/:id', async (req, res) => {
+router.get('/by-id/:id', async(req, res) => {
   try {
     const id = req.params ? req.params.id : false;
     if (!id)
-      throw { code: 400, message: "Ausência de valores (requerido: id" };
+      throw {
+        code: 400,
+        message: 'Ausência de valores (requerido: id)'
+      };
     const template = await getTemplateById(id);
     res.send(template);
   } catch (error) {
@@ -19,7 +22,7 @@ router.get('/by-id/:id', async (req, res) => {
   }
 });
 
-router.get('/latest', async (req, res) => {
+router.get('/latest', async(req, res) => {
   try {
     const template = await getLatestTemplate();
     res.send(template);
@@ -28,7 +31,7 @@ router.get('/latest', async (req, res) => {
   }
 });
 
-router.post('/new', async (req, res) => {
+router.post('/new', async(req, res) => {
   try {
     const pages = req.body.pages;
     const template = await setTemplate(pages);
