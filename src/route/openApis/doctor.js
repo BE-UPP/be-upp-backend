@@ -20,7 +20,9 @@ router.post('/new', async(req, res) => {
         message: 'Ausência de valores \
         (requerido: name, email, profession, cellphone, phone, password)',
       };
-    const doctor = await createNewDoctor(name,email,password,cellphone,phone,profession);
+    const doctor = await createNewDoctor(
+      name, email, password, cellphone, phone, profession
+      );
     res.send(omit(doctor._doc, 'password'));
   } catch (error) {
     responseError(res, error);
