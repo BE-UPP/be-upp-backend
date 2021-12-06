@@ -12,7 +12,7 @@ router.get('/appointments', verifyToken, async(req, res) => {
     if (!idDoctor)
       throw {
         code: 400,
-        message: 'Ausência de valores (requerido: id)'
+        message: 'Ausência de valores (requerido: id)',
       };
     const appointments = await listAppointments(idDoctor);
     res.send(appointments);

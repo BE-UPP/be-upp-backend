@@ -3,7 +3,7 @@ const { generateToken } = require('./authentication');
 const AppointmentModel = require('../data/models/appointment');
 const mongoose = require('mongoose');
 
-const getDoctorById = async (id) => {
+const getDoctorById = async(id) => {
   try {
     const dado = await DoctorModel.findById(id).exec();
     return dado;
@@ -16,7 +16,7 @@ const getDoctorById = async (id) => {
   }
 };
 
-const listAppointments = async (idDoctor) => {
+const listAppointments = async(idDoctor) => {
   try {
     const appointments = await AppointmentModel.find({
       doctor: mongoose.Types.ObjectId(idDoctor),
@@ -38,7 +38,7 @@ const listAppointments = async (idDoctor) => {
   }
 };
 
-const validateDoctorLogin = async (email, password) => {
+const validateDoctorLogin = async(email, password) => {
   const doctor = await DoctorModel.findOne({ email: email }).exec();
   const err = {
     message: 'login authentication failed',
@@ -64,7 +64,7 @@ const validateDoctorLogin = async (email, password) => {
   }
 };
 
-const createNewDoctor = async (name, email, password, cellphone, phone, profession) => {
+const createNewDoctor = async(name, email, password, cellphone, phone, profession) => {
   try {
     const doctor = {
       name: name,
