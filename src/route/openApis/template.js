@@ -13,7 +13,7 @@ router.get('/by-id/:id', async(req, res) => {
     if (!id)
       throw {
         code: 400,
-        message: 'Ausência de valores (requerido: id)'
+        message: 'Ausência de valores (requerido: id)',
       };
     const template = await getTemplateById(id);
     res.send(template);

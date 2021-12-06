@@ -10,10 +10,10 @@ const omit = (obj, okey) => {
 function responseError(response, err) {
   err.code = err.code ? err.code : 200;
   err.message = err.message ? err.message : err.toString();
-  response.header({"X-Robots-Tag": "noindex"}).status(err.code).json(err.message);
+  response.header({'X-Robots-Tag': 'noindex'}).status(err.code).json(err.message);
 }
 
 module.exports = {
   omit: omit,
-  responseError: responseError
+  responseError: responseError,
 };

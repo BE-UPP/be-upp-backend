@@ -14,7 +14,7 @@ router.post('/new', verifyToken, async(req, res) => {
     if (!(date && patientId && doctorId))
       throw {
         code: 400,
-        message: 'Ausência de valores (requerido: date, patientId, doctorId)'
+        message: 'Ausência de valores (requerido: date, patientId, doctorId)',
       };
     const appointment = await createNewAppointment(date, patientId, doctorId);
     res.send(appointment._id);
