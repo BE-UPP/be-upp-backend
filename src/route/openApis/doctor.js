@@ -17,12 +17,11 @@ router.post('/new', async(req, res) => {
     if (!(name && email && profession && cellphone && phone && password))
       throw {
         code: 400,
-        message: 'Ausência de valores \
-        (requerido: name, email, profession, cellphone, phone, password)',
+        message: 'Ausência de valores ' +
+          '(requerido: name, email, profession, cellphone, phone, password)',
       };
-    const doctor = await createNewDoctor(
-      name, email, password, cellphone, phone, profession
-      );
+    let doctor;
+    doctor = await createNewDoctor(name, email, password, cellphone, phone, profession);
     res.send(omit(doctor._doc, 'password'));
   } catch (error) {
     responseError(res, error);
