@@ -92,7 +92,7 @@ describe('Testing doctor service', () => {
       const t = await createNewDoctor(name, email, password, cellphone,
         phone, profession);
       const d = await validateDoctorLogin(t.email, t.password);
-      expect(d._id).toEqual(t._id);
+      expect(d.doctor._id).toEqual(t._id);
       done();
     });
     it('login error email inexistent', async(done) => {
@@ -152,10 +152,10 @@ describe('Testing login doctor request', () => {
     it('successful login', async done => {
       await createNewDoctor(name, email, password, cellphone, phone, profession);
       const resp = await supertest(app).post('/open-api/doctor/login').send({
-        email: email,
-        password: password,
+        emailLogin: email,
+        passwordLogin: password,
       });
-      const doc = resp.body;
+      const doc = resp.body.doctor;
       expect(resp.statusCode).toEqual(200);
       expect(doc.name).toEqual(name);
       done();
