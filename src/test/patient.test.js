@@ -2,6 +2,7 @@ const db = require('./db');
 const { createNewPatient, getAllPatients } = require('../service/patient');
 const supertest = require('supertest');
 const { app, openServer, closeServer } = require('../server');
+const { generateToken } = require('../service/authentication');
 
 beforeAll(async() => {
   await db.connect();
@@ -30,6 +31,10 @@ const cpf1 = '12345678900';
 const cellphone1 = '11945158787';
 const birth1 = 1005530400000;
 const password1 = 'senhasegura';
+
+const payload = {
+  id: '1234',
+};
 
 describe('Testing patient service', () => {
   describe('Testing successfully creates', () => {
@@ -105,8 +110,10 @@ describe('Testing patient service', () => {
 
 describe('Testing post patient request', () => {
   describe('Testing successful requests', () => {
+    const token = generateToken(payload);
     it('create new patient', async done => {
-      const resp = await supertest(app).post('/open-api/patient/').send({
+      const resp = await supertest(app).post('/close-api/patient/new').set(
+        'x-access-token', token).send({
         name: name,
         email: email,
         cpf: cpf,
@@ -121,7 +128,9 @@ describe('Testing post patient request', () => {
   });
   describe('Testing fail requests', () => {
     it('blank name', async done => {
-      const resp = await supertest(app).post('/open-api/patient/').send({
+      const token = generateToken(payload);
+      const resp = await supertest(app).post('/close-api/patient/new').set(
+        'x-access-token', token).send({
         email: email,
         cpf: cpf,
         cellphone: cellphone,
@@ -163,7 +172,9 @@ describe('Testing get all patients api', () => {
     it('getting two patients', async done => {
       await createNewPatient(name, email, cpf, cellphone, birth, password);
       await createNewPatient(name1, email1, cpf1, cellphone1, birth1, password1);
-      const resp = await supertest(app).get('/open-api/patient/all');
+      const token = generateToken(payload);
+      const resp = await supertest(app).get('/close-api/patient/all').set(
+        'x-access-token', token);
       const patients = resp.body;
       expect(resp.statusCode).toEqual(200);
       expect(patients.length).toEqual(2);
@@ -171,7 +182,9 @@ describe('Testing get all patients api', () => {
       done();
     });
     it('getting no patients', async done => {
-      const resp = await supertest(app).get('/open-api/patient/all');
+      const token = generateToken(payload);
+      const resp = await supertest(app).get('/close-api/patient/all').set(
+        'x-access-token', token);
       const patients = resp.body;
       expect(resp.statusCode).toEqual(200);
       expect(patients.length).toEqual(0);

@@ -95,7 +95,7 @@ describe('Testing post appointment request', () => {
       const doc = await createNewDoctor(d.name, d.email, d.password, d.cellphone,
         d.phone, d.rcn);
       const login = await validateDoctorLogin(d.email, d.password);
-      const resp = await supertest(app).post('/close-api/appointment/').set(
+      const resp = await supertest(app).post('/close-api/appointment/new').set(
         'x-access-token', login.token).send({
         date: Date.now(),
         patientId: pat._id,
@@ -113,7 +113,7 @@ describe('Testing post appointment request', () => {
       const doc = await createNewDoctor(d.name, d.email, d.password, d.cellphone,
         d.phone, d.rcn);
       const login = await validateDoctorLogin(d.email, d.password);
-      const resp = await supertest(app).post('/close-api/appointment/').set(
+      const resp = await supertest(app).post('/close-api/appointment/new').set(
         'x-access-token', login.token).send({
         date: Date.now(),
         patientId: 1234,
