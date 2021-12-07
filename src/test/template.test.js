@@ -3,6 +3,7 @@ const {
   getLatestTemplate,
   setTemplate,
   getTemplateById,
+  getTemplateByVersion,
 } = require('../service/template');
 const supertest = require('supertest');
 const { app, openServer, closeServer } = require('../server');
@@ -30,11 +31,13 @@ const pages = [
         questionLabel: 'Nome Incompleto',
         placeholder: 'Ex: José Fernando da Silva',
         type: 'text',
+        variables: ['name'],
       },
       telephone: {
         questionLabel: 'Número de Celular (DDD + Telefone)',
         placeholder: 'Ex: 119XXXXXXXX',
         type: 'text',
+        variables: ['telephone'],
       },
     },
   },
@@ -45,11 +48,30 @@ const pages = [
         questionLabel: 'Nome Incompleto',
         placeholder: 'Ex: José Fernando da Silva',
         type: 'text',
+        variables: ['name2'],
       },
       telephone2: {
         questionLabel: 'Número de Celular (DDD + Telefone)',
         placeholder: 'Ex: 119XXXXXXXX',
         type: 'text',
+        variables: ['telephone2'],
+      },
+    },
+  },
+  {
+    pageLabel: 'another page label',
+    questions: {
+      name2: {
+        questionLabel: 'Nome Incompleto',
+        placeholder: 'Ex: José Fernando da Silva',
+        type: 'checkbox',
+        variables: ['id1', 'resp1', 'id2', 'resp2', 'id3', 'resp3' ],
+      },
+      telephone2: {
+        questionLabel: 'Número de Celular (DDD + Telefone)',
+        placeholder: 'Ex: 119XXXXXXXX',
+        type: 'text',
+        variables: ['telephone2'],
       },
     },
   },
@@ -85,6 +107,20 @@ describe('Testing getTemplateById service', () => {
     } catch (e){
       expect(e.code).toEqual(500);
     }
+    done();
+  });
+});
+
+describe('Testing getTemplateByVersion service', () => {
+  it('Testing successfuly retrieving a template', async done => {
+    const t = await setTemplate(pages);
+    const t2 = await getTemplateByVersion(0);
+    expect(t2._id).toEqual(t._id);
+    done();
+  });
+  it('Testing unsuccessfuly retrieving a template', async done => {
+    const r = await getTemplateByVersion(4);
+    expect(r).toBeNull();
     done();
   });
 });

@@ -7,6 +7,9 @@ const omit = (obj, okey) => {
   }, {});
 };
 
+const clone = (obj) => {
+  return JSON.parse(JSON.stringify(obj));
+};
 function responseError(response, err) {
   err.code = err.code ? err.code : 200;
   err.message = err.message ? err.message : err.toString();
@@ -14,6 +17,7 @@ function responseError(response, err) {
 }
 
 module.exports = {
+  clone: clone,
   omit: omit,
   responseError: responseError,
 };

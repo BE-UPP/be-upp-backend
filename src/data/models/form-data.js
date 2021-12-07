@@ -6,20 +6,15 @@ const QuestionSchema = new mongoose.Schema({
     required: true,
   },
 
-  value: {
-    type: mongoose.Schema.Types.Mixed,
+  variables: {
+    type: [String],
     required: true,
   },
 
-  /*
-    variables: {
-      type: Array,
-      required: true,
-    },
-    value: {
-      type: Array,
-      required: true,
-    },*/
+  values: {
+    type: Array,
+    required: true,
+  },
 
 });
 

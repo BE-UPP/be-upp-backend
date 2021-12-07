@@ -3,8 +3,6 @@ const math = require('mathjs');
 
 const error = {message: 'JSON inválido', code: 400};
 
-var variables = {};
-
 const addProcessData = async(data) => {
   try {
     const dado = await DataProcessingModel.create(data);
@@ -32,24 +30,25 @@ const getProcessData = async(version) => {
 };
 
 const processData = async(formData) => {
+  let variables = {};
   try {
 
     let version = formData.templateVersion;
     let dataProcessing = await getProcessData(version);
 
-    for (let key in formData) {
-      let variables = formData[key].variables;
-      let values = formData[key].values;
+    for (let i in formData.questions) {
+      let variablesNames = formData.questions[i].variables;
+      let values = formData.questions[i].values;
 
       if (values == null)
         continue;
 
       for (let i = 0; i < values.length; i += 1) {
-        setVariable(variables[i], values[i]);
+        setVariable(variablesNames[i], values[i], variables);
       }
     }
 
-    compute(dataProcessing);
+    compute(dataProcessing, variables);
 
     return variables;
 
@@ -69,25 +68,25 @@ module.exports = {
 };
 
 
-function setVariable(variable, value) {
+function setVariable(variable, value, variables) {
   variables[variable] = value;
 }
 
-function getVariable(variable) {
+function getVariable(variable, variables) {
   return variables[variable];
 }
 
-function compute(data) {
+function compute(data, variables) {
   let operations = data.operations;
 
   for (let i = 0; i < operations.length; i++) {
     let operation = operations[i];
     switch (operation.type) {
       case 'Table':
-        computeTable(operation);
+        computeTable(operation, variables);
         break;
       case 'Math':
-        computeMath(operation);
+        computeMath(operation, variables);
         break;
       default:
         break;
@@ -96,27 +95,20 @@ function compute(data) {
 
 }
 
-function recursiveTable(input, table) {
-  // console.log('Input:', input);
-  // console.log('Table:', table);
+function recursiveTable(input, table, variables) {
   if (input.length === 0)
     throw error;
 
   let variable = input[0];
-  let newTable;
-  // console.log("Tipo: ", variable.type)
+  let new_table;
+
   switch (variable.type) {
     case 'text':
-      newTable = table[getVariable(variable.label)];
+      new_table = table[getVariable(variable.label, variables)];
       break;
     case 'number':
-      let y = getVariable(variable.label);
+      let y = getVariable(variable.label, variables);
       let passou = false;
-
-      // console.log("Y: ", y);
-
-      // console.log("Table: ", table);
-
 
       for (let key in table) {
         let op = key.substr(0, 2);
@@ -125,10 +117,6 @@ function recursiveTable(input, table) {
         let x1 = parseFloat(aux2[0]);
         let x2 = parseFloat(aux2[1]);
         let cmp = null;
-
-        // console.log('OP: ', op);
-        // console.log('x1: ', x1);
-        // console.log('x2: ', x2);
 
         switch (op) {
           case '__':
@@ -165,9 +153,8 @@ function recursiveTable(input, table) {
             throw error;
         }
 
-        // console.log(cmp);
         if (cmp) {
-          newTable = table[key];
+          new_table = table[key];
           passou = true;
           break;
         }
@@ -181,39 +168,38 @@ function recursiveTable(input, table) {
       throw error;
   }
 
-  if (newTable === {})
+  if (new_table === {})
     throw error;
 
   if (input.length === 1)
-    return newTable;
+    return new_table;
 
-  let newInput = input;
-  newInput.shift();
+  let new_input = input;
+  new_input.shift();
 
-  return recursiveTable(newInput, newTable);
+  return recursiveTable(new_input, new_table);
 
 }
 
-function computeTable(operation) {
-  // console.log(operation.input);
+function computeTable(operation, variables) {
   let input = JSON.parse(JSON.stringify(operation.input));
   let output = recursiveTable(
-    input, operation.body);
-  setVariable(operation.output, output);
+    input, operation.body, variables);
+  setVariable(operation.output, output, variables);
 }
 
 const parser = math.parser();
 
-function computeMath(operation) {
+function computeMath(operation, variables) {
 
   operation.input.forEach(
     (variable, i) => {
-      parser.set(variable, getVariable(variable));
+      parser.set(variable, getVariable(variable, variables));
     },
   );
 
   let result = parser.evaluate(operation.body);
-  setVariable(operation.output, result);
+  setVariable(operation.output, result, variables);
 
   parser.clear();
 }

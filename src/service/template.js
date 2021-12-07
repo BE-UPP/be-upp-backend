@@ -28,6 +28,21 @@ const getLatestTemplate = async() => {
   }
 };
 
+const getTemplateByVersion = async(version) => {
+
+  try {
+    const dado = await Model.findOne({templateVersion: version}).exec();
+    return dado;
+  } catch (error) {
+    const err = {
+      err: error,
+      code: 500,
+    };
+    throw err;
+  }
+
+};
+
 const setTemplate = async(pages) => {
   try {
     const now = Date.now();
@@ -55,4 +70,5 @@ module.exports = {
   getTemplateById: getTemplateById,
   getLatestTemplate: getLatestTemplate,
   setTemplate: setTemplate,
+  getTemplateByVersion: getTemplateByVersion,
 };
