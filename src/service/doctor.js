@@ -1,6 +1,7 @@
-const { DoctorModel } = require('../data/models/doctor');
-const AppointmentModel = require('../data/models/appointment');
 const mongoose = require('mongoose');
+const { DoctorModel } = require('../data/models/doctor');
+const { generateToken } = require('./authentication');
+const AppointmentModel = require('../data/models/appointment');
 
 const getDoctorById = async(id) => {
   try {
@@ -19,8 +20,15 @@ const listAppointments = async(idDoctor) => {
   try {
     const appointments = await AppointmentModel.find({
       doctor: mongoose.Types.ObjectId(idDoctor),
-    }, '_id date patient').populate('patient', '-password').sort({date: 'asc'}).exec();
-    return appointments;
+    }, '_id date patient').populate('patient', '-password').sort({ date: 'asc' }).exec();
+
+    const newAppointments = appointments.map((item) => {
+      const difference = item.date - new Date();
+      item.daysToAppointment = Math.floor(difference / 1000 / 60 / 60 / 24);
+      return item;
+    });
+
+    return newAppointments;
   } catch (error) {
     const err = {
       message: error.message,
@@ -36,9 +44,17 @@ const validateDoctorLogin = async(email, password) => {
     message: 'login authentication failed',
     code: 400,
   };
-  if (doctor != null){
-    if (doctor.password === password){
-      return doctor;
+  if (doctor != null) {
+    if (doctor.password === password) {
+
+      const payload = {
+        id: doctor._id,
+      };
+
+      const token = generateToken(payload);
+      console.log('token gerado com sucesso');
+
+      return { doctor: doctor, token: token };
     } else {
       throw err;
     }

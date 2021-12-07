@@ -31,7 +31,7 @@ const DataProcessingSchema = new mongoose.Schema({
 
   operations: {
     type: [OperationSchema],
-    // validate: V => Array.isArray(V) && V.length > 0,
+    validate: V => Array.isArray(V) && V.length > 0,
     required: [true, 'Questions required'],
   },
 

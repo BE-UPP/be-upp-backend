@@ -25,23 +25,23 @@ const answers = {
   questions: [
     {
       id: 'name',
-      value: 'Ex: José Fernando da Silva',
+      values: ['Ex: José Fernando da Silva'],
     },
     {
       id: 'telephone',
-      value: '12341234',
+      values: ['12341234'],
     },
     {
       id: 'email',
-      value: 'willian@hiroshi.com.br.mogi',
+      values: ['willian@hiroshi.com.br.mogi'],
     },
     {
       id: 'birthday',
-      value: '30/05/1999',
+      values: ['30/05/1999'],
     },
     {
       id: 'city',
-      value: 'Mogi',
+      values: ['Mogi'],
     }],
   templateVersion: 1,
 };
@@ -104,7 +104,7 @@ describe('Testing post form-data request', () => {
       const date = Date.now();
       const t = await createNewAppointment(date, pat._id, doc._id);
       answers.appointmentId = t._id;
-      const resp = await supertest(app).post('/open-api/form-data/')
+      const resp = await supertest(app).post('/open-api/form-data/new')
         .send(answers);
       const ans = resp.body;
       expect(resp.statusCode).toEqual(200);
@@ -115,7 +115,7 @@ describe('Testing post form-data request', () => {
   describe('Testing fail requests', () => {
     it('failing to create form-data', async done => {
       answers.appointmentId = mongoose.Types.ObjectId('507f1f77bcf86cd799439011');
-      const resp = await supertest(app).post('/open-api/form-data/')
+      const resp = await supertest(app).post('/open-api/form-data/new')
         .send(answers);
       expect(resp.statusCode).toEqual(400);
       done();

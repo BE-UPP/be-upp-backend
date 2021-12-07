@@ -3,6 +3,7 @@ const {
   getLatestTemplate,
   setTemplate,
   getTemplateById,
+  getTemplateByVersion,
 } = require('../service/template');
 const supertest = require('supertest');
 const { app, openServer, closeServer } = require('../server');
@@ -30,11 +31,13 @@ const pages = [
         questionLabel: 'Nome Incompleto',
         placeholder: 'Ex: José Fernando da Silva',
         type: 'text',
+        variables: ['name'],
       },
       telephone: {
         questionLabel: 'Número de Celular (DDD + Telefone)',
         placeholder: 'Ex: 119XXXXXXXX',
         type: 'text',
+        variables: ['telephone'],
       },
     },
   },
@@ -45,11 +48,30 @@ const pages = [
         questionLabel: 'Nome Incompleto',
         placeholder: 'Ex: José Fernando da Silva',
         type: 'text',
+        variables: ['name2'],
       },
       telephone2: {
         questionLabel: 'Número de Celular (DDD + Telefone)',
         placeholder: 'Ex: 119XXXXXXXX',
         type: 'text',
+        variables: ['telephone2'],
+      },
+    },
+  },
+  {
+    pageLabel: 'another page label',
+    questions: {
+      name2: {
+        questionLabel: 'Nome Incompleto',
+        placeholder: 'Ex: José Fernando da Silva',
+        type: 'checkbox',
+        variables: ['id1', 'resp1', 'id2', 'resp2', 'id3', 'resp3' ],
+      },
+      telephone2: {
+        questionLabel: 'Número de Celular (DDD + Telefone)',
+        placeholder: 'Ex: 119XXXXXXXX',
+        type: 'text',
+        variables: ['telephone2'],
       },
     },
   },
@@ -89,6 +111,20 @@ describe('Testing getTemplateById service', () => {
   });
 });
 
+describe('Testing getTemplateByVersion service', () => {
+  it('Testing successfuly retrieving a template', async done => {
+    const t = await setTemplate(pages);
+    const t2 = await getTemplateByVersion(0);
+    expect(t2._id).toEqual(t._id);
+    done();
+  });
+  it('Testing unsuccessfuly retrieving a template', async done => {
+    const r = await getTemplateByVersion(4);
+    expect(r).toBeNull();
+    done();
+  });
+});
+
 describe('Testing getLatestTemplate service', () => {
   it('Testing retrieving the last template', async done => {
     await setTemplate(pages);
@@ -107,7 +143,7 @@ describe('Testing getLatestTemplate service', () => {
 describe('Testing post template request', () => {
   describe('Testing successful requests', () => {
     it('create new template', async done => {
-      const resp = await supertest(app).post('/open-api/template/').send({
+      const resp = await supertest(app).post('/open-api/template/new').send({
         pages: pages,
       });
       expect(resp.statusCode).toEqual(200);
@@ -117,7 +153,7 @@ describe('Testing post template request', () => {
   });
   describe('Testing fail requests', () => {
     it('pages blank', async done => {
-      const resp = await supertest(app).post('/open-api/template/').send({
+      const resp = await supertest(app).post('/open-api/template/new').send({
         pages: {},
       });
       expect(resp.statusCode).toEqual(400);
