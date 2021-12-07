@@ -152,8 +152,8 @@ describe('Testing login doctor request', () => {
     it('successful login', async done => {
       await createNewDoctor(name, email, password, cellphone, phone, profession);
       const resp = await supertest(app).post('/open-api/doctor/login').send({
-        emailLogin: email,
-        passwordLogin: password,
+        email: email,
+        password: password,
       });
       const doc = resp.body.doctor;
       expect(resp.statusCode).toEqual(200);

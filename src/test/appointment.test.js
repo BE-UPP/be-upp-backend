@@ -112,13 +112,9 @@ describe('Testing post appointment request', () => {
     it('failing to create appointment', async done => {
       const doc = await createNewDoctor(d.name, d.email, d.password, d.cellphone,
         d.phone, d.rcn);
-<<<<<<< 5e30602ff97de55dcbeca9dba887a1e1cc1fb7c8
       const login = await validateDoctorLogin(d.email, d.password);
-      const resp = await supertest(app).post('/close-api/appointment/').set(
+      const resp = await supertest(app).post('/close-api/appointment/new').set(
         'x-access-token', login.token).send({
-=======
-      const resp = await supertest(app).post('/close-api/appointment/new').send({
->>>>>>> Corrigido rotas para os testes e documentação
         date: Date.now(),
         patientId: 1234,
         doctorId: doc._id,

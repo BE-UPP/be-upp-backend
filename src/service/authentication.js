@@ -10,7 +10,6 @@ const generateToken = (payload) => {
 
 const verifyToken = (req, res, next) => {
   const token = req.headers['x-access-token'];
-  const id = req.query.id;
   if (!token){
     return res.status(401).json({auth: false, message: 'Token não foi fornecido.'});
   } else {
@@ -18,13 +17,8 @@ const verifyToken = (req, res, next) => {
       if (err){
         return res.status(500).json({auth: false, message: 'Token inválido.'});
       };
-
-      if (id === decoded.id){
-        next();
-      } else {
-        return res.status(403).json({auth: false,
-          message: 'Acesso não permitido para esse tipo de usuário.'});
-      };
+      req.userId = decoded.id;
+      next();
     });
   };
 };

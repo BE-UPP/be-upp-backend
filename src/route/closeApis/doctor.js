@@ -6,12 +6,7 @@ const {
 const { verifyToken } = require('../../service/authentication');
 const { responseError } = require('../../service/helper');
 
-<<<<<<< 6b6542dc616c2031bffebba1a23bd36a192d33cc
 router.get('/appointments', verifyToken, async(req, res) => {
-
-=======
-router.get('/appointments', verifyToken, async (req, res) => {
->>>>>>> Corrigido rotas para modelo de rotas livres e restritas
   try {
     const idDoctor = req.query.id;
     if (!idDoctor)
