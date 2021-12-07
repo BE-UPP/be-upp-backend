@@ -4,7 +4,7 @@ const {
   getAppointmentById,
 } = require('../service/appointment');
 const { createNewPatient } = require('../service/patient');
-const { createNewDoctor } = require('../service/doctor');
+const { createNewDoctor, validateDoctorLogin } = require('../service/doctor');
 const supertest = require('supertest');
 const { app, openServer, closeServer } = require('../server');
 
@@ -94,7 +94,9 @@ describe('Testing post appointment request', () => {
         p.birth, p.password);
       const doc = await createNewDoctor(d.name, d.email, d.password, d.cellphone,
         d.phone, d.rcn);
-      const resp = await supertest(app).post('/open-api/appointment/').send({
+      const login = await validateDoctorLogin(d.email, d.password);
+      const resp = await supertest(app).post('/close-api/appointment/').set(
+        'x-access-token', login.token).send({
         date: Date.now(),
         patientId: pat._id,
         doctorId: doc._id,
@@ -110,7 +112,9 @@ describe('Testing post appointment request', () => {
     it('failing to create appointment', async done => {
       const doc = await createNewDoctor(d.name, d.email, d.password, d.cellphone,
         d.phone, d.rcn);
-      const resp = await supertest(app).post('/open-api/appointment/').send({
+      const login = await validateDoctorLogin(d.email, d.password);
+      const resp = await supertest(app).post('/close-api/appointment/').set(
+        'x-access-token', login.token).send({
         date: Date.now(),
         patientId: 1234,
         doctorId: doc._id,

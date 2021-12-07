@@ -4,3 +4,5 @@
 src/doc/swagger_output.json
 
 package-lock.json
+
+.rest
