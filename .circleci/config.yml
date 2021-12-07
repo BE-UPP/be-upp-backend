@@ -17,5 +17,8 @@ jobs:
           name: Install package json dependencies
           command: npm install .
       - run:
+          name: Add secret to .env
+          command: echo "SECRET=beeUppAuthentication" > .env
+      - run:
           name: Run test
           command: npm test

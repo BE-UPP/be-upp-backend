@@ -143,7 +143,7 @@ describe('Testing getLatestTemplate service', () => {
 describe('Testing post template request', () => {
   describe('Testing successful requests', () => {
     it('create new template', async done => {
-      const resp = await supertest(app).post('/open-api/template/').send({
+      const resp = await supertest(app).post('/open-api/template/new').send({
         pages: pages,
       });
       expect(resp.statusCode).toEqual(200);
@@ -153,7 +153,7 @@ describe('Testing post template request', () => {
   });
   describe('Testing fail requests', () => {
     it('pages blank', async done => {
-      const resp = await supertest(app).post('/open-api/template/').send({
+      const resp = await supertest(app).post('/open-api/template/new').send({
         pages: {},
       });
       expect(resp.statusCode).toEqual(400);
