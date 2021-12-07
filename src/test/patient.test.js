@@ -34,7 +34,6 @@ const password1 = 'senhasegura';
 
 const payload = {
   id: '1234',
-  profile: 'doctor',
 };
 
 describe('Testing patient service', () => {

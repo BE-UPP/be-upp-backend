@@ -49,7 +49,6 @@ const validateDoctorLogin = async(email, password) => {
 
       const payload = {
         id: doctor._id,
-        profile: 'doctor',
       };
 
       const token = generateToken(payload);
