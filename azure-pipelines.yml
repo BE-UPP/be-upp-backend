@@ -4,16 +4,32 @@
 # https://aka.ms/yaml
 
 trigger:
-- develop
+- master
 
 pool:
   vmImage: ubuntu-latest
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+- task: NodeTool@0
+  inputs:
+    versionSpec: '12.22'
+  displayName: 'Install node.js'
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+- script: npm install
+  displayName: 'Run npm install'
+
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: '$(pwd)/..'
+    includeRootFolder: true
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+    replaceExistingArchive: true
+  displayName: 'Archive files $(pwd)/..'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
+  displayName: 'Publish artifact'
