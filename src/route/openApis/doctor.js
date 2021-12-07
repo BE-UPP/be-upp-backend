@@ -32,6 +32,7 @@ router.post('/login', async(req, res) => {
   try {
     const email = req.body.email;
     const password = req.body.password;
+    console.log(req.body);
     if (!(email && password))
       throw {
         code: 400,
