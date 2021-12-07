@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 const { DoctorModel } = require('../data/models/doctor');
 const { generateToken } = require('./authentication');
 const AppointmentModel = require('../data/models/appointment');
-const { generateToken } = require('./authentication');
 
 const getDoctorById = async(id) => {
   try {
