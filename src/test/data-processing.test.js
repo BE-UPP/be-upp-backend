@@ -232,3 +232,46 @@ describe('Testing post dataProcessing request', () => {
     });
   });
 });
+
+
+describe('Testing post dataProcessing request', () => {
+
+  describe('Testing successful requests', () => {
+    it('create new dataProcessing', async done => {
+      const resp = await supertest(app).post('/open-api/data-processing/')
+        .send(dataProcessing);
+      expect(resp.statusCode).toEqual(200);
+      expect(resp.body.version).toEqual(dataProcessing.version);
+      done();
+    });
+  });
+
+  describe('Testing fail requests', () => {
+    it('null data-processing', async done => {
+      const resp = await supertest(app).post('/open-api/data-processing/').send({});
+      expect(resp.statusCode).toEqual(400);
+      done();
+    });
+  });
+
+  describe('Testing successful requests', () => {
+    it('get dataProcessing by version', async done => {
+      const resp1 = await supertest(app).post('/open-api/data-processing/')
+        .send(dataProcessing);
+      const resp2 = await supertest(app).get('/open-api/data-processing/by-version/0');
+      expect(resp2.statusCode).toEqual(200);
+      expect(resp2.body).toEqual(resp1.body);
+      done();
+    });
+  });
+
+  describe('Testing fail requests', () => {
+    it('wrong data-processing version', async done => {
+      await supertest(app).post('/open-api/data-processing/').send(dataProcessing);
+      const resp2 = await supertest(app).get('/open-api/data-processing/by-version/1');
+      expect(resp2.statusCode).toEqual(200);
+      expect(resp2.body).toEqual({});
+      done();
+    });
+  });
+});
