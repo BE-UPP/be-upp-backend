@@ -42,7 +42,7 @@ const validateDoctorLogin = async(email, password) => {
   const doctor = await DoctorModel.findOne({ email: email }).exec();
   const err = {
     message: 'login authentication failed',
-    code: 400,
+    code: 200,
   };
   if (doctor != null) {
     if (doctor.password === password) {
