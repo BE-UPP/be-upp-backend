@@ -19,8 +19,6 @@ router.post('/', async(req, res) => {
       phone, profession);
     res.send(omit(doctor._doc, 'password'));
   } catch (error){
-    // console.log(error)
-    // TODO error
     res.status(error.code).send(error.message);
   }
 });
@@ -31,11 +29,8 @@ router.post('/login', async(req, res) => {
     const email = req.body.emailLogin;
     const password = req.body.passwordLogin;
     const {doctor, token} = await validateDoctorLogin(email, password);
-    console.log(doctor);
     res.send({doctor: omit(doctor._doc, 'password'), token: token});
   } catch (error){
-    // console.log(error)
-    // TODO error
     res.status(error.code).send(error.message);
   }
 });
