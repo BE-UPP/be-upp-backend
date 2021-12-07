@@ -109,6 +109,26 @@ describe('Testing post appointment request', () => {
       expect(ap.patient).toEqual(pat._id);
       done();
     });
+    it('get appointment', async done => {
+      const pat = await createNewPatient(p.name, p.email, p.cpf, p.cellphone,
+        p.birth, p.password);
+      const doc = await createNewDoctor(d.name, d.email, d.password, d.cellphone,
+        d.phone, d.rcn);
+      const login = await validateDoctorLogin(d.email, d.password);
+      const resp = await supertest(app).post('/close-api/appointment/new').set(
+        'x-access-token', login.token).send({
+        date: Date.now(),
+        patientId: pat._id,
+        doctorId: doc._id,
+      });
+      const apId = resp.body;
+      const resp2 = await supertest(app).get(`/close-api/appointment/by-id/${apId}`).set(
+        'x-access-token', login.token);
+      const ap = resp2.body;
+      expect(resp.statusCode).toEqual(200);
+      expect(ap.patient).toEqual(pat._id.toString());
+      done();
+    });
   });
   describe('Testing fail requests', () => {
     it('failing to create appointment', async done => {
