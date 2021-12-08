@@ -33,7 +33,7 @@ const getFinalReportTemplateByVersion = async(version) => {
 
 const addFinalReportData = async(formData, variables) => {
   try {
-    const data = getFinalReportTemplateByVersion(formData.Templateversion);
+    const data = await getFinalReportTemplateByVersion(formData.templateVersion);
 
     delete data.isTemplate;
     await getAppointmentById(formData.appointmentId);
@@ -41,7 +41,7 @@ const addFinalReportData = async(formData, variables) => {
 
     for (let i in data.pages) {
       for (let j in data.pages[i].values) {
-        data.pages[i].values[j] = variables[data.pages[i].values[j]];
+        data.pages[i].values[j] = String(variables[data.pages[i].values[j]]);
       }
     }
 

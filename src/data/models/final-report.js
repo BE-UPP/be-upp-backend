@@ -7,7 +7,7 @@ const ReportPageSchema = new mongoose.Schema({
   },
 
   values: {
-    type: [Array],
+    type: Array,
     default: [],
   },
 
@@ -30,9 +30,11 @@ const FinalReportSchema = new mongoose.Schema({
   appointmentId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'AppointmentSchema',
-    required: [!this.isTemplate, 'Appointment id required'],
+    required: [ function() {
+      return !(this.isTemplate);
+    },
+    'Appointment id required'],
   },
-
 
   pages: {
     type: [ReportPageSchema],
