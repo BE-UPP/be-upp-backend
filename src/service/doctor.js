@@ -23,9 +23,10 @@ const listAppointments = async(idDoctor) => {
     }, '_id date patient').populate('patient', '-password').sort({ date: 'asc' }).exec();
 
     const newAppointments = appointments.map((item) => {
+      const temp = {...item._doc};
       const difference = item.date - new Date();
-      item.daysToAppointment = Math.floor(difference / 1000 / 60 / 60 / 24);
-      return item;
+      temp.daysToAppointment = Math.floor(difference / 1000 / 60 / 60 / 24);
+      return temp;
     });
 
     return newAppointments;
