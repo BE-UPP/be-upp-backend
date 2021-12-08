@@ -14,11 +14,11 @@ router.post('/new', async(req, res) => {
     const phone = req.body.phone;
     const profession = req.body.profession;
     const password = req.body.password;
-    if (!(name && email && profession && cellphone && phone && password))
+    if (!(name && email && profession && cellphone && password))
       throw {
         code: 400,
         message: 'Ausência de valores ' +
-          '(requerido: name, email, profession, cellphone, phone, password)',
+          '(requerido: name, email, profession, cellphone, password)',
       };
     let doctor;
     doctor = await createNewDoctor(name, email, password, cellphone, phone, profession);
