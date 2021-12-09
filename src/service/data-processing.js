@@ -29,23 +29,15 @@ const getProcessData = async(version) => {
   }
 };
 
-const processData = async(formData) => {
+const processData = async(formData, templateVar) => {
   let variables = {};
   try {
 
     let version = formData.templateVersion;
     let dataProcessing = await getProcessData(version);
 
-    for (let i in formData.questions) {
-      let variablesNames = formData.questions[i].variables;
-      let values = formData.questions[i].values;
-
-      if (values == null)
-        continue;
-
-      for (let i = 0; i < values.length; i += 1) {
-        setVariable(variablesNames[i], values[i], variables);
-      }
+    for (let i in templateVar.variables) {
+      setVariable(templateVar.variables[i], templateVar.values[i], variables);
     }
 
     compute(dataProcessing, variables);

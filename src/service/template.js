@@ -65,10 +65,45 @@ const setTemplate = async(pages) => {
 
 };
 
+const getVariables = async(formData) => {
+  try {
+    let version = formData.templateVersion;
+    let template = await getTemplateByVersion(version);
+
+    const output = {
+      variables: [],
+      values: [],
+    };
+
+    let questions = {};
+
+    for (let page of template.pages) {
+      for (let key in page.questions) {
+        questions[key] = page.questions[key].variables;
+      }
+    }
+
+    for (let i in formData.questions) {
+      let id = formData.questions[i].id;
+      let v = questions[id];
+      Array.prototype.push.apply(output.variables, v);
+      Array.prototype.push.apply(output.values, formData.questions[i].values);
+    }
+    return output;
+  } catch (error) {
+    const err = {
+      message: error.message,
+      code: 400,
+    };
+    throw err;
+  }
+
+};
 
 module.exports = {
   getTemplateById: getTemplateById,
   getLatestTemplate: getLatestTemplate,
   setTemplate: setTemplate,
   getTemplateByVersion: getTemplateByVersion,
+  getVariables: getVariables,
 };

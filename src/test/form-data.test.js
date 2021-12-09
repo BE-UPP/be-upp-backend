@@ -3,6 +3,8 @@ const { addFormData } = require('../service/form-data');
 const { createNewPatient } = require('../service/patient');
 const { createNewDoctor } = require('../service/doctor');
 const { createNewAppointment } = require('../service/appointment');
+const { setTemplate } = require('../service/template');
+const { addProcessData } = require('../service/data-processing');
 const { app, openServer, closeServer } = require('../server');
 const supertest = require('supertest');
 const mongoose = require('mongoose');
@@ -43,7 +45,7 @@ const answers = {
       id: 'city',
       values: ['Mogi'],
     }],
-  templateVersion: 1,
+  templateVersion: 0,
 };
 
 const p = {
@@ -64,6 +66,59 @@ const d = {
   rcn: '22359',
 };
 
+const pages = [
+  {
+    pageLabel: 'A page label',
+    questions: {
+      name: {
+        questionLabel: 'Nome Incompleto',
+        placeholder: 'Ex: José Fernando da Silva',
+        type: 'text',
+        variables: ['name'],
+      },
+      telephone: {
+        questionLabel: 'Número de Celular (DDD + Telefone)',
+        placeholder: 'Ex: 119XXXXXXXX',
+        type: 'text',
+        variables: ['telephone'],
+      },
+      email: {
+        questionLabel: '',
+        placeholder: '',
+        type: 'text',
+        variables: ['email'],
+      },
+      birthday: {
+        questionLabel: '',
+        placeholder: '',
+        type: 'text',
+        variables: ['birthday'],
+      },
+      city: {
+        questionLabel: '',
+        placeholder: '',
+        type: 'text',
+        variables: ['city'],
+      },
+    },
+  },
+];
+
+const dataProcessing = {
+  version: 0,
+  operations: [
+    {
+      type: 'Table',
+      input: [{ label: 'city', type: 'text' }],
+      output: ['tableProcessing1'],
+      body: {
+        Mogi: 'Sim',
+        __: 'Não',
+      },
+    },
+  ],
+};
+
 describe('Testing addFormData service', () => {
   describe('Testing successfully creates', () => {
     it('create new form-data', async(done) => {
@@ -75,7 +130,7 @@ describe('Testing addFormData service', () => {
       const t = await createNewAppointment(date, pat._id, doc._id);
       answers.appointmentId = t._id;
       const t2 = await addFormData(answers);
-      expect(t2.templateVersion).toEqual(1);
+      expect(t2.templateVersion).toEqual(0);
       done();
     });
   });
@@ -104,6 +159,9 @@ describe('Testing post form-data request', () => {
       const date = Date.now();
       const t = await createNewAppointment(date, pat._id, doc._id);
       answers.appointmentId = t._id;
+      setTemplate(pages);
+      addProcessData(dataProcessing);
+
       const resp = await supertest(app).post('/open-api/form-data/new')
         .send(answers);
       const ans = resp.body;
@@ -115,6 +173,8 @@ describe('Testing post form-data request', () => {
   describe('Testing fail requests', () => {
     it('failing to create form-data', async done => {
       answers.appointmentId = mongoose.Types.ObjectId('507f1f77bcf86cd799439011');
+      setTemplate(pages);
+      addProcessData(dataProcessing);
       const resp = await supertest(app).post('/open-api/form-data/new')
         .send(answers);
       expect(resp.statusCode).toEqual(400);

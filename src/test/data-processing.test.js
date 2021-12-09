@@ -59,6 +59,13 @@ const formDataDb = {
   ],
 };
 
+const variablesValues = {
+  variables: ['text', 'selectId', 'select', 'scale', 'radioId',
+    'radio', 'tableId1', 'table1', 'tableId2', 'table2', 'tableId3',
+    'table3', 'checkbox1', 'checkbox2' ],
+  values: ['josé', 2, 'Feminino', 4, 1, 'Não', 0, '1', 1, '3', 2, '2', 1, 0],
+};
+
 const dataProcessing = {
   version: 0,
   operations: [
@@ -123,7 +130,7 @@ describe('Testing data-processing services', () => {
   it('Processing 1 user', async done => {
 
     await addProcessData(dataProcessing);
-    const t = await processData(formDataDb);
+    const t = await processData(formDataDb, variablesValues);
     let u = clone(t);
 
     omit(u, '_id');
@@ -136,7 +143,8 @@ describe('Testing data-processing services', () => {
   it('Processing 2 users', async done => {
 
     await addProcessData(dataProcessing);
-    const t = await processData(formDataDb);
+    console.log(variablesValues);
+    const t = await processData(formDataDb, variablesValues);
     let u = clone(t);
 
     omit(u, '_id');
@@ -144,7 +152,7 @@ describe('Testing data-processing services', () => {
 
     expect(u).toEqual(output);
 
-    const t2 = await processData(formDataDb);
+    const t2 = await processData(formDataDb, variablesValues);
     let u2 = clone(t2);
 
     omit(u2, '_id');
@@ -159,13 +167,12 @@ describe('Testing data-processing services', () => {
 describe('Testing invalid process', () => {
   it('Operations with only body', async done => {
     expect.assertions(1);
-
     try {
       let invalidProcessing = clone(dataProcessing);
       invalidProcessing.operations[0] = {body: 'scale * selectId + radioId' };
 
       await addProcessData(invalidProcessing);
-      await processData(formDataDb);
+      await processData(formDataDb, {});
     } catch (error) {
       expect(error.code).toEqual(400);
     }
@@ -181,7 +188,7 @@ describe('Testing invalid process', () => {
       invalidProcessing.operations[0].input = [];
 
       await addProcessData(invalidProcessing);
-      await processData(formDataDb);
+      await processData(formDataDb, {});
     } catch (error) {
       expect(error.code).toEqual(400);
     }
