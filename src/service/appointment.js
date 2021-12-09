@@ -1,6 +1,7 @@
 const AppointmentModel = require('../data/models/appointment');
 const { getPatientById } = require('./patient');
 const { getDoctorById } = require('./doctor');
+// const mailer = require('../data/mail/mailer');
 
 const getAppointmentById = async(id) => {
   try {
@@ -33,6 +34,31 @@ const createNewAppointment = async(date, patientId, doctorId) => {
       doctor: doctor._id,
     };
     const result = await AppointmentModel.create(appointment);
+    // const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+    // const mailmessage = `
+    //   Olá, ${patient.name} <br/> <br/>
+    //   O profissional ${doctor.name} agendou uma consulta para
+    //   ${new Date(date).toLocaleDateString('pt-br', options)}.
+    //   <a href='http://${process.env.REACT_APP_API_DOMAIN}/fpc/${result._id}'
+    //   target='_blank'>
+    //   Clique aqui para preencher o formulário pré-consulta.
+    //   </a>
+    //   <br/> <br/>
+    //   Atenciosamente, <br/>
+    //   Equipe Qualime
+    // `;
+    // const mailOptions = {
+    //   to: `${patient.email}`,
+    //   subject: 'Qualime - Consulta Agendada',
+    //   html: mailmessage,
+    // };
+    // mailer.sendMail(mailOptions, (error, response) => {
+    //   if (error) {
+    //     console.log(error);
+    //   } else {
+    //     console.log('Mensagem enviada: ', response);
+    //   }
+    // });
     return result;
   } catch (error){
     const err = {
