@@ -6,8 +6,7 @@
   "author": "IME + UFABC",
   "license": "MIT",
   "scripts": {
-    "start:dev": "nodemon ./src/server.js",
-    "build": "cp -r !(build) build/"
+    "start:dev": "nodemon ./src/server.js"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
