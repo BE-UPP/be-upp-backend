@@ -20,7 +20,6 @@ steps:
 
 - task: ArchiveFiles@2
   inputs:
-    rootFolderOrFile: '*'
     archiveType: 'zip'
     archiveFile: '$(Build.ArtifactStagingDirectory)/backend.zip'
     replaceExistingArchive: true
