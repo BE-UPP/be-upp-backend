@@ -14,11 +14,12 @@ router.post('/new', verifyToken, async(req, res) => {
     const cellphone = req.body.cellphone;
     const birth = req.body.birth;
     const password = req.body.password;
-    if (!(name && email && cpf && cellphone && birth))
+    if (!(name && email && cpf && cellphone && birth)) {
       throw Object.assign(
         new Error('Ausência de valores (requerido: name, email, cpf, cellphone, birth)'),
         { code: 400 },
       );
+    }
     const patient = await createNewPatient(name, email, cpf, cellphone, birth, password);
     res.send(patient);
   } catch (error) {

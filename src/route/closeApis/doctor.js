@@ -9,11 +9,12 @@ const { responseError } = require('../../service/helper');
 router.get('/appointments', verifyToken, async(req, res) => {
   try {
     const idDoctor = req.query.id;
-    if (!idDoctor)
+    if (!idDoctor) {
       throw Object.assign(
         new Error('Ausência de valores (requerido: id)'),
         { code: 400 },
       );
+    }
     const appointments = await listAppointments(idDoctor);
     res.send(appointments);
   } catch (error) {

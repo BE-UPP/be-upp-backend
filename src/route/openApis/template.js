@@ -10,11 +10,12 @@ const { responseError } = require('../../service/helper');
 router.get('/by-id/:id', async(req, res) => {
   try {
     const id = req.params ? req.params.id : false;
-    if (!id)
+    if (!id) {
       throw Object.assign(
         new Error('Ausência de valores (requerido: id)'),
         { code: 400 },
       );
+    }
     const template = await getTemplateById(id);
     res.send(template);
   } catch (error) {
