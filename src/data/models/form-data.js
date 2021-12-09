@@ -6,6 +6,11 @@ const QuestionSchema = new mongoose.Schema({
     required: true,
   },
 
+  variables: {
+    type: [String],
+    required: true,
+  },
+
   values: {
     type: Array,
     required: true,
