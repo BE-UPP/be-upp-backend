@@ -12,8 +12,8 @@ const ReportPageSchema = new mongoose.Schema({
   },
 
   items: {
-    type: Object,
-    default: {},
+    type: [Object],
+    default: [],
   },
 });
 
