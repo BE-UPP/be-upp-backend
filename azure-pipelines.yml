@@ -15,15 +15,19 @@ steps:
     versionSpec: '12.22'
   displayName: 'Install node.js'
 
-- script: npm install
-  displayName: 'Run npm install'
+- script: |
+    npm install
+    rm package-lock.json
+    npm run build
+  displayName: 'Run npm install and npm run build'
 
 - task: ArchiveFiles@2
   inputs:
+    rootFolderOrFile: 'build'
     archiveType: 'zip'
     archiveFile: '$(Build.ArtifactStagingDirectory)/backend.zip'
     replaceExistingArchive: true
-  displayName: 'Archive files $PWD'
+  displayName: 'Archive files'
 
 - task: PublishBuildArtifacts@1
   inputs:
