@@ -18,8 +18,8 @@ steps:
 - script: |
     npm install
     rm package-lock.json
-    npm run build
-  displayName: 'Run npm install and npm run build'
+    ./build.sh
+  displayName: 'Run npm install and build'
 
 - task: ArchiveFiles@2
   inputs:
@@ -32,6 +32,6 @@ steps:
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'drop'
+    ArtifactName: 'backend'
     publishLocation: 'Container'
   displayName: 'Publish artifact'
