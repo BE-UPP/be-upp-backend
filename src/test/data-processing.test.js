@@ -143,7 +143,6 @@ describe('Testing data-processing services', () => {
   it('Processing 2 users', async done => {
 
     await addProcessData(dataProcessing);
-    console.log(variablesValues);
     const t = await processData(formDataDb, variablesValues);
     let u = clone(t);
 
@@ -184,7 +183,6 @@ describe('Testing invalid process', () => {
 
     try {
       let invalidProcessing = clone(dataProcessing);
-      console.log(invalidProcessing);
       invalidProcessing.operations[0].input = [];
 
       await addProcessData(invalidProcessing);
