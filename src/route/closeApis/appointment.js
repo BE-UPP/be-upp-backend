@@ -15,7 +15,7 @@ router.get('/by-id/:id', verifyToken, async(req, res) => {
     if (!id) {
       throw Object.assign(
         new Error('Ausência de valores (requerido: appointmentId)'),
-        { code: 402 },
+        { code: 400 },
       );
     }
     const template = await getAppointmentById(id);
