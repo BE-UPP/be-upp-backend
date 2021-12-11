@@ -4,6 +4,7 @@ const {
   setTemplate,
   getTemplateById,
   getTemplateByVersion,
+  getVariables,
 } = require('../service/template');
 const supertest = require('supertest');
 const { app, openServer, closeServer } = require('../server');
@@ -61,21 +62,52 @@ const pages = [
   {
     pageLabel: 'another page label',
     questions: {
-      name2: {
+      name3: {
         questionLabel: 'Nome Incompleto',
         placeholder: 'Ex: José Fernando da Silva',
         type: 'checkbox',
         variables: ['id1', 'resp1', 'id2', 'resp2', 'id3', 'resp3' ],
       },
-      telephone2: {
+      telephone3: {
         questionLabel: 'Número de Celular (DDD + Telefone)',
         placeholder: 'Ex: 119XXXXXXXX',
         type: 'text',
-        variables: ['telephone2'],
+        variables: ['telephone3'],
       },
     },
   },
 ];
+
+const formData = {
+  questions: [
+    {
+      id: 'name',
+      values: ['José Fernando da Silva'],
+    },
+    {
+      id: 'telephone',
+      values: ['12341234'],
+    },
+    {
+      id: 'name2',
+      values: ['José Fernando da Silva II'],
+    },
+    {
+      id: 'telephone2',
+      values: ['999999999'],
+    },
+    {
+      id: 'name3',
+      values: ['1', 'ruim', '2', 'bom', '3', 'ótimo'],
+    },
+    {
+      id: 'telephone3',
+      values: ['000000000'],
+    },
+  ],
+  templateVersion: 0,
+};
+
 
 describe('Testing setTemplate service', () => {
   describe('Testing successfully creates', () => {
@@ -136,6 +168,22 @@ describe('Testing getLatestTemplate service', () => {
   it('Failing to retrieve template due to non existence', async done => {
     const r = await getLatestTemplate();
     expect(r).toBeNull();
+    done();
+  });
+});
+
+describe('Testing getVariables service', () => {
+  it('Testing success', async done => {
+    await setTemplate(pages);
+    const r = await getVariables(formData);
+    let output = {
+      variables: ['name', 'telephone', 'name2', 'telephone2', 'id1', 'resp1', 'id2',
+        'resp2', 'id3', 'resp3', 'telephone3'],
+      values: ['José Fernando da Silva', '12341234', 'José Fernando da Silva II',
+        '999999999', '1', 'ruim', '2', 'bom', '3', 'ótimo', '000000000'],
+    };
+
+    expect(r).toEqual(output);
     done();
   });
 });
