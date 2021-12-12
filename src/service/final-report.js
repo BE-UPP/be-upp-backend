@@ -1,7 +1,7 @@
 const Model = require('../data/models/final-report');
 const { getAppointmentById } = require('./appointment');
 const { clone } = require('./helper');
-
+const mongoose = require('mongoose');
 
 const addFinalReportTemplate = async(data) => {
   try {
@@ -69,7 +69,8 @@ const getFinalReportData = async(appointmentId) => {
     if (ap == null)
       return null;
 
-    const dado = await Model.findOne({appointmentId: appointmentId}).exec();
+    const dado = await Model.findOne(
+      {appointmentId: mongoose.Types.ObjectId(appointmentId)}).exec();
 
     return dado;
   } catch (error) {

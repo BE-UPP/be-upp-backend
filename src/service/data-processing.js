@@ -169,7 +169,7 @@ function recursiveTable(input, table, variables) {
   let new_input = input;
   new_input.shift();
 
-  return recursiveTable(new_input, new_table);
+  return recursiveTable(new_input, new_table, variables);
 
 }
 

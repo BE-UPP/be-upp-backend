@@ -19,7 +19,7 @@ router.get('/by-id', verifyToken, async(req, res) => {
       );
     }
 
-    const frData = await getFinalReportData(req.params.id);
+    const frData = await getFinalReportData(id);
 
     res.send(frData);
   } catch (error) {
