@@ -226,8 +226,8 @@ describe('Testing API final-report', () => {
       let aux = clone(FRData.toObject());
       aux._id = String(aux._id);
 
-      const resp = await supertest(app).get(`/close-api/final-report/by-id/${t._id}`).set(
-        'x-access-token', login.token);
+      const resp = await supertest(app).get('/close-api/final-report/by-id/').set(
+        'x-access-token', login.token).query({ id: t._id.toString() });
 
       const data = resp.body;
 

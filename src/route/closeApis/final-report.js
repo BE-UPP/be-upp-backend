@@ -18,6 +18,7 @@ router.get('/by-id', verifyToken, async(req, res) => {
         { code: 402 },
       );
     }
+    console.log('ID -> ', id);
 
     const frData = await getFinalReportData(id);
 
