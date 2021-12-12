@@ -9,9 +9,9 @@ const { verifyToken } = require('../../service/authentication');
 const { clone, responseError } = require('../../service/helper');
 
 
-router.get('/by-id/:id', verifyToken, async(req, res) => {
+router.get('/by-id', verifyToken, async(req, res) => {
   try {
-    const id = req.params ? req.params.id : false;
+    const id = req.query ? req.query.id : false;
     if (!id) {
       throw Object.assign(
         new Error('Ausência de valores (requerido: appointmentId)'),
