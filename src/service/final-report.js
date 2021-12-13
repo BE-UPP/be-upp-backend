@@ -1,11 +1,13 @@
 const Model = require('../data/models/final-report');
 const { getAppointmentById } = require('./appointment');
-
+const { clone } = require('./helper');
+const mongoose = require('mongoose');
 
 const addFinalReportTemplate = async(data) => {
   try {
-    data.isTemplate = true;
-    const dado = await Model.create(data);
+    let data2 = clone(data);
+    data2.isTemplate = true;
+    const dado = await Model.create(data2);
     return dado;
   } catch (error) {
     const err = {
@@ -33,9 +35,13 @@ const getFinalReportTemplateByVersion = async(version) => {
 
 const addFinalReportData = async(formData, variables) => {
   try {
-    const data = await getFinalReportTemplateByVersion(formData.templateVersion);
+    const template = await getFinalReportTemplateByVersion(formData.templateVersion);
+    const data = clone(template);
 
     delete data.isTemplate;
+    delete data._id;
+    delete data.__v;
+
     await getAppointmentById(formData.appointmentId);
     data.appointmentId = formData.appointmentId;
 
@@ -56,9 +62,30 @@ const addFinalReportData = async(formData, variables) => {
   }
 };
 
+const getFinalReportData = async(appointmentId) => {
+
+  try {
+    const ap = await getAppointmentById(appointmentId);
+    if (ap == null)
+      return null;
+
+    const dado = await Model.findOne(
+      {appointmentId: mongoose.Types.ObjectId(appointmentId)}).exec();
+
+    return dado;
+  } catch (error) {
+    const err = {
+      err: error,
+      code: 500,
+    };
+    throw err;
+  }
+
+};
 
 module.exports = {
   addFinalReportTemplate: addFinalReportTemplate,
   getFinalReportTemplateByVersion: getFinalReportTemplateByVersion,
   addFinalReportData: addFinalReportData,
+  getFinalReportData: getFinalReportData,
 };

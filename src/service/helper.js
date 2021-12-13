@@ -12,7 +12,7 @@ const clone = (obj) => {
 };
 
 function responseError(response, err) {
-  err.code = err.code ? err.code : 200;
+  err.code = err.code ? err.code : 400;
   err.message = err.message ? err.message : err.toString();
   response.header({'X-Robots-Tag': 'noindex'}).status(err.code).json(err.message);
 }

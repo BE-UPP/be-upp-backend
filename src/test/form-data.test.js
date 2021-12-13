@@ -5,6 +5,7 @@ const { createNewDoctor } = require('../service/doctor');
 const { createNewAppointment } = require('../service/appointment');
 const { setTemplate } = require('../service/template');
 const { addProcessData } = require('../service/data-processing');
+const { addFinalReportTemplate } = require('../service/final-report');
 const { app, openServer, closeServer } = require('../server');
 const supertest = require('supertest');
 const mongoose = require('mongoose');
@@ -110,7 +111,7 @@ const dataProcessing = {
     {
       type: 'Table',
       input: [{ label: 'city', type: 'text' }],
-      output: ['tableProcessing1'],
+      output: ['mogi'],
       body: {
         Mogi: 'Sim',
         __: 'Não',
@@ -118,6 +119,63 @@ const dataProcessing = {
     },
   ],
 };
+
+const FinalReportTemplate = {
+  version: 0,
+  pages: [
+    {
+      pageLabel: 'Dados Gerais',
+      values: [
+        'name',
+        'telephone',
+        'email',
+        'birthday',
+        'city',
+        'mogi',
+      ],
+      items: [
+        {
+          label: 'Nome:',
+          type: 'text',
+          content: [
+            0,
+          ],
+        },
+        {
+          label: 'Telefone:',
+          type: 'text',
+          content: [
+            1,
+          ],
+        },
+        {
+          label: 'Email:',
+          type: 'text',
+          content: [
+            2,
+          ],
+        },
+        {
+          label: 'Aniversário:',
+          type: 'text',
+          content: [
+            3,
+          ],
+        },
+        {
+          label: 'Cidade:',
+          type: 'text',
+          content: [
+            5,
+            4,
+          ],
+        },
+      ],
+    },
+
+  ],
+};
+
 
 describe('Testing addFormData service', () => {
   describe('Testing successfully creates', () => {
@@ -158,6 +216,7 @@ describe('Testing post form-data request', () => {
         d.phone, d.rcn);
       const date = Date.now();
       const t = await createNewAppointment(date, pat._id, doc._id);
+      await addFinalReportTemplate(FinalReportTemplate);
       answers.appointmentId = t._id;
       setTemplate(pages);
       addProcessData(dataProcessing);

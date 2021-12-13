@@ -1,14 +1,14 @@
 const db = require('./db');
 const { addFinalReportTemplate, getFinalReportTemplateByVersion,
-  addFinalReportData } = require('../service/final-report');
+  addFinalReportData, getFinalReportData } = require('../service/final-report');
 const { createNewPatient } = require('../service/patient');
-const { createNewDoctor } = require('../service/doctor');
+const { createNewDoctor, validateDoctorLogin } = require('../service/doctor');
 const { createNewAppointment } = require('../service/appointment');
-const {// app,
+const { app,
   openServer, closeServer } = require('../server');
 const { clone } = require('../service/helper');
-// const supertest = require('supertest');
-// const mongoose = require('mongoose');
+const supertest = require('supertest');
+const mongoose = require('mongoose');
 
 beforeAll(async() => {
   await db.connect();
@@ -152,6 +152,7 @@ describe('Testing FinalReport services', () => {
     let FRData = await addFinalReportData(formData, variables);
     let output = clone(FinalReportTemplate);
     output.appointmentId = String(t._id);
+    delete output.isTemplate;
 
     output.pages[0].values = [
       'José da Silva',
@@ -167,6 +168,73 @@ describe('Testing FinalReport services', () => {
     expect(t2).toEqual(output);
     done();
   });
+
+  it('get new FinalReportData', async(done) => {
+    const pat = await createNewPatient(p.name, p.email, p.cpf, p.cellphone,
+      p.birth, p.password);
+    const doc = await createNewDoctor(d.name, d.email, d.password, d.cellphone,
+      d.phone, d.rcn);
+    const date = Date.now();
+    const t = await createNewAppointment(date, pat._id, doc._id);
+    let formData = clone(answers);
+    formData.appointmentId = t._id;
+
+    await addFinalReportTemplate(FinalReportTemplate);
+    let FRData = await addFinalReportData(formData, variables);
+    let FRData2 = await getFinalReportData(t._id);
+
+    expect(FRData2.toObject()).toEqual(FRData.toObject());
+    done();
+  });
   // describe('Testing failed creates', () => {
   // });
+});
+
+
+describe('Testing API final-report', () => {
+  describe('Testing successful requests', () => {
+    it('create new FinalReportTemplte', async done => {
+      await createNewDoctor(d.name, d.email, d.password, d.cellphone,
+        d.phone, d.rcn);
+      const login = await validateDoctorLogin(d.email, d.password);
+
+      const resp = await supertest(app).post('/close-api/final-report/new').set(
+        'x-access-token', login.token).send(FinalReportTemplate);
+
+      const id = mongoose.Types.ObjectId(resp.body);
+      const id2 = await getFinalReportTemplateByVersion(FinalReportTemplate.version);
+
+      expect(resp.statusCode).toEqual(200);
+      expect(id).toEqual(id2._id);
+      done();
+    });
+    it('get FinalReportData', async done => {
+      const pat = await createNewPatient(p.name, p.email, p.cpf, p.cellphone,
+        p.birth, p.password);
+      const doc = await createNewDoctor(d.name, d.email, d.password, d.cellphone,
+        d.phone, d.rcn);
+      const login = await validateDoctorLogin(d.email, d.password);
+      const date = Date.now();
+      const t = await createNewAppointment(date, pat._id, doc._id);
+
+
+      let formData = clone(answers);
+      formData.appointmentId = t._id;
+
+      await addFinalReportTemplate(FinalReportTemplate);
+      let FRData = await addFinalReportData(formData, variables);
+      let aux = clone(FRData.toObject());
+      aux._id = String(aux._id);
+
+      const resp = await supertest(app).get('/close-api/final-report/by-id/').set(
+        'x-access-token', login.token).query({ id: t._id.toString() });
+
+      const data = resp.body;
+
+
+      expect(resp.statusCode).toEqual(200);
+      expect(data).toEqual(aux);
+      done();
+    });
+  });
 });

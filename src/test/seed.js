@@ -2,6 +2,9 @@ const mongoose = require('../infra/database');
 const { PatientModel } = require('../data/models/patient');
 const { DoctorModel } = require('../data/models/doctor');
 const AppointmentModel = require('../data/models/appointment');
+const { addFinalReportTemplate,
+  addFinalReportData } = require('../service/final-report');
+const { clone } = require('../service/helper');
 
 const clearDatabase = async() => {
   const collections = mongoose.connection.collections;
@@ -80,8 +83,68 @@ const appointments = [
   },
 ];
 
+const formData = {
+  questions: [
+    {
+      id: 'nome',
+      values: ['José da Silva'],
+    },
+    {
+      id: 'sexo',
+      values: ['Masculino'],
+    } ],
+  templateVersion: 1,
+};
+
+const FinalReportTemplate = {
+  version: 1,
+  pages: [
+    {
+      pageLabel: 'Dados Gerais',
+      values: [
+        'nome',
+        'sexo',
+        'idade',
+      ],
+      items: [
+        {
+          label: 'Nome:',
+          type: 'text',
+          content: [
+            0,
+          ],
+        },
+        {
+          label: 'Sexo biológico:',
+          type: 'text',
+          content: [
+            1,
+          ],
+        },
+        {
+          label: 'Idade:',
+          type: 'text',
+          content: [
+            2,
+            'anos',
+          ],
+        },
+      ],
+    },
+
+  ],
+};
+
+const variables = {
+  nome: 'José da Silva',
+  sexo: 'Masculino',
+  idade: 90,
+};
+
+
 const newPatients = [];
 const newDoctors = [];
+const newAppointments = [];
 
 const populatePatients = async(patients) => {
   for (const patient of patients){
@@ -104,14 +167,26 @@ const populateAppointments = async(appointments) => {
       patient: newPatients[appointment.patient]._id,
       doctor: newDoctors[appointment.doctor]._id,
     };
-    await AppointmentModel.create(ap);
+    const newAppointment = await AppointmentModel.create(ap);
+    newAppointments.push(newAppointment);
   }
 };
+
+const populateFinalReport = async() => {
+
+  let form = clone(formData);
+  form.appointmentId = newAppointments[2] ._id;
+
+  await addFinalReportTemplate(FinalReportTemplate);
+  await addFinalReportData(form, variables);
+};
+
 
 const populate = async() => {
   await populatePatients(patients);
   await populateDoctors(doctors);
   await populateAppointments(appointments);
+  await populateFinalReport();
 };
 
 populate().then(console.log('Populated'));
