@@ -5,6 +5,7 @@ const {omit, clone} = require('../service/helper');
 const { processData, addProcessData,
   getProcessData } = require('../service/data-processing');
 const { app, openServer, closeServer } = require('../server');
+const moment = require('moment');
 
 beforeAll(async() => {
   await db.connect();
@@ -158,6 +159,54 @@ describe('Testing data-processing services', () => {
     omit(u2, '__v');
 
     expect(u2).toEqual(output);
+
+    done();
+  });
+  it('Processing type Date', async done => {
+
+    let dp = {
+      version: 0,
+      operations: [
+        {
+          name: 'Idade',
+          type: 'Date',
+          input: [
+            'data',
+          ],
+          output: [
+            'anos', 'meses', 'dias',
+          ],
+        },
+      ],
+    };
+    let date = moment('2001/12/11', 'YYYY/M/D');
+    let date2 = moment().utcOffset('-0300');
+    let y = date2.diff(date, 'years');
+    date2.add(-y, 'years');
+    let m = date2.diff(date, 'months');
+    date2.add(-m, 'months');
+    let d = date2.diff(date, 'days');
+
+    let output2 = {
+      data: '11/12/2001',
+      anos: y,
+      meses: m,
+      dias: d,
+    };
+
+    let variablesValues2 = {
+      variables: ['data'],
+      values: ['11/12/2001'],
+    };
+
+    await addProcessData(dp);
+    const t = await processData(formDataDb, variablesValues2);
+    let u = clone(t);
+
+    u = omit(u, '_id');
+    u = omit(u, '__v');
+
+    expect(u).toEqual(output2);
 
     done();
   });

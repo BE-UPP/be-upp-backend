@@ -1,5 +1,6 @@
 const DataProcessingModel = require('../data/models/data-processing');
 const math = require('mathjs');
+const moment = require('moment');
 
 const error = {message: 'JSON inválido', code: 400};
 
@@ -79,6 +80,22 @@ function compute(data, variables) {
         break;
       case 'Math':
         computeMath(operation, variables);
+        break;
+      case 'Date':
+        let date = moment().utcOffset('-0300');
+        let date2 = getVariable(operation.input[0], variables);
+        date2 = moment(date2, 'D/M/YYYY');
+
+        let y = date.diff(date2, 'years');
+        date.add(-y, 'years');
+        let m = date.diff(date2, 'months');
+        date.add(m, 'months');
+        let d = date.diff(date2, 'days');
+
+        setVariable(operation.output[0], y, variables);
+        setVariable(operation.output[1], m, variables);
+        setVariable(operation.output[2], d, variables);
+
         break;
       default:
         break;
