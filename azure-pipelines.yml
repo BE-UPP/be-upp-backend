@@ -15,8 +15,11 @@ steps:
     versionSpec: '12.22'
   displayName: 'Install node.js'
 
+- task: DownloadSecureFile@1
+  inputs:
+    secureFile: '.env'
+
 - script: |
-    cp .env-example .env
     npm install
     rm package-lock.json
     ./build.sh
