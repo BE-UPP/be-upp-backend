@@ -16,10 +16,12 @@ steps:
   displayName: 'Install node.js'
 
 - task: DownloadSecureFile@1
+  name: envfile
   inputs:
     secureFile: '.env'
 
 - script: |
+    cp $(envfile.secureFilePath) .env
     npm install
     rm package-lock.json
     ./build.sh
