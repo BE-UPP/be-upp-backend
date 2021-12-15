@@ -5,4 +5,6 @@ src/doc/swagger_output.json
 .env
 .env.*
 
-package-lock
+package-lock.json
+
+.rest

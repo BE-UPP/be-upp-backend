@@ -1,0 +1,14 @@
+const router = require('express').Router({
+  mergeParams: true,
+});
+const templatesRoutes = require('./openApis/template');
+const formDataRoutes = require('./openApis/form-data');
+const doctorRoutes = require('./openApis/doctor');
+const dataProcessingRoutes = require('./openApis/data-processing');
+
+router.use('/template', templatesRoutes);
+router.use('/form-data', formDataRoutes);
+router.use('/doctor', doctorRoutes);
+router.use('/data-processing', dataProcessingRoutes);
+
+module.exports = router;

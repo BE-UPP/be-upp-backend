@@ -1,36 +1,61 @@
+require('dotenv').config();
 
 const express = require('express');
+const cors = require('cors');
 
-const bodyParser = require('body-parser');
-const formDataRoutes = require('./route/form-data')
+const openApis = require('./route/openApis');
+const closeApis = require('./route/closeApis');
 
 const app = express();
 
-app.use(bodyParser.urlencoded({
-    extended: true
+// Setup server port
+var port = process.env.API_PORT || 3001;
+
+app.use(cors({
+  origin: process.env.ORIGIN || '*',
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
 }));
 
-app.use(bodyParser.json());
+app.use(express.static('public'));
 
-formDataRoutes(app);
+app.use(express.urlencoded({
+  extended: true,
+}));
 
-// Setup server port
-var port = process.env.PORT || 3000;
+app.use(express.json());
 
-app.post('/', async (req, res) => { 
-    const Model = require('./data/models/template');
-    const body = req.body;
-    console.log(body)
-    try{
-        const dado = await Model.create({ createAt: 1633020142, pages: []});
-        console.log(dado)
-        res.send('Hello World with Express')
-    }
-    catch(error){
-        res.send(error.message)
-    }
-});
+app.use('/open-api', openApis);
+app.use('/close-api', closeApis);
 
-app.listen(port, function () {
-    console.log("Running server on port " + port);
-});
+if (process.env.REACT_APP_API_DOMAIN === 'localhost') {
+  try {
+    const swaggerUi = require('swagger-ui-express');
+    const swaggerFile = require('./doc/swagger_output.json');
+    app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile));
+  } catch (e) {};
+}
+
+let server = null;
+
+const openServer = () => {
+  if (server != null && server.readyState === server.OPEN)
+    return server;
+  const newServer = app.listen(port, function() {
+    console.log('Running server on port ' + port);
+  });
+  return newServer;
+};
+
+const closeServer = () => {
+  server.close();
+};
+
+server = openServer();
+
+module.exports = {
+  app: app,
+  openServer: openServer,
+  closeServer: closeServer,
+};
