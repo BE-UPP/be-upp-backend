@@ -254,6 +254,78 @@ describe('Testing data-processing services', () => {
 
     done();
   });
+  it('Processing type String', async done => {
+
+    let variablesValues2 = {
+      variables: ['a', 'b', 'c', 'x', 'y', 'z', 'aaa', 'bbb', 'ccc'],
+      values: [true, false, true, '', 'A', '', '1', '', '2'],
+    };
+    let dp = {
+      version: 0,
+      operations: [
+        {
+          type: 'String',
+          input: [
+            {variable: 'a', label: 'A', validation: 'bool' },
+            {variable: 'b', label: 'B', validation: 'bool'},
+            {variable: 'c', label: 'C', validation: 'bool'},
+          ],
+          output: [
+            'abc',
+          ],
+        }, {
+          type: 'String',
+          input: [
+            {variable: 'x', label: 'X', validation: 'empty' },
+            {variable: 'y', label: 'Y', validation: 'empty' },
+            {variable: 'z', label: 'Z', validation: 'empty' },
+          ],
+          output: [
+            'xyz',
+          ],
+        },
+        {
+          type: 'String',
+          input: [
+            {variable: 'aaa' },
+            {variable: 'bbb' },
+            {variable: 'ccc' },
+          ],
+          output: [
+            'az',
+          ],
+        },
+      ],
+    };
+
+    let output2 = {
+      a: true,
+      b: false,
+      c: true,
+      x: '',
+      y: 'A',
+      z: '',
+      aaa: '1',
+      bbb: '',
+      ccc: '2',
+      abc: 'A, C',
+      xyz: 'X, Z',
+      az: '1, 2',
+
+    };
+
+
+    await addProcessData(dp);
+    const t = await processData(formDataDb, variablesValues2);
+    let u = clone(t);
+
+    u = omit(u, '_id');
+    u = omit(u, '__v');
+
+    expect(u).toEqual(output2);
+
+    done();
+  });
 });
 
 describe('Testing invalid process', () => {

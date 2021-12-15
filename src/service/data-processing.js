@@ -97,6 +97,34 @@ function compute(data, variables) {
         setVariable(operation.output[2], d, variables);
 
         break;
+      case 'String':
+        let s = '';
+
+        for (let x of operation.input){
+          switch (x.validation) {
+            case 'bool':
+              if (getVariable(x.variable, variables) === true)
+                s += x.label + ', ';
+              break;
+            case 'empty':
+              if (getVariable(x.variable, variables) === '')
+                s += x.label + ', ';
+              break;
+            default:
+              if (getVariable(x.variable, variables) !== '')
+                if (x.label)
+                  s += x.label + ', ';
+                else
+                  s += getVariable(x.variable, variables) + ', ';
+              break;
+          }
+        }
+        if (s.slice(s.length - 2, s.length) === ', ')
+          s = s.slice(0, -2);
+
+        setVariable(operation.output, s, variables);
+
+        break;
       default:
         break;
     }
