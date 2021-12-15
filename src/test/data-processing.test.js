@@ -210,6 +210,50 @@ describe('Testing data-processing services', () => {
 
     done();
   });
+  it('Processing type Table', async done => {
+
+    let dp = {
+      version: 0,
+      operations: [
+        {
+          name: 'idade',
+          type: 'Table',
+          input: [
+            { label: 'idade', type: 'number' },
+          ],
+          output: [
+            'anos', 'meses',
+          ],
+          body: {
+            '==20': [1, 2],
+            __: [3, 4],
+          },
+        },
+      ],
+    };
+
+    let output2 = {
+      idade: 20,
+      anos: 1,
+      meses: 2,
+    };
+
+    let variablesValues2 = {
+      variables: ['idade'],
+      values: [20],
+    };
+
+    await addProcessData(dp);
+    const t = await processData(formDataDb, variablesValues2);
+    let u = clone(t);
+
+    u = omit(u, '_id');
+    u = omit(u, '__v');
+
+    expect(u).toEqual(output2);
+
+    done();
+  });
 });
 
 describe('Testing invalid process', () => {

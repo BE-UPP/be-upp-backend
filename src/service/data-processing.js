@@ -194,7 +194,12 @@ function computeTable(operation, variables) {
   let input = JSON.parse(JSON.stringify(operation.input));
   let output = recursiveTable(
     input, operation.body, variables);
-  setVariable(operation.output, output, variables);
+
+  if (Array.isArray(output)) {
+    for (let i in operation.output)
+      setVariable(operation.output[i], output[i], variables);
+  } else
+    setVariable(operation.output, output, variables);
 }
 
 const parser = math.parser();
@@ -206,7 +211,6 @@ function computeMath(operation, variables) {
       parser.set(variable, getVariable(variable, variables));
     },
   );
-
   let result = parser.evaluate(operation.body);
   setVariable(operation.output, result, variables);
 
