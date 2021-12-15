@@ -1,5 +1,8 @@
 /node_modules
+/build
 
+src/doc/swagger_output.json
+.env
 .env.*
 
 package-lock
