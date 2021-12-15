@@ -16,6 +16,7 @@ steps:
   displayName: 'Install node.js'
 
 - script: |
+    cp .env-example .env
     npm install
     rm package-lock.json
     ./build.sh
