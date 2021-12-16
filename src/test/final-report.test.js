@@ -198,7 +198,7 @@ describe('Testing API final-report', () => {
         d.phone, d.rcn);
       const login = await validateDoctorLogin(d.email, d.password);
 
-      const resp = await supertest(app).post('/close-api/final-report/new').set(
+      const resp = await supertest(app).post('/open-api/final-report/new').set(
         'x-access-token', login.token).send(FinalReportTemplate);
 
       const id = mongoose.Types.ObjectId(resp.body);

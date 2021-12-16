@@ -18,7 +18,7 @@ const OperationSchema = new mongoose.Schema({
 
   body: {
     type: mongoose.Schema.Types.Mixed,
-    required: true,
+    required: [this.type === 'Math' || this.type === 'Table'],
   },
 
 });

@@ -25,6 +25,7 @@ router.post('/new', async(req, res) => {
     doctor = await createNewDoctor(name, email, password, cellphone, phone, profession);
     res.send(omit(doctor._doc, 'password'));
   } catch (error) {
+    console.log(error);
     responseError(res, error);
   }
 });
