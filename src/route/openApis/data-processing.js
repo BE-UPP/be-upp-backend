@@ -20,7 +20,7 @@ router.get('/by-version/:version', async(req, res) => {
 });
 
 
-router.post('/', async(req, res) => {
+router.post('/new', async(req, res) => {
 
   const dataProcessing = req.body;
   try {
