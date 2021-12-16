@@ -81,7 +81,7 @@ const dataProcessing = {
       input: [{ label: 'tableId1', type: 'number' }],
       output: ['tableProcessing1'],
       body: {
-        '==1': 'Sim',
+        '==1,0': 'Sim',
         __: 'Não',
       },
     },
@@ -177,26 +177,48 @@ describe('Testing data-processing services', () => {
             'anos', 'meses', 'dias',
           ],
         },
+        {
+          name: 'Idade2',
+          type: 'Date',
+          input: [
+            'data2',
+          ],
+          output: [
+            'anos2', 'meses2', 'dias2',
+          ],
+        },
       ],
     };
     let date = moment('2001/12/11', 'YYYY/M/D');
+    let date3 = moment('1998/07/18', 'YYYY/M/D');
     let date2 = moment().utcOffset('-0300');
     let y = date2.diff(date, 'years');
-    date2.add(-y, 'years');
+    date2 = date2.add(-y, 'years');
     let m = date2.diff(date, 'months');
-    date2.add(-m, 'months');
+    date2 = date2.add(-m, 'months');
     let d = date2.diff(date, 'days');
+
+    date2 = moment().utcOffset('-0300');
+    let y2 = date2.diff(date3, 'years');
+    date2 = date2.add(-y2, 'years');
+    let m2 = date2.diff(date3, 'months');
+    date2 = date2.add(-m2, 'months');
+    let d2 = date2.diff(date3, 'days');
 
     let output2 = {
       data: '11/12/2001',
       anos: y,
       meses: m,
       dias: d,
+      data2: '18/07/1998',
+      anos2: y2,
+      meses2: m2,
+      dias2: d2,
     };
 
     let variablesValues2 = {
-      variables: ['data'],
-      values: ['11/12/2001'],
+      variables: ['data', 'data2'],
+      values: ['11/12/2001', '18/07/1998'],
     };
 
     await addProcessData(dp);
@@ -308,9 +330,9 @@ describe('Testing data-processing services', () => {
       aaa: '1',
       bbb: '',
       ccc: '2',
-      abc: 'A, C',
-      xyz: 'X, Z',
-      az: '1, 2',
+      abc: 'A, C.',
+      xyz: 'X, Z.',
+      az: '1, 2.',
 
     };
 
@@ -365,7 +387,7 @@ describe('Testing post dataProcessing request', () => {
 
   describe('Testing successful requests', () => {
     it('create new dataProcessing', async done => {
-      const resp = await supertest(app).post('/open-api/data-processing/')
+      const resp = await supertest(app).post('/open-api/data-processing/new')
         .send(dataProcessing);
       expect(resp.statusCode).toEqual(200);
       expect(resp.body.version).toEqual(dataProcessing.version);
@@ -375,7 +397,7 @@ describe('Testing post dataProcessing request', () => {
 
   describe('Testing fail requests', () => {
     it('null data-processing', async done => {
-      const resp = await supertest(app).post('/open-api/data-processing/').send({});
+      const resp = await supertest(app).post('/open-api/data-processing/new').send({});
       expect(resp.statusCode).toEqual(400);
       done();
     });
@@ -383,7 +405,7 @@ describe('Testing post dataProcessing request', () => {
 
   describe('Testing successful requests', () => {
     it('get dataProcessing by version', async done => {
-      const resp1 = await supertest(app).post('/open-api/data-processing/')
+      const resp1 = await supertest(app).post('/open-api/data-processing/new')
         .send(dataProcessing);
       const resp2 = await supertest(app).get('/open-api/data-processing/by-version/0');
       expect(resp2.statusCode).toEqual(200);
@@ -394,50 +416,7 @@ describe('Testing post dataProcessing request', () => {
 
   describe('Testing fail requests', () => {
     it('wrong data-processing version', async done => {
-      await supertest(app).post('/open-api/data-processing/').send(dataProcessing);
-      const resp2 = await supertest(app).get('/open-api/data-processing/by-version/1');
-      expect(resp2.statusCode).toEqual(200);
-      expect(resp2.body).toEqual({});
-      done();
-    });
-  });
-});
-
-
-describe('Testing post dataProcessing request', () => {
-
-  describe('Testing successful requests', () => {
-    it('create new dataProcessing', async done => {
-      const resp = await supertest(app).post('/open-api/data-processing/')
-        .send(dataProcessing);
-      expect(resp.statusCode).toEqual(200);
-      expect(resp.body.version).toEqual(dataProcessing.version);
-      done();
-    });
-  });
-
-  describe('Testing fail requests', () => {
-    it('null data-processing', async done => {
-      const resp = await supertest(app).post('/open-api/data-processing/').send({});
-      expect(resp.statusCode).toEqual(400);
-      done();
-    });
-  });
-
-  describe('Testing successful requests', () => {
-    it('get dataProcessing by version', async done => {
-      const resp1 = await supertest(app).post('/open-api/data-processing/')
-        .send(dataProcessing);
-      const resp2 = await supertest(app).get('/open-api/data-processing/by-version/0');
-      expect(resp2.statusCode).toEqual(200);
-      expect(resp2.body).toEqual(resp1.body);
-      done();
-    });
-  });
-
-  describe('Testing fail requests', () => {
-    it('wrong data-processing version', async done => {
-      await supertest(app).post('/open-api/data-processing/').send(dataProcessing);
+      await supertest(app).post('/open-api/data-processing/new').send(dataProcessing);
       const resp2 = await supertest(app).get('/open-api/data-processing/by-version/1');
       expect(resp2.statusCode).toEqual(200);
       expect(resp2.body).toEqual({});

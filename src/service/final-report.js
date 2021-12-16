@@ -54,6 +54,7 @@ const addFinalReportData = async(formData, variables) => {
     const dado = await Model.create(data);
     return dado;
   } catch (error) {
+    console.log(error);
     const err = {
       message: error.message,
       code: 400,

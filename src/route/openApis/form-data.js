@@ -15,6 +15,7 @@ router.post('/new', async(req, res) => {
 
     res.send(data);
   } catch (error) {
+    console.log(error);
     responseError(res, error);
   }
 });

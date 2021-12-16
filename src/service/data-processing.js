@@ -2,7 +2,11 @@ const DataProcessingModel = require('../data/models/data-processing');
 const math = require('mathjs');
 const moment = require('moment');
 
-const error = {message: 'JSON inválido', code: 400};
+function ErrorJson() {
+  const e = new Error('JSON inválido');
+  return e;
+};
+ErrorJson.prototype = Object.create(Error.prototype);
 
 const addProcessData = async(data) => {
   try {
@@ -46,6 +50,7 @@ const processData = async(formData, templateVar) => {
     return variables;
 
   } catch (error) {
+    console.log(error);
     const err = {
       message: error.message,
       code: 400,
@@ -87,9 +92,9 @@ function compute(data, variables) {
         date2 = moment(date2, 'D/M/YYYY');
 
         let y = date.diff(date2, 'years');
-        date.add(-y, 'years');
+        date = date.add(-y, 'years');
         let m = date.diff(date2, 'months');
-        date.add(m, 'months');
+        date = date.add(-m, 'months');
         let d = date.diff(date2, 'days');
 
         setVariable(operation.output[0], y, variables);
@@ -101,26 +106,30 @@ function compute(data, variables) {
         let s = '';
 
         for (let x of operation.input){
+          let y = getVariable(x.variable, variables);
           switch (x.validation) {
             case 'bool':
-              if (getVariable(x.variable, variables) === true)
+              if (y && y === true)
                 s += x.label + ', ';
               break;
             case 'empty':
-              if (getVariable(x.variable, variables) === '')
+              if (y === '')
                 s += x.label + ', ';
               break;
             default:
-              if (getVariable(x.variable, variables) !== '')
+              if (y && y !== '') {
                 if (x.label)
                   s += x.label + ', ';
                 else
-                  s += getVariable(x.variable, variables) + ', ';
+                  s += y + ', ';
+              }
               break;
           }
         }
-        if (s.slice(s.length - 2, s.length) === ', ')
+        if (s.slice(s.length - 2, s.length) === ', ') {
           s = s.slice(0, -2);
+          s += '.';
+        }
 
         setVariable(operation.output, s, variables);
 
@@ -134,23 +143,32 @@ function compute(data, variables) {
 
 function recursiveTable(input, table, variables) {
   if (input.length === 0)
-    throw error;
+    throw new ErrorJson();
 
   let variable = input[0];
   let new_table;
+
+  console.log(variables);
+  console.log(input);
+  console.log(variable);
+  console.log(table);
 
   switch (variable.type) {
     case 'text':
       new_table = table[getVariable(variable.label, variables)];
       break;
     case 'number':
-      let y = getVariable(variable.label, variables);
+      let y = parseFloat(getVariable(variable.label, variables));
       let passou = false;
 
       for (let key in table) {
         let op = key.substr(0, 2);
         let aux = key.substr(2, key.length);
         let aux2 = aux.split('_');
+        if (aux[0] !== undefined)
+          aux2[0] = aux2[0].replace(',', '.');
+        if (aux2.length > 1 && aux[1] !== undefined)
+          aux2[1] = aux2[1].replace(',', '.');
         let x1 = parseFloat(aux2[0]);
         let x2 = parseFloat(aux2[1]);
         let cmp = null;
@@ -187,7 +205,7 @@ function recursiveTable(input, table, variables) {
             cmp = (y > x1 && y < x2);
             break;
           default:
-            throw error;
+            throw new ErrorJson();
         }
 
         if (cmp) {
@@ -198,15 +216,15 @@ function recursiveTable(input, table, variables) {
       }
 
       if (!passou) {
-        throw error;
+        throw new ErrorJson();
       }
       break;
     default:
-      throw error;
+      throw new ErrorJson();
   }
 
   if (new_table === {})
-    throw error;
+    throw new ErrorJson();
 
   if (input.length === 1)
     return new_table;
