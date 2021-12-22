@@ -64,7 +64,7 @@ const variablesValues = {
   variables: ['text', 'selectId', 'select', 'scale', 'radioId',
     'radio', 'tableId1', 'table1', 'tableId2', 'table2', 'tableId3',
     'table3', 'checkbox1', 'checkbox2' ],
-  values: ['josé', 2, 'Feminino', 4, 1, 'Não', 0, '1', 1, '3', 2, '2', 1, 0],
+  values: ['josé', '2', 'Feminino', 4, 1, 'Não', 0, '1', 1, '3', 2, '2', 1, 0],
 };
 
 const dataProcessing = {
@@ -90,7 +90,7 @@ const dataProcessing = {
 
 const output = {
   text: 'josé',
-  selectId: 2,
+  selectId: '2',
   select: 'Feminino',
   scale: 4,
   radioId: 1,

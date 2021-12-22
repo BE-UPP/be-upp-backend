@@ -44,7 +44,7 @@ const processData = async(formData, templateVar) => {
     for (let i in templateVar.variables) {
       setVariable(templateVar.variables[i], templateVar.values[i], variables);
     }
-
+    console.log(variables);
     compute(dataProcessing, variables);
 
     return variables;
@@ -258,12 +258,16 @@ function computeTable(operation, variables) {
 const parser = math.parser();
 
 function computeMath(operation, variables) {
-
   operation.input.forEach(
     (variable, i) => {
-      parser.set(variable, getVariable(variable, variables));
+      let value = getVariable(variable, variables);
+      if (value === null || value === undefined)
+        value = 0;
+      parser.set(variable, value);
     },
   );
+  console.log(variables);
+  console.log(operation);
   let result = parser.evaluate(operation.body);
   setVariable(operation.output, result, variables);
 
