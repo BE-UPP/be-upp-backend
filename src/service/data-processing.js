@@ -266,8 +266,8 @@ function computeMath(operation, variables) {
       parser.set(variable, value);
     },
   );
-  console.log(variables);
-  console.log(operation);
+  // console.log(variables);
+  // console.log(operation);
   let result = parser.evaluate(operation.body);
   setVariable(operation.output, result, variables);
 
