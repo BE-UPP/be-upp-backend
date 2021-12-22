@@ -148,10 +148,10 @@ function recursiveTable(input, table, variables) {
   let variable = input[0];
   let new_table;
 
-  console.log(variables);
-  console.log(input);
-  console.log(variable);
-  console.log(table);
+  // console.log(variables);
+  // console.log(input);
+  // console.log(variable);
+  // console.log(table);
 
   switch (variable.type) {
     case 'text':
@@ -216,7 +216,7 @@ function recursiveTable(input, table, variables) {
       }
 
       if (!passou) {
-        throw new ErrorJson();
+        return null;
       }
       break;
     default:
@@ -240,6 +240,13 @@ function computeTable(operation, variables) {
   let input = JSON.parse(JSON.stringify(operation.input));
   let output = recursiveTable(
     input, operation.body, variables);
+
+  if (output === null) {
+    output = [];
+    operation.output.forEach(() => {
+      output.push(null);
+    });
+  }
 
   if (Array.isArray(output)) {
     for (let i in operation.output)
