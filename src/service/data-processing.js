@@ -44,7 +44,7 @@ const processData = async(formData, templateVar) => {
     for (let i in templateVar.variables) {
       setVariable(templateVar.variables[i], templateVar.values[i], variables);
     }
-
+    console.log(variables);
     compute(dataProcessing, variables);
 
     return variables;
@@ -148,10 +148,10 @@ function recursiveTable(input, table, variables) {
   let variable = input[0];
   let new_table;
 
-  console.log(variables);
-  console.log(input);
-  console.log(variable);
-  console.log(table);
+  // console.log(variables);
+  // console.log(input);
+  // console.log(variable);
+  // console.log(table);
 
   switch (variable.type) {
     case 'text':
@@ -216,7 +216,7 @@ function recursiveTable(input, table, variables) {
       }
 
       if (!passou) {
-        throw new ErrorJson();
+        return null;
       }
       break;
     default:
@@ -241,6 +241,13 @@ function computeTable(operation, variables) {
   let output = recursiveTable(
     input, operation.body, variables);
 
+  if (output === null) {
+    output = [];
+    operation.output.forEach(() => {
+      output.push(null);
+    });
+  }
+
   if (Array.isArray(output)) {
     for (let i in operation.output)
       setVariable(operation.output[i], output[i], variables);
@@ -251,12 +258,16 @@ function computeTable(operation, variables) {
 const parser = math.parser();
 
 function computeMath(operation, variables) {
-
   operation.input.forEach(
     (variable, i) => {
-      parser.set(variable, getVariable(variable, variables));
+      let value = getVariable(variable, variables);
+      if (value === null || value === undefined)
+        value = 0;
+      parser.set(variable, value);
     },
   );
+  console.log(variables);
+  console.log(operation);
   let result = parser.evaluate(operation.body);
   setVariable(operation.output, result, variables);
 

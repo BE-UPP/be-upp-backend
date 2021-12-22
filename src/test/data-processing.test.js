@@ -64,7 +64,7 @@ const variablesValues = {
   variables: ['text', 'selectId', 'select', 'scale', 'radioId',
     'radio', 'tableId1', 'table1', 'tableId2', 'table2', 'tableId3',
     'table3', 'checkbox1', 'checkbox2' ],
-  values: ['josé', 2, 'Feminino', 4, 1, 'Não', 0, '1', 1, '3', 2, '2', 1, 0],
+  values: ['josé', '2', 'Feminino', 4, 1, 'Não', 0, '1', 1, '3', 2, '2', 1, 0],
 };
 
 const dataProcessing = {
@@ -90,7 +90,7 @@ const dataProcessing = {
 
 const output = {
   text: 'josé',
-  selectId: 2,
+  selectId: '2',
   select: 'Feminino',
   scale: 4,
   radioId: 1,
@@ -336,6 +336,49 @@ describe('Testing data-processing services', () => {
 
     };
 
+
+    await addProcessData(dp);
+    const t = await processData(formDataDb, variablesValues2);
+    let u = clone(t);
+
+    u = omit(u, '_id');
+    u = omit(u, '__v');
+
+    expect(u).toEqual(output2);
+
+    done();
+  });
+  it('Processing type Table 2', async done => {
+
+    let dp = {
+      version: 0,
+      operations: [
+        {
+          name: 'idade',
+          type: 'Table',
+          input: [
+            { label: 'idade', type: 'number' },
+          ],
+          output: [
+            'anos', 'meses',
+          ],
+          body: {
+            '==20': [9, 11],
+          },
+        },
+      ],
+    };
+
+    let output2 = {
+      idade: 33,
+      anos: null,
+      meses: null,
+    };
+
+    let variablesValues2 = {
+      variables: ['idade'],
+      values: [33],
+    };
 
     await addProcessData(dp);
     const t = await processData(formDataDb, variablesValues2);
