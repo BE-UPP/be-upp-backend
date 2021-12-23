@@ -14,22 +14,29 @@ router.post('/new', verifyToken, async(req, res) => {
     const cellphone = req.body.cellphone;
     const birth = req.body.birth;
     const password = req.body.password;
-    if (!(name && email && cpf && cellphone && birth)) {
+    const doctorId = req.query.id;
+
+    if (!(name && email && cpf && cellphone && birth && doctorId)) {
       throw Object.assign(
-        new Error('Ausência de valores (requerido: name, email, cpf, cellphone, birth)'),
+        new Error(
+          'Ausência de valores (requerido: name, email, cpf, cellphone, birth,'
+           + ' doctorId)'),
         { code: 400 },
       );
     }
-    const patient = await createNewPatient(name, email, cpf, cellphone, birth, password);
+    const patient = await createNewPatient(name, email, cpf, cellphone, birth, password,
+      doctorId);
     res.send(patient);
   } catch (error) {
+    console.log(error);
     responseError(res, error);
   }
 });
 
 router.get('/all', verifyToken, async(req, res) => {
   try {
-    const patients = await getAllPatients();
+    const doctorId = req.query.id;
+    const patients = await getAllPatients(doctorId);
     res.send(patients);
   } catch (error) {
     responseError(res, error);
