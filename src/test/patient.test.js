@@ -3,6 +3,7 @@ const { createNewPatient, getAllPatients } = require('../service/patient');
 const supertest = require('supertest');
 const { app, openServer, closeServer } = require('../server');
 const { generateToken } = require('../service/authentication');
+const mongoose = require('mongoose');
 
 beforeAll(async() => {
   await db.connect();
@@ -112,15 +113,18 @@ describe('Testing post patient request', () => {
   describe('Testing successful requests', () => {
     const token = generateToken(payload);
     it('create new patient', async done => {
-      const resp = await supertest(app).post('/close-api/patient/new').set(
-        'x-access-token', token).send({
-        name: name,
-        email: email,
-        cpf: cpf,
-        cellphone: cellphone,
-        birth: birth,
-        password: password,
-      });
+      console.log('AAAAAAAAA');
+      const resp = await supertest(app).post('/close-api/patient/new')
+        .set('x-access-token', token)
+        .query({ id: mongoose.Types.ObjectId(123).toString()})
+        .send({
+          name: name,
+          email: email,
+          cpf: cpf,
+          cellphone: cellphone,
+          birth: birth,
+          password: password,
+        });
       expect(resp.statusCode).toEqual(200);
       expect(resp.body.name).toEqual(name);
       done();
@@ -129,14 +133,15 @@ describe('Testing post patient request', () => {
   describe('Testing fail requests', () => {
     it('blank name', async done => {
       const token = generateToken(payload);
-      const resp = await supertest(app).post('/close-api/patient/new').set(
-        'x-access-token', token).send({
-        email: email,
-        cpf: cpf,
-        cellphone: cellphone,
-        birth: birth,
-        password: password,
-      });
+      const resp = await supertest(app).post('/close-api/patient/new')
+        .query({ id: mongoose.Types.ObjectId(123).toString()})
+        .set('x-access-token', token).send({
+          email: email,
+          cpf: cpf,
+          cellphone: cellphone,
+          birth: birth,
+          password: password,
+        });
       expect(resp.statusCode).toEqual(400);
       done();
     });

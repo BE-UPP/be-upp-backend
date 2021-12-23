@@ -13,7 +13,8 @@ const getPatientById = async(id) => {
   }
 };
 
-const createNewPatient = async(name, email, cpf, cellphone, birth, password) => {
+const createNewPatient = async(name, email, cpf, cellphone, birth, password,
+  doctorId) => {
   try {
     const patient = {
       name: name,
@@ -22,6 +23,7 @@ const createNewPatient = async(name, email, cpf, cellphone, birth, password) => 
       cellphone: cellphone,
       birth: birth,
       password: password,
+      doctorId: doctorId,
     };
     const dado = await PatientModel.create(patient);
     return dado;
@@ -34,9 +36,9 @@ const createNewPatient = async(name, email, cpf, cellphone, birth, password) => 
   }
 };
 
-const getAllPatients = async() => {
+const getAllPatients = async(doctorId) => {
   try {
-    const patients = await PatientModel.find({}, { password: 0 });
+    const patients = await PatientModel.find({doctorId: doctorId}, { password: 0 });
     return patients;
   } catch (error) {
     const err = {
