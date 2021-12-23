@@ -1,4 +1,5 @@
 const mongoose = require('../../infra/database');
+const { DoctorModel } = require('./doctor');
 
 const PatientSchema = new mongoose.Schema({
   name: {
@@ -13,7 +14,6 @@ const PatientSchema = new mongoose.Schema({
     validate: s => (typeof s === 'string' || s instanceof String)
         && s.length > 0,
     required: [true, 'email required'],
-    unique: true,
   },
 
   cpf: {
@@ -21,7 +21,6 @@ const PatientSchema = new mongoose.Schema({
     validate: s => (typeof s === 'string' || s instanceof String)
         && s.length === 11,
     required: [true, 'cpf required'],
-    unique: true,
   },
 
   cellphone: {
@@ -38,6 +37,12 @@ const PatientSchema = new mongoose.Schema({
 
   password: {
     type: String,
+  },
+
+  doctorId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: DoctorModel,
+    // required: [true, 'doctor required'], // TODO
   },
 });
 
