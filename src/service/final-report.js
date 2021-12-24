@@ -47,10 +47,10 @@ const addFinalReportData = async(formData, variables) => {
 
     for (let i in data.pages) {
       for (let j in data.pages[i].values) {
-        let aux = String(variables[data.pages[i].values[j]]);
+        let aux = variables[data.pages[i].values[j]];
         if (aux === undefined || aux === null)
           aux = 'não definido';
-        data.pages[i].values[j] = aux;
+        data.pages[i].values[j] = String(aux);
       }
     }
 
