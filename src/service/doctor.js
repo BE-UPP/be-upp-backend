@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { DoctorModel } = require('../data/models/doctor');
+const { DoctorModel, generateHash, checkPassword } = require('../data/models/doctor');
 const { generateToken } = require('./authentication');
 const AppointmentModel = require('../data/models/appointment');
 
@@ -46,7 +46,7 @@ const validateDoctorLogin = async(email, password) => {
     code: 400,
   };
   if (doctor != null) {
-    if (doctor.password === password) {
+    if (checkPassword(password, doctor.password)) {
 
       const payload = {
         id: doctor._id,
@@ -74,6 +74,13 @@ const createNewDoctor = async(name, email, password, cellphone, phone, professio
       phone: phone,
       profession: profession,
     };
+
+    if (doctor.password.length < 6){
+      const err = { message: 'Senha muito curta'};
+      throw err;
+    }
+
+    doctor.password = generateHash(doctor.password);
     const data = await DoctorModel.create(doctor);
     return data;
   } catch (error) {
