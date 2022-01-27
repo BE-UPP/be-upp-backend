@@ -263,11 +263,18 @@ function computeTable(operation, variables) {
     });
   }
 
-  if (Array.isArray(output)) {
-    for (let i in operation.output)
+  if (Array.isArray(output) === false)
+    output = [output];
+
+  for (let i in operation.output) {
+    if (output[i] !== null && output[i] !== undefined && typeof output[i] === 'object') {
+      if (output[i].type === 'variable') {
+        let y = getVariable(output[i].variable, variables);
+        setVariable(operation.output[i], y, variables);
+      }
+    } else
       setVariable(operation.output[i], output[i], variables);
-  } else
-    setVariable(operation.output, output, variables);
+  }
 }
 
 const parser = math.parser();
