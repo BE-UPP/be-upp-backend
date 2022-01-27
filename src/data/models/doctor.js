@@ -1,4 +1,5 @@
 const mongoose = require('../../infra/database');
+const bcrypt = require('bcryptjs');
 
 const DoctorSchema = new mongoose.Schema({
   name: {
@@ -18,8 +19,7 @@ const DoctorSchema = new mongoose.Schema({
 
   password: {
     type: String,
-    validate: s => (typeof s === 'string' || s instanceof String)
-        && s.length > 5,
+    validate: s => (typeof s === 'string' || s instanceof String),
     required: [true, 'password required'],
   },
 
@@ -42,9 +42,23 @@ const DoctorSchema = new mongoose.Schema({
   },
 });
 
+const generateHash = (password) => {
+  return bcrypt.hashSync(password, bcrypt.genSaltSync(8));
+};
+
+const checkPassword = (passA, passB) => {
+  return bcrypt.compareSync(passA, passB);
+};
+
+DoctorSchema.methods.generateHash = function hashPassword(){
+  this.password = generateHash(this.password);
+};
+
 const DoctorModel = mongoose.model('DoctorSchema', DoctorSchema);
 
 module.exports = {
   DoctorModel: DoctorModel,
   DoctorSchema: DoctorSchema,
+  generateHash: generateHash,
+  checkPassword: checkPassword,
 };

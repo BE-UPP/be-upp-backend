@@ -1,5 +1,6 @@
 const db = require('./db');
 const { createNewDoctor, validateDoctorLogin } = require('../service/doctor');
+const { checkPassword } = require('../data/models/doctor');
 const supertest = require('supertest');
 const { app, openServer, closeServer } = require('../server');
 
@@ -31,7 +32,7 @@ describe('Testing doctor service', () => {
         phone, profession);
       expect(t.name).toEqual(name);
       expect(t.email).toEqual(email);
-      expect(t.password).toEqual(password);
+      expect(checkPassword(password, t.password)).toEqual(true);
       expect(t.cellphone).toEqual(cellphone);
       expect(t.phone).toEqual(phone);
       expect(t.profession).toEqual(profession);
@@ -42,7 +43,7 @@ describe('Testing doctor service', () => {
         '', profession);
       expect(t.name).toEqual(name);
       expect(t.email).toEqual(email);
-      expect(t.password).toEqual(password);
+      expect(checkPassword(password, t.password)).toEqual(true);
       expect(t.cellphone).toEqual(cellphone);
       expect(t.phone).toEqual('');
       expect(t.profession).toEqual(profession);
@@ -91,7 +92,7 @@ describe('Testing doctor service', () => {
     it('successfull login', async(done) => {
       const t = await createNewDoctor(name, email, password, cellphone,
         phone, profession);
-      const d = await validateDoctorLogin(t.email, t.password);
+      const d = await validateDoctorLogin(t.email, password);
       expect(d.doctor._id).toEqual(t._id);
       done();
     });
