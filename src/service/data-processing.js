@@ -23,7 +23,9 @@ const addProcessData = async(data) => {
 
 const getProcessData = async(version) => {
   try {
-    const dado = await DataProcessingModel.findOne({version: version}).exec();
+    const dado = await DataProcessingModel.findOne({
+      version: version,
+    }).exec();
     return dado;
   } catch (error) {
     const err = {
@@ -105,7 +107,7 @@ function compute(data, variables) {
       case 'String':
         let s = '';
 
-        for (let x of operation.input){
+        for (let x of operation.input) {
           let y = getVariable(x.variable, variables);
           switch (x.validation) {
             case 'bool':
@@ -133,6 +135,19 @@ function compute(data, variables) {
 
         setVariable(operation.output, s, variables);
 
+        break;
+      case 'Sum' :
+        let aux = 0;
+
+        for (let x of operation.input) {
+          let y = getVariable(x, variables);
+          if (typeof y === 'number')
+            aux += y;
+          else if (typeof y === 'boolean')
+            aux += y ? 1 : 0;
+        }
+
+        setVariable(operation.output, aux, variables);
         break;
       default:
         break;
