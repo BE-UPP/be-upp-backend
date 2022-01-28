@@ -4,6 +4,9 @@ const supertest = require('supertest');
 const {omit, clone} = require('../service/helper');
 const { processData, addProcessData,
   getProcessData } = require('../service/data-processing');
+const {
+  setTemplate,
+} = require('../service/template');
 const { app, openServer, closeServer } = require('../server');
 const moment = require('moment');
 
@@ -126,6 +129,165 @@ describe('Testing data-processing services', () => {
 
     expect(u).toEqual(dataProcessing);
 
+    done();
+  });
+  it('Adding Process data without version', async done => {
+
+    let dataProcessing2 = {
+      operations: [
+        {
+          type: 'Math',
+          input: ['scale', 'selectId', 'radioId'],
+          output: ['math1'],
+          body: 'scale * selectId + radioId',
+        },
+        {
+          type: 'Table',
+          input: [{ label: 'tableId1', type: 'number' }],
+          output: ['tableProcessing1'],
+          body: {
+            '==1,0': 'Sim',
+            __: 'Não',
+          },
+        },
+      ],
+    };
+
+    let pages = [
+      {
+        pageLabel: 'A page label',
+        questions: {
+          name: {
+            questionLabel: 'Nome Incompleto',
+            placeholder: 'Ex: José Fernando da Silva',
+            type: 'text',
+            variables: ['name'],
+          },
+        },
+      },
+    ];
+
+    await setTemplate(pages);
+    await setTemplate(pages);
+    await setTemplate(pages);
+    await setTemplate(pages);
+
+    await addProcessData(dataProcessing2);
+    let t = await getProcessData(3);
+    expect(t.version).toEqual(3);
+    done();
+  });
+  it('Overwrite Process data', async done => {
+
+    let dataProcessing2 = {
+      version: 0,
+      operations: [
+        {
+          type: 'Math',
+          input: ['scale', 'selectId', 'radioId'],
+          output: ['math1'],
+          body: 'scale * selectId + radioId',
+        },
+        {
+          type: 'Table',
+          input: [{ label: 'tableId1', type: 'number' }],
+          output: ['tableProcessing1'],
+          body: {
+            '==1,0': 'Sim',
+            __: 'Não',
+          },
+        },
+      ],
+    };
+    let dataProcessing3 = {
+      version: 0,
+      operations: [
+        {
+          type: 'Table',
+          input: [{ label: 'tableId1', type: 'number' }],
+          output: ['tableProcessing1'],
+          body: {
+            '==1,0': 'Não',
+            __: 'Sim',
+          },
+        },
+      ],
+    };
+
+    await addProcessData(dataProcessing2);
+    await addProcessData(dataProcessing3);
+    let t = await getProcessData(0);
+    let u = clone(t);
+
+    delete u._id;
+    delete u.__v;
+    for (let i = 0; i < u.operations.length; i++)
+      delete u.operations[i]._id;
+    expect(u).toEqual(dataProcessing3);
+    done();
+  });
+  it('Overwrite Process data without version', async done => {
+
+    let dataProcessing2 = {
+      operations: [
+        {
+          type: 'Math',
+          input: ['scale', 'selectId', 'radioId'],
+          output: ['math1'],
+          body: 'scale * selectId + radioId',
+        },
+        {
+          type: 'Table',
+          input: [{ label: 'tableId1', type: 'number' }],
+          output: ['tableProcessing1'],
+          body: {
+            '==1,0': 'Sim',
+            __: 'Não',
+          },
+        },
+      ],
+    };
+    let dataProcessing3 = {
+      operations: [
+        {
+          type: 'Table',
+          input: [{ label: 'tableId1', type: 'number' }],
+          output: ['tableProcessing1'],
+          body: {
+            '==1,0': 'Não',
+            __: 'Sim',
+          },
+        },
+      ],
+    };
+
+    let pages = [
+      {
+        pageLabel: 'A page label',
+        questions: {
+          name: {
+            questionLabel: 'Nome Incompleto',
+            placeholder: 'Ex: José Fernando da Silva',
+            type: 'text',
+            variables: ['name'],
+          },
+        },
+      },
+    ];
+
+    await setTemplate(pages);
+
+    await addProcessData(dataProcessing2);
+    await addProcessData(dataProcessing3);
+    let t = await getProcessData(0);
+    let u = clone(t);
+
+    delete u._id;
+    delete u.__v;
+    delete u.version;
+    for (let i = 0; i < u.operations.length; i++)
+      delete u.operations[i]._id;
+    expect(u).toEqual(dataProcessing3);
     done();
   });
   it('Processing 1 user', async done => {

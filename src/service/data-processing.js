@@ -1,6 +1,10 @@
 const DataProcessingModel = require('../data/models/data-processing');
+const {
+  getLatestTemplate,
+} = require('../service/template');
 const math = require('mathjs');
 const moment = require('moment');
+const {clone} = require('../service/helper');
 
 function ErrorJson() {
   const e = new Error('JSON inválido');
@@ -8,8 +12,13 @@ function ErrorJson() {
 };
 ErrorJson.prototype = Object.create(Error.prototype);
 
-const addProcessData = async(data) => {
+const addProcessData = async(_data) => {
   try {
+    let data = clone(_data);
+    if (data.version === null || data.version === undefined) {
+      data.version = (await getLatestTemplate()).templateVersion;
+    }
+    await DataProcessingModel.find({version: data.version}).remove().exec();
     const dado = await DataProcessingModel.create(data);
     return dado;
   } catch (error) {
