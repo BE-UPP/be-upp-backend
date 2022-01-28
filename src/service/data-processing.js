@@ -278,6 +278,7 @@ function computeTable(operation, variables) {
 
         let y = getVariable(operation.output[i], variables) + value;
         setVariable(operation.output[i], y, variables);
+      } else if (output[i].type === null || output[i].type === undefined) {
       }
     } else
       setVariable(operation.output[i], output[i], variables);

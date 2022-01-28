@@ -477,7 +477,7 @@ describe('Testing data-processing services', () => {
 
     done();
   });
-  it('Processing type Table 3', async done => {
+  it('Processing type Table 4', async done => {
 
     let dp = {
       version: 0,
@@ -506,6 +506,49 @@ describe('Testing data-processing services', () => {
     let output2 = {
       abc: 89,
       idade: 41,
+      meses: 11,
+    };
+
+    await addProcessData(dp);
+    const t = await processData(formDataDb, variablesValues2);
+    let u = clone(t);
+
+    u = omit(u, '_id');
+    u = omit(u, '__v');
+
+    expect(u).toEqual(output2);
+
+    done();
+  });
+  it('Processing type Table 5', async done => {
+
+    let dp = {
+      version: 0,
+      operations: [
+        {
+          name: 'idade',
+          type: 'Table',
+          input: [
+            { label: 'idade', type: 'number' },
+          ],
+          output: [
+            'idade', 'meses',
+          ],
+          body: {
+            '==20': [{}, 11],
+          },
+        },
+      ],
+    };
+
+    let variablesValues2 = {
+      variables: ['idade', 'abc'],
+      values: [20, 89],
+    };
+
+    let output2 = {
+      abc: 89,
+      idade: 20,
       meses: 11,
     };
 
