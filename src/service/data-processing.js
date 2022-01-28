@@ -271,6 +271,13 @@ function computeTable(operation, variables) {
       if (output[i].type === 'variable') {
         let y = getVariable(output[i].variable, variables);
         setVariable(operation.output[i], y, variables);
+      } else if (output[i].type === 'increment') {
+        let value = output[i].value;
+        if (value === null || value === undefined)
+          value = 1;
+
+        let y = getVariable(operation.output[i], variables) + value;
+        setVariable(operation.output[i], y, variables);
       }
     } else
       setVariable(operation.output[i], output[i], variables);
