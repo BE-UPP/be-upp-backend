@@ -789,7 +789,7 @@ describe('Testing invalid process', () => {
 
     try {
       let invalidProcessing = clone(dataProcessing);
-      invalidProcessing.operations[0].input = [];
+      invalidProcessing.operations[1].type = '';
 
       await addProcessData(invalidProcessing);
       await processData(formDataDb, {});
