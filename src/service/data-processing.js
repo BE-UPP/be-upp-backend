@@ -32,7 +32,9 @@ const addProcessData = async(_data) => {
 
 const getProcessData = async(version) => {
   try {
-    const dado = await DataProcessingModel.findOne({version: version}).exec();
+    const dado = await DataProcessingModel.findOne({
+      version: version,
+    }).exec();
     return dado;
   } catch (error) {
     const err = {
@@ -114,12 +116,18 @@ function compute(data, variables) {
       case 'String':
         let s = '';
 
-        for (let x of operation.input){
+        for (let x of operation.input) {
           let y = getVariable(x.variable, variables);
           switch (x.validation) {
             case 'bool':
               if (y && y === true)
                 s += x.label + ', ';
+              break;
+            case 'equal':
+              if (y && y === x.value)
+                s += x.label + ', ';
+              else if (y && x.else)
+                s += x.else + ', ';
               break;
             case 'empty':
               if (y === '')
@@ -137,11 +145,24 @@ function compute(data, variables) {
         }
         if (s.slice(s.length - 2, s.length) === ', ') {
           s = s.slice(0, -2);
-          s += '.';
+          // s += '.';
         }
 
         setVariable(operation.output, s, variables);
 
+        break;
+      case 'Sum' :
+        let aux = 0;
+
+        for (let x of operation.input) {
+          let y = getVariable(x, variables);
+          if (typeof y === 'number')
+            aux += y;
+          else if (typeof y === 'boolean')
+            aux += y ? 1 : 0;
+        }
+
+        setVariable(operation.output, aux, variables);
         break;
       default:
         break;
@@ -257,11 +278,26 @@ function computeTable(operation, variables) {
     });
   }
 
-  if (Array.isArray(output)) {
-    for (let i in operation.output)
+  if (Array.isArray(output) === false)
+    output = [output];
+
+  for (let i in operation.output) {
+    if (output[i] !== null && output[i] !== undefined && typeof output[i] === 'object') {
+      if (output[i].type === 'variable') {
+        let y = getVariable(output[i].variable, variables);
+        setVariable(operation.output[i], y, variables);
+      } else if (output[i].type === 'increment') {
+        let value = output[i].value;
+        if (value === null || value === undefined)
+          value = 1;
+
+        let y = getVariable(operation.output[i], variables) + value;
+        setVariable(operation.output[i], y, variables);
+      } else if (output[i].type === null || output[i].type === undefined) {
+      }
+    } else
       setVariable(operation.output[i], output[i], variables);
-  } else
-    setVariable(operation.output, output, variables);
+  }
 }
 
 const parser = math.parser();

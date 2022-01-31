@@ -1,7 +1,7 @@
 const db = require('./db');
 const supertest = require('supertest');
 // const { ObjectId } = require('mongodb');
-const {omit, clone} = require('../service/helper');
+const { omit, clone } = require('../service/helper');
 const { processData, addProcessData,
   getProcessData } = require('../service/data-processing');
 const {
@@ -58,7 +58,7 @@ const formDataDb = {
     {
       id: 'checkbox',
       variables: ['checkbox1', 'checkbox2'],
-      values: [ 1, 0 ],
+      values: [1, 0],
     },
   ],
 };
@@ -66,7 +66,7 @@ const formDataDb = {
 const variablesValues = {
   variables: ['text', 'selectId', 'select', 'scale', 'radioId',
     'radio', 'tableId1', 'table1', 'tableId2', 'table2', 'tableId3',
-    'table3', 'checkbox1', 'checkbox2' ],
+    'table3', 'checkbox1', 'checkbox2'],
   values: ['josé', '2', 'Feminino', 4, 1, 'Não', 0, '1', 1, '3', 2, '2', 1, 0],
 };
 
@@ -450,9 +450,9 @@ describe('Testing data-processing services', () => {
         {
           type: 'String',
           input: [
-            {variable: 'a', label: 'A', validation: 'bool' },
-            {variable: 'b', label: 'B', validation: 'bool'},
-            {variable: 'c', label: 'C', validation: 'bool'},
+            { variable: 'a', label: 'A', validation: 'bool' },
+            { variable: 'b', label: 'B', validation: 'bool' },
+            { variable: 'c', label: 'C', validation: 'bool' },
           ],
           output: [
             'abc',
@@ -460,9 +460,9 @@ describe('Testing data-processing services', () => {
         }, {
           type: 'String',
           input: [
-            {variable: 'x', label: 'X', validation: 'empty' },
-            {variable: 'y', label: 'Y', validation: 'empty' },
-            {variable: 'z', label: 'Z', validation: 'empty' },
+            { variable: 'x', label: 'X', validation: 'empty' },
+            { variable: 'y', label: 'Y', validation: 'empty' },
+            { variable: 'z', label: 'Z', validation: 'empty' },
           ],
           output: [
             'xyz',
@@ -471,9 +471,9 @@ describe('Testing data-processing services', () => {
         {
           type: 'String',
           input: [
-            {variable: 'aaa' },
-            {variable: 'bbb' },
-            {variable: 'ccc' },
+            { variable: 'aaa' },
+            { variable: 'bbb' },
+            { variable: 'ccc' },
           ],
           output: [
             'az',
@@ -492,9 +492,9 @@ describe('Testing data-processing services', () => {
       aaa: '1',
       bbb: '',
       ccc: '2',
-      abc: 'A, C.',
-      xyz: 'X, Z.',
-      az: '1, 2.',
+      abc: 'A, C',
+      xyz: 'X, Z',
+      az: '1, 2',
 
     };
 
@@ -553,6 +553,220 @@ describe('Testing data-processing services', () => {
 
     done();
   });
+  it('Processing type Sum', async done => {
+
+    let dp = {
+      version: 0,
+      operations: [
+        {
+          name: 'idade',
+          type: 'Sum',
+          input: [
+            'a', 'b', 'c', 'd',
+          ],
+          output: [
+            'soma',
+          ],
+        },
+      ],
+    };
+
+    let variablesValues2 = {
+      variables: ['a', 'b', 'c', 'd'],
+      values: [true, 2, false, 0.5],
+    };
+
+    let output2 = {
+      a: true,
+      b: 2,
+      c: false,
+      d: 0.5,
+      soma: 3.5,
+    };
+
+    await addProcessData(dp);
+    const t = await processData(formDataDb, variablesValues2);
+    let u = clone(t);
+
+    u = omit(u, '_id');
+    u = omit(u, '__v');
+
+    expect(u).toEqual(output2);
+
+    done();
+  });
+  it('Processing type Table 3', async done => {
+
+    let dp = {
+      version: 0,
+      operations: [
+        {
+          name: 'idade',
+          type: 'Table',
+          input: [
+            { label: 'idade', type: 'number' },
+          ],
+          output: [
+            'anos', 'meses',
+          ],
+          body: {
+            '==20': [{type: 'variable', variable: 'abc'}, 11],
+          },
+        },
+      ],
+    };
+
+    let variablesValues2 = {
+      variables: ['idade', 'abc'],
+      values: [20, 89],
+    };
+
+    let output2 = {
+      abc: 89,
+      idade: 20,
+      anos: 89,
+      meses: 11,
+    };
+
+    await addProcessData(dp);
+    const t = await processData(formDataDb, variablesValues2);
+    let u = clone(t);
+
+    u = omit(u, '_id');
+    u = omit(u, '__v');
+
+    expect(u).toEqual(output2);
+
+    done();
+  });
+  it('Processing type Table 4', async done => {
+
+    let dp = {
+      version: 0,
+      operations: [
+        {
+          name: 'idade',
+          type: 'Table',
+          input: [
+            { label: 'idade', type: 'number' },
+          ],
+          output: [
+            'idade', 'meses',
+          ],
+          body: {
+            '==20': [{type: 'increment', value: 21}, 11],
+          },
+        },
+      ],
+    };
+
+    let variablesValues2 = {
+      variables: ['idade', 'abc'],
+      values: [20, 89],
+    };
+
+    let output2 = {
+      abc: 89,
+      idade: 41,
+      meses: 11,
+    };
+
+    await addProcessData(dp);
+    const t = await processData(formDataDb, variablesValues2);
+    let u = clone(t);
+
+    u = omit(u, '_id');
+    u = omit(u, '__v');
+
+    expect(u).toEqual(output2);
+
+    done();
+  });
+  it('Processing type Table 5', async done => {
+
+    let dp = {
+      version: 0,
+      operations: [
+        {
+          name: 'idade',
+          type: 'Table',
+          input: [
+            { label: 'idade', type: 'number' },
+          ],
+          output: [
+            'idade', 'meses',
+          ],
+          body: {
+            '==20': [{}, 11],
+          },
+        },
+      ],
+    };
+
+    let variablesValues2 = {
+      variables: ['idade', 'abc'],
+      values: [20, 89],
+    };
+
+    let output2 = {
+      abc: 89,
+      idade: 20,
+      meses: 11,
+    };
+
+    await addProcessData(dp);
+    const t = await processData(formDataDb, variablesValues2);
+    let u = clone(t);
+
+    u = omit(u, '_id');
+    u = omit(u, '__v');
+
+    expect(u).toEqual(output2);
+
+    done();
+  });
+  it('Processing type String 2', async done => {
+
+    let variablesValues2 = {
+      variables: ['x', 'y', 'z'],
+      values: [11.2, 22, 78.9],
+    };
+    let dp = {
+      version: 0,
+      operations: [ {
+        type: 'String',
+        input: [
+          { variable: 'x', label: 'X', validation: 'equal', value: 11.2 },
+          { variable: 'y', label: 'Y', validation: 'equal', value: 99 },
+          { variable: 'z', label: 'Z', else: 'ZZ', validation: 'equal', value: 81.4 },
+        ],
+        output: [
+          'xyz',
+        ],
+      },
+      ],
+    };
+
+    let output2 = {
+      x: 11.2,
+      y: 22,
+      z: 78.9,
+      xyz: 'X, ZZ',
+
+    };
+
+
+    await addProcessData(dp);
+    const t = await processData(formDataDb, variablesValues2);
+    let u = clone(t);
+
+    u = omit(u, '_id');
+    u = omit(u, '__v');
+
+    expect(u).toEqual(output2);
+
+    done();
+  });
 });
 
 describe('Testing invalid process', () => {
@@ -560,7 +774,7 @@ describe('Testing invalid process', () => {
     expect.assertions(1);
     try {
       let invalidProcessing = clone(dataProcessing);
-      invalidProcessing.operations[0] = {body: 'scale * selectId + radioId' };
+      invalidProcessing.operations[0] = { body: 'scale * selectId + radioId' };
 
       await addProcessData(invalidProcessing);
       await processData(formDataDb, {});
