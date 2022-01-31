@@ -169,6 +169,7 @@ function compute(data, variables) {
           break;
       }
     } catch (error) {
+      console.log(operations[i]);
       if (error.message === 'JSON inválido')
         throw error;
       console.log(error);
