@@ -563,6 +563,48 @@ describe('Testing data-processing services', () => {
 
     done();
   });
+  it('Processing type String 2', async done => {
+
+    let variablesValues2 = {
+      variables: ['x', 'y', 'z'],
+      values: [11.2, 22, 78.9],
+    };
+    let dp = {
+      version: 0,
+      operations: [ {
+        type: 'String',
+        input: [
+          { variable: 'x', label: 'X', validation: 'equal', value: 11.2 },
+          { variable: 'y', label: 'Y', validation: 'equal', value: 99 },
+          { variable: 'z', label: 'Z', else: 'ZZ', validation: 'equal', value: 81.4 },
+        ],
+        output: [
+          'xyz',
+        ],
+      },
+      ],
+    };
+
+    let output2 = {
+      x: 11.2,
+      y: 22,
+      z: 78.9,
+      xyz: 'X, ZZ.',
+
+    };
+
+
+    await addProcessData(dp);
+    const t = await processData(formDataDb, variablesValues2);
+    let u = clone(t);
+
+    u = omit(u, '_id');
+    u = omit(u, '__v');
+
+    expect(u).toEqual(output2);
+
+    done();
+  });
 });
 
 describe('Testing invalid process', () => {

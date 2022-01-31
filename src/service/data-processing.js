@@ -114,6 +114,12 @@ function compute(data, variables) {
               if (y && y === true)
                 s += x.label + ', ';
               break;
+            case 'equal':
+              if (y && y === x.value)
+                s += x.label + ', ';
+              else if (y && x.else)
+                s += x.else + ', ';
+              break;
             case 'empty':
               if (y === '')
                 s += x.label + ', ';
