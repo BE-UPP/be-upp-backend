@@ -1,6 +1,10 @@
 const DataProcessingModel = require('../data/models/data-processing');
+const {
+  getLatestTemplate,
+} = require('../service/template');
 const math = require('mathjs');
 const moment = require('moment');
+const {clone} = require('../service/helper');
 
 function ErrorJson() {
   const e = new Error('JSON inválido');
@@ -8,8 +12,13 @@ function ErrorJson() {
 };
 ErrorJson.prototype = Object.create(Error.prototype);
 
-const addProcessData = async(data) => {
+const addProcessData = async(_data) => {
   try {
+    let data = clone(_data);
+    if (data.version === null || data.version === undefined) {
+      data.version = (await getLatestTemplate()).templateVersion;
+    }
+    await DataProcessingModel.find({version: data.version}).remove().exec();
     const dado = await DataProcessingModel.create(data);
     return dado;
   } catch (error) {
@@ -23,7 +32,9 @@ const addProcessData = async(data) => {
 
 const getProcessData = async(version) => {
   try {
-    const dado = await DataProcessingModel.findOne({version: version}).exec();
+    const dado = await DataProcessingModel.findOne({
+      version: version,
+    }).exec();
     return dado;
   } catch (error) {
     const err = {
@@ -44,8 +55,8 @@ const processData = async(formData, templateVar) => {
     for (let i in templateVar.variables) {
       setVariable(templateVar.variables[i], templateVar.values[i], variables);
     }
-    console.log(variables);
     compute(dataProcessing, variables);
+    console.log(variables);
 
     return variables;
 
@@ -78,64 +89,89 @@ function compute(data, variables) {
   let operations = data.operations;
 
   for (let i = 0; i < operations.length; i++) {
-    let operation = operations[i];
-    switch (operation.type) {
-      case 'Table':
-        computeTable(operation, variables);
-        break;
-      case 'Math':
-        computeMath(operation, variables);
-        break;
-      case 'Date':
-        let date = moment().utcOffset('-0300');
-        let date2 = getVariable(operation.input[0], variables);
-        date2 = moment(date2, 'D/M/YYYY');
+    try {
+      let operation = operations[i];
+      switch (operation.type) {
+        case 'Table':
+          computeTable(operation, variables);
+          break;
+        case 'Math':
+          computeMath(operation, variables);
+          break;
+        case 'Date':
+          let date = moment().utcOffset('-0300');
+          let date2 = getVariable(operation.input[0], variables);
+          date2 = moment(date2, 'D/M/YYYY');
 
-        let y = date.diff(date2, 'years');
-        date = date.add(-y, 'years');
-        let m = date.diff(date2, 'months');
-        date = date.add(-m, 'months');
-        let d = date.diff(date2, 'days');
+          let y = date.diff(date2, 'years');
+          date = date.add(-y, 'years');
+          let m = date.diff(date2, 'months');
+          date = date.add(-m, 'months');
+          let d = date.diff(date2, 'days');
 
-        setVariable(operation.output[0], y, variables);
-        setVariable(operation.output[1], m, variables);
-        setVariable(operation.output[2], d, variables);
+          setVariable(operation.output[0], y, variables);
+          setVariable(operation.output[1], m, variables);
+          setVariable(operation.output[2], d, variables);
 
-        break;
-      case 'String':
-        let s = '';
+          break;
+        case 'String':
+          let s = '';
 
-        for (let x of operation.input){
-          let y = getVariable(x.variable, variables);
-          switch (x.validation) {
-            case 'bool':
-              if (y && y === true)
-                s += x.label + ', ';
-              break;
-            case 'empty':
-              if (y === '')
-                s += x.label + ', ';
-              break;
-            default:
-              if (y && y !== '') {
-                if (x.label)
+          for (let x of operation.input) {
+            let y = getVariable(x.variable, variables);
+            switch (x.validation) {
+              case 'bool':
+                if (y && y === true)
                   s += x.label + ', ';
-                else
-                  s += y + ', ';
-              }
-              break;
+                break;
+              case 'equal':
+                if (y && y === x.value)
+                  s += x.label + ', ';
+                else if (y && x.else)
+                  s += x.else + ', ';
+                break;
+              case 'empty':
+                if (y === '')
+                  s += x.label + ', ';
+                break;
+              default:
+                if (y && y !== '') {
+                  if (x.label)
+                    s += x.label + ', ';
+                  else
+                    s += y + ', ';
+                }
+                break;
+            }
           }
-        }
-        if (s.slice(s.length - 2, s.length) === ', ') {
-          s = s.slice(0, -2);
-          s += '.';
-        }
+          if (s.slice(s.length - 2, s.length) === ', ') {
+            s = s.slice(0, -2);
+          // s += '.';
+          }
 
-        setVariable(operation.output, s, variables);
+          setVariable(operation.output, s, variables);
 
-        break;
-      default:
-        break;
+          break;
+        case 'Sum' :
+          let aux = 0;
+
+          for (let x of operation.input) {
+            let y = getVariable(x, variables);
+            if (typeof y === 'number')
+              aux += y;
+            else if (typeof y === 'boolean')
+              aux += y ? 1 : 0;
+          }
+
+          setVariable(operation.output, aux, variables);
+          break;
+        default:
+          break;
+      }
+    } catch (error) {
+      if (error.message === 'JSON inválido')
+        throw error;
+      console.log(error);
     }
   }
 
@@ -223,7 +259,7 @@ function recursiveTable(input, table, variables) {
       throw new ErrorJson();
   }
 
-  if (new_table === {})
+  if (input.length !== 1 && new_table === {})
     throw new ErrorJson();
 
   if (input.length === 1)
@@ -248,11 +284,26 @@ function computeTable(operation, variables) {
     });
   }
 
-  if (Array.isArray(output)) {
-    for (let i in operation.output)
+  if (Array.isArray(output) === false)
+    output = [output];
+
+  for (let i in operation.output) {
+    if (output[i] !== null && output[i] !== undefined && typeof output[i] === 'object') {
+      if (output[i].type === 'variable') {
+        let y = getVariable(output[i].variable, variables);
+        setVariable(operation.output[i], y, variables);
+      } else if (output[i].type === 'increment') {
+        let value = output[i].value;
+        if (value === null || value === undefined)
+          value = 1;
+
+        let y = getVariable(operation.output[i], variables) + value;
+        setVariable(operation.output[i], y, variables);
+      } else if (output[i].type === null || output[i].type === undefined) {
+      }
+    } else
       setVariable(operation.output[i], output[i], variables);
-  } else
-    setVariable(operation.output, output, variables);
+  }
 }
 
 const parser = math.parser();
