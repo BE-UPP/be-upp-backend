@@ -40,6 +40,16 @@ const DoctorSchema = new mongoose.Schema({
         && s.length > 0,
     required: [true, 'profession required'],
   },
+
+  status: { /* contas ativas e inativas */
+    type: Boolean,
+    required: [true, 'status required'],
+  },
+
+  role: { /* user ou admin */
+    type: String,
+    required: [true, 'role required'],
+  },
 });
 
 const generateHash = (password) => {

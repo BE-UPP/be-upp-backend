@@ -16,6 +16,36 @@ const getDoctorById = async(id) => {
   }
 };
 
+const listUsers = async() => {
+  try {
+    const users = await DoctorModel.find({role: 'user'}).exec();
+
+    return users;
+  } catch (error){
+    const err = {
+      message: error.message,
+      code: 400,
+    };
+    throw err;
+  }
+};
+
+const changeAccount = async(id) => {
+  try {
+    const doctor = await getDoctorById(id);
+    doctor.status = !doctor.status;
+    doctor.save();
+
+    return doctor;
+  } catch (error){
+    const err = {
+      message: error.message,
+      code: 400,
+    };
+    throw err;
+  }
+};
+
 const listAppointments = async(idDoctor) => {
   try {
     const appointments = await AppointmentModel.find({
@@ -50,6 +80,8 @@ const validateDoctorLogin = async(email, password) => {
 
       const payload = {
         id: doctor._id,
+        status: doctor.status,
+        role: doctor.role,
       };
 
       const token = generateToken(payload);
@@ -73,6 +105,8 @@ const createNewDoctor = async(name, email, password, cellphone, phone, professio
       cellphone: cellphone,
       phone: phone,
       profession: profession,
+      status: false,
+      role: 'user',
     };
 
     if (doctor.password.length < 6){
@@ -97,4 +131,6 @@ module.exports = {
   listAppointments: listAppointments,
   createNewDoctor: createNewDoctor,
   validateDoctorLogin: validateDoctorLogin,
+  listUsers: listUsers,
+  changeAccount: changeAccount,
 };
