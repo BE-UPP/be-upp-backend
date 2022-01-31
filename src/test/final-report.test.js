@@ -182,6 +182,91 @@ describe('Testing FinalReport services', () => {
     done();
   });
 
+  it('overwrite FinalReportTemplate without version', async(done) => {
+
+    let FinalReportTemplate2 = {
+      pages: [
+        {
+          pageLabel: 'Dados Gerais',
+          values: [
+            'nome',
+            'sexo',
+            'idade',
+          ],
+          items: [
+            {
+              label: 'Nome:',
+              type: 'text',
+              content: [
+                0,
+              ],
+            },
+          ],
+        },
+
+      ],
+    };
+
+    let FinalReportTemplate3 = {
+      pages: [
+        {
+          pageLabel: 'Dados Gerais2',
+          values: [
+            'nome2',
+            'sexo2',
+            'idade2',
+          ],
+          items: [
+            {
+              label: 'Nome2:',
+              type: 'text',
+              content: [
+                0,
+              ],
+            },
+          ],
+        },
+
+      ],
+    };
+
+    let pages = [
+      {
+        pageLabel: 'A page label',
+        questions: {
+          name: {
+            questionLabel: 'Nome Incompleto',
+            placeholder: 'Ex: José Fernando da Silva',
+            type: 'text',
+            variables: ['name'],
+          },
+        },
+      },
+    ];
+
+
+    await setTemplate(pages);
+    await setTemplate(pages);
+    await setTemplate(pages);
+    await setTemplate(pages);
+
+    await addFinalReportTemplate(FinalReportTemplate3);
+    let FRTemplate = await addFinalReportTemplate(FinalReportTemplate2);
+    let output = clone(FinalReportTemplate2);
+    output.isTemplate = true;
+    output.version = 3;
+
+    let t = clone(FRTemplate);
+    delete t._id;
+    delete t.__v;
+
+    for (let i in t.pages)
+      delete t.pages[i]._id;
+
+    expect(t).toEqual(output);
+    done();
+  });
+
   it('get FinalReportTemplate', async(done) => {
     let FRTemplate = await addFinalReportTemplate(FinalReportTemplate);
     let t = clone(FRTemplate);

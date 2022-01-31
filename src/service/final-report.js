@@ -13,6 +13,7 @@ const addFinalReportTemplate = async(data) => {
     if (data2.version === null || data2.version === undefined) {
       data2.version = (await getLatestTemplate()).templateVersion;
     }
+    await Model.find({version: data2.version, isTemplate: true}).remove().exec();
     const dado = await Model.create(data2);
     return dado;
   } catch (error) {
