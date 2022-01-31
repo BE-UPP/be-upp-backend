@@ -330,9 +330,9 @@ describe('Testing data-processing services', () => {
       aaa: '1',
       bbb: '',
       ccc: '2',
-      abc: 'A, C.',
-      xyz: 'X, Z.',
-      az: '1, 2.',
+      abc: 'A, C',
+      xyz: 'X, Z',
+      az: '1, 2',
 
     };
 
@@ -589,7 +589,7 @@ describe('Testing data-processing services', () => {
       x: 11.2,
       y: 22,
       z: 78.9,
-      xyz: 'X, ZZ.',
+      xyz: 'X, ZZ',
 
     };
 

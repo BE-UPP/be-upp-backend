@@ -136,7 +136,7 @@ function compute(data, variables) {
         }
         if (s.slice(s.length - 2, s.length) === ', ') {
           s = s.slice(0, -2);
-          s += '.';
+          // s += '.';
         }
 
         setVariable(operation.output, s, variables);
