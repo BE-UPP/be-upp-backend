@@ -55,8 +55,8 @@ const processData = async(formData, templateVar) => {
     for (let i in templateVar.variables) {
       setVariable(templateVar.variables[i], templateVar.values[i], variables);
     }
-    console.log(variables);
     compute(dataProcessing, variables);
+    console.log(variables);
 
     return variables;
 
@@ -89,83 +89,90 @@ function compute(data, variables) {
   let operations = data.operations;
 
   for (let i = 0; i < operations.length; i++) {
-    let operation = operations[i];
-    switch (operation.type) {
-      case 'Table':
-        computeTable(operation, variables);
-        break;
-      case 'Math':
-        computeMath(operation, variables);
-        break;
-      case 'Date':
-        let date = moment().utcOffset('-0300');
-        let date2 = getVariable(operation.input[0], variables);
-        date2 = moment(date2, 'D/M/YYYY');
+    try {
+      let operation = operations[i];
+      switch (operation.type) {
+        case 'Table':
+          computeTable(operation, variables);
+          break;
+        case 'Math':
+          computeMath(operation, variables);
+          break;
+        case 'Date':
+          let date = moment().utcOffset('-0300');
+          let date2 = getVariable(operation.input[0], variables);
+          date2 = moment(date2, 'D/M/YYYY');
 
-        let y = date.diff(date2, 'years');
-        date = date.add(-y, 'years');
-        let m = date.diff(date2, 'months');
-        date = date.add(-m, 'months');
-        let d = date.diff(date2, 'days');
+          let y = date.diff(date2, 'years');
+          date = date.add(-y, 'years');
+          let m = date.diff(date2, 'months');
+          date = date.add(-m, 'months');
+          let d = date.diff(date2, 'days');
 
-        setVariable(operation.output[0], y, variables);
-        setVariable(operation.output[1], m, variables);
-        setVariable(operation.output[2], d, variables);
+          setVariable(operation.output[0], y, variables);
+          setVariable(operation.output[1], m, variables);
+          setVariable(operation.output[2], d, variables);
 
-        break;
-      case 'String':
-        let s = '';
+          break;
+        case 'String':
+          let s = '';
 
-        for (let x of operation.input) {
-          let y = getVariable(x.variable, variables);
-          switch (x.validation) {
-            case 'bool':
-              if (y && y === true)
-                s += x.label + ', ';
-              break;
-            case 'equal':
-              if (y && y === x.value)
-                s += x.label + ', ';
-              else if (y && x.else)
-                s += x.else + ', ';
-              break;
-            case 'empty':
-              if (y === '')
-                s += x.label + ', ';
-              break;
-            default:
-              if (y && y !== '') {
-                if (x.label)
+          for (let x of operation.input) {
+            let y = getVariable(x.variable, variables);
+            switch (x.validation) {
+              case 'bool':
+                if (y && y === true)
                   s += x.label + ', ';
-                else
-                  s += y + ', ';
-              }
-              break;
+                break;
+              case 'equal':
+                if (y && y === x.value)
+                  s += x.label + ', ';
+                else if (y && x.else)
+                  s += x.else + ', ';
+                break;
+              case 'empty':
+                if (y === '')
+                  s += x.label + ', ';
+                break;
+              default:
+                if (y && y !== '') {
+                  if (x.label)
+                    s += x.label + ', ';
+                  else
+                    s += y + ', ';
+                }
+                break;
+            }
           }
-        }
-        if (s.slice(s.length - 2, s.length) === ', ') {
-          s = s.slice(0, -2);
+          if (s.slice(s.length - 2, s.length) === ', ') {
+            s = s.slice(0, -2);
           // s += '.';
-        }
+          }
 
-        setVariable(operation.output, s, variables);
+          setVariable(operation.output, s, variables);
 
-        break;
-      case 'Sum' :
-        let aux = 0;
+          break;
+        case 'Sum' :
+          let aux = 0;
 
-        for (let x of operation.input) {
-          let y = getVariable(x, variables);
-          if (typeof y === 'number')
-            aux += y;
-          else if (typeof y === 'boolean')
-            aux += y ? 1 : 0;
-        }
+          for (let x of operation.input) {
+            let y = getVariable(x, variables);
+            if (typeof y === 'number')
+              aux += y;
+            else if (typeof y === 'boolean')
+              aux += y ? 1 : 0;
+          }
 
-        setVariable(operation.output, aux, variables);
-        break;
-      default:
-        break;
+          setVariable(operation.output, aux, variables);
+          break;
+        default:
+          break;
+      }
+    } catch (error) {
+      console.log(operations[i]);
+      if (error.message === 'JSON inválido')
+        throw error;
+      console.log(error);
     }
   }
 
@@ -253,7 +260,7 @@ function recursiveTable(input, table, variables) {
       throw new ErrorJson();
   }
 
-  if (new_table === {})
+  if (input.length !== 1 && new_table === {})
     throw new ErrorJson();
 
   if (input.length === 1)
