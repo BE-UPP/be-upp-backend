@@ -1,5 +1,8 @@
 const Model = require('../data/models/final-report');
 const { getAppointmentById } = require('./appointment');
+const {
+  getLatestTemplate,
+} = require('../service/template');
 const { clone } = require('./helper');
 const mongoose = require('mongoose');
 
@@ -7,6 +10,9 @@ const addFinalReportTemplate = async(data) => {
   try {
     let data2 = clone(data);
     data2.isTemplate = true;
+    if (data2.version === null || data2.version === undefined) {
+      data2.version = (await getLatestTemplate()).templateVersion;
+    }
     const dado = await Model.create(data2);
     return dado;
   } catch (error) {
@@ -54,6 +60,7 @@ const addFinalReportData = async(formData, variables) => {
       }
     }
 
+    await Model.find({appointmentId: data.appointmentId}).remove().exec();
     const dado = await Model.create(data);
     return dado;
   } catch (error) {
