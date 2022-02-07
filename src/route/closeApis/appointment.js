@@ -4,11 +4,11 @@ const {
   getAppointmentById,
   createNewAppointment,
 } = require('../../service/appointment');
-const { verifyToken } = require('../../service/authentication');
+const { authorize } = require('../../service/authentication');
 const { responseError } = require('../../service/helper');
 
 
-router.get('/by-id/:id', verifyToken, async(req, res) => {
+router.get('/by-id/:id', authorize(), async(req, res) => {
 
   try {
     const id = req.params ? req.params.id : false;
@@ -27,7 +27,7 @@ router.get('/by-id/:id', verifyToken, async(req, res) => {
   }
 });
 
-router.post('/new', verifyToken, async(req, res) => {
+router.post('/new', authorize(), async(req, res) => {
   try {
     const date = req.body.date;
     const patientId = req.body.patientId;

@@ -3,10 +3,10 @@ const router = express.Router();
 const {
   getFinalReportData,
 } = require('../../service/final-report');
-const { verifyToken } = require('../../service/authentication');
+const { authorize } = require('../../service/authentication');
 
 
-router.get('/by-id', verifyToken, async(req, res) => {
+router.get('/by-id', authorize(), async(req, res) => {
   try {
     const id = req.query ? req.query.id : false;
     if (!id) {

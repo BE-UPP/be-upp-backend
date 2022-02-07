@@ -76,7 +76,7 @@ const validateDoctorLogin = async(email, password) => {
     code: 400,
   };
   if (doctor != null) {
-    if (checkPassword(password, doctor.password)) {
+    if (doctor.status && checkPassword(password, doctor.password)) {
 
       const payload = {
         id: doctor._id,
