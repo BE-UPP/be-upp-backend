@@ -51,7 +51,7 @@ const doctors = [
   {
     name: 'Willian Hiroshi',
     email: 'hiroshi@mail.com',
-    password: 'asdasdasd',
+    password: '123456',
     phone: '1187877878',
     cellphone: '11987877878',
     profession: 'Cirurgião',
@@ -59,7 +59,7 @@ const doctors = [
   {
     name: 'Davi Hiroshi',
     email: 'davi@mail.com',
-    password: 'asdasdasdef',
+    password: '123456',
     phone: '1198989797',
     cellphone: '11987877878',
     profession: 'Cardiologista',
