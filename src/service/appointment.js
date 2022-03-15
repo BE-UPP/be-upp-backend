@@ -1,6 +1,7 @@
 const AppointmentModel = require('../data/models/appointment');
 const { getPatientById } = require('./patient');
 const { getDoctorById } = require('./doctor');
+const { getLatestTemplate } = require('./template');
 // const mailer = require('../data/mail/mailer');
 
 const getAppointmentById = async(id) => {
@@ -15,6 +16,34 @@ const getAppointmentById = async(id) => {
     }
 
     return dado;
+  } catch (error) {
+    const err = {
+      message: error.message,
+      code: 400,
+    };
+    throw err;
+  }
+};
+
+const getTemplateWithPatientData = async(appointmentId) => {
+  try {
+    const template = await getLatestTemplate();
+    const appointment = await getAppointmentById(appointmentId);
+    const patient = await getPatientById(appointment.patient);
+    for (const page of template.pages) {
+      console.log(page);
+      if (page.questions.hasOwnProperty('name')) {
+        page.questions.name.initialValue = patient.name;
+      }
+      if (page.questions.hasOwnProperty('email')) {
+        page.questions.email.initialValue = patient.email;
+      }
+      // if (page.questions.hasOwnProperty('telephone')) {
+      //   page.questions.telephone.initialValue = patient.cellphone;
+      // }
+    }
+
+    return template;
   } catch (error) {
     const err = {
       message: error.message,
@@ -72,4 +101,5 @@ const createNewAppointment = async(date, patientId, doctorId) => {
 module.exports = {
   createNewAppointment: createNewAppointment,
   getAppointmentById: getAppointmentById,
+  getTemplateWithPatientData: getTemplateWithPatientData,
 };
