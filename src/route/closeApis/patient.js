@@ -3,10 +3,10 @@ const router = express.Router();
 const {
   createNewPatient, getAllPatients,
 } = require('../../service/patient');
-const { verifyToken } = require('../../service/authentication');
+const { authorize } = require('../../service/authentication');
 const { responseError } = require('../../service/helper');
 
-router.post('/new', verifyToken, async(req, res) => {
+router.post('/new', authorize(), async(req, res) => {
   try {
     const name = req.body.name;
     const email = req.body.email;
@@ -33,7 +33,7 @@ router.post('/new', verifyToken, async(req, res) => {
   }
 });
 
-router.get('/all', verifyToken, async(req, res) => {
+router.get('/all', authorize(), async(req, res) => {
   try {
     const doctorId = req.query.id;
     const patients = await getAllPatients(doctorId);

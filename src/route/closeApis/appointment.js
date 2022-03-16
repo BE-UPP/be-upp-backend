@@ -3,10 +3,10 @@ const router = express.Router();
 const {
   createNewAppointment,
 } = require('../../service/appointment');
-const { verifyToken } = require('../../service/authentication');
+const { authorize } = require('../../service/authentication');
 const { responseError } = require('../../service/helper');
 
-router.post('/new', verifyToken, async(req, res) => {
+router.post('/new', authorize(), async(req, res) => {
   try {
     const date = req.body.date;
     const patientId = req.body.patientId;
