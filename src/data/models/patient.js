@@ -20,7 +20,7 @@ const PatientSchema = new mongoose.Schema({
     type: String,
     validate: s => (typeof s === 'string' || s instanceof String)
         && s.length === 11,
-    required: [true, 'cpf required'],
+    // required: [true, 'cpf required'],
   },
 
   cellphone: {
