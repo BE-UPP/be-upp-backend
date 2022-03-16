@@ -1,20 +1,33 @@
 const AppointmentModel = require('../data/models/appointment');
 const { getPatientById } = require('./patient');
 const { getDoctorById } = require('./doctor');
+const mongoose = require('mongoose');
 // const mailer = require('../data/mail/mailer');
 
 const getAppointmentById = async(id) => {
   try {
     const dado = await AppointmentModel.findById(id).exec();
-    if (dado === null){
-      const err = {
-        message: 'Appointment does not exist',
-        code: 400,
-      };
-      throw err;
-    }
 
     return dado;
+  } catch (error) {
+    const err = {
+      message: error.message,
+      code: 400,
+    };
+    throw err;
+  }
+};
+
+const checkAppointment = async(id) => {
+  try {
+    const isIdValid = mongoose.Types.ObjectId.isValid(id);
+
+    if (isIdValid) {
+      const dado = await getAppointmentById(id);
+      return dado != null;
+    }
+
+    return false;
   } catch (error) {
     const err = {
       message: error.message,
@@ -72,4 +85,5 @@ const createNewAppointment = async(date, patientId, doctorId) => {
 module.exports = {
   createNewAppointment: createNewAppointment,
   getAppointmentById: getAppointmentById,
+  checkAppointment: checkAppointment,
 };
