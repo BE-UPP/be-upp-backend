@@ -1,25 +1,20 @@
 const express = require('express');
 const router = express.Router();
 const {
-  getFinalReportData,
-} = require('../../service/final-report');
-const { authorize } = require('../../service/authentication');
+  checkAppointment,
+} = require('../../service/appointment');
 
-
-router.get('/by-id', authorize(), async(req, res) => {
+router.get('/check', async(req, res) => {
   try {
     const id = req.query ? req.query.id : false;
     if (!id) {
       throw Object.assign(
         new Error('Ausência de valores (requerido: appointmentId)'),
-        { code: 402 },
+        { code: 400 },
       );
     }
-    console.log('ID -> ', id);
-
-    const frData = await getFinalReportData(id);
-
-    res.send(frData);
+    const appointment = await checkAppointment(id);
+    res.send(appointment);
   } catch (error) {
     console.log(error);
     // TODO error
