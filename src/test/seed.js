@@ -1,7 +1,7 @@
 const mongoose = require('../infra/database');
-const { PatientModel } = require('../data/models/patient');
-const { DoctorModel } = require('../data/models/doctor');
 const AppointmentModel = require('../data/models/appointment');
+const { createNewDoctor } = require('../service/doctor');
+const { createNewPatient } = require('../service/patient');
 const { addFinalReportTemplate,
   addFinalReportData } = require('../service/final-report');
 const { clone } = require('../service/helper');
@@ -51,18 +51,22 @@ const doctors = [
   {
     name: 'Willian Hiroshi',
     email: 'hiroshi@mail.com',
-    password: 'asdasdasd',
+    password: '123456',
     phone: '1187877878',
     cellphone: '11987877878',
     profession: 'Cirurgião',
+    role: 'user',
+    status: false,
   },
   {
     name: 'Davi Hiroshi',
     email: 'davi@mail.com',
-    password: 'asdasdasdef',
+    password: '123456',
     phone: '1198989797',
     cellphone: '11987877878',
     profession: 'Cardiologista',
+    role: 'admin',
+    status: true,
   }];
 
 const appointments = [
@@ -148,14 +152,16 @@ const newAppointments = [];
 
 const populatePatients = async(patients) => {
   for (const patient of patients){
-    const newPatient = await PatientModel.create(patient);
+    const newPatient = await createNewPatient(patient.name, patient.email, patient.cpf,
+      patient.cellphone, patient.birth, patient.password, patient.doctorId);
     newPatients.push(newPatient);
   }
 };
 
 const populateDoctors = async(doctors) => {
   for (const doctor of doctors){
-    const newDoctor = await DoctorModel.create(doctor);
+    const newDoctor = await createNewDoctor(doctor.name, doctor.email, doctor.password,
+      doctor.cellphone, doctor.phone, doctor.profession);
     newDoctors.push(newDoctor);
   }
 };
