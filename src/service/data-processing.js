@@ -149,6 +149,13 @@ function compute(data, variables) {
           // s += '.';
           }
 
+          if (s === '' && operation.defaultValue){
+            s = operation.defaultValue;
+            console.log('operation');
+            console.log(operation.defaultValue);
+            console.log(operation);
+          }
+
           setVariable(operation.output, s, variables);
 
           break;
