@@ -11,6 +11,11 @@ const OperationSchema = new mongoose.Schema({
     required: true,
   },
 
+  defaultValue: {
+    type: String,
+    required: false,
+  },
+
   output: {
     type: [String],
     required: true,
